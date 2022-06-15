@@ -1,16 +1,18 @@
 <template>
   <div>
-    <PopupMenu :showMenu="showPopup" :pos="popupPosition">
-      <ul><li class="close-tab-toggle" @click="togglePopup()">
-        <fa :icon="['fas', 'arrow-right-from-bracket']" />
-        <span>Déconnexion</span>
-    </li></ul>
+    <PopupMenu ref="popup-menu" :showMenu="showPopup" :pos="popupPosition">
+      <ul>
+        <li class="close-tab-toggle" @click="togglePopup()">
+          <fa :icon="['fas', 'arrow-right-from-bracket']" />
+          <span>Déconnexion</span>
+        </li>
+      </ul>
     </PopupMenu>
     <div class="menu" :class="{ show: showMenu }">
       <div class="menu-header">
-        <div class="input-group search-bar">
+        <div class="search-bar">
           <span class="search-icon">
-            <i class="fa fa-search"></i>
+            <fa :icon="['fas', 'magnifying-glass']" />
           </span>
           <input
             type="search"
@@ -71,7 +73,7 @@ export default {
     mounted() {
     // on click outside of the menu
     document.addEventListener('click', (e) => {
-        if (this.showPopup && !this.$el.contains(e.target)) {
+        if (this.showPopup) {
             this.showPopup = false;
         } else if (!this.$el.contains(e.target) && this.showMenu) {
                 this.$emit('toggle-menu', false);
@@ -122,7 +124,7 @@ export default {
 .search-bar {
   display: flex;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   height: 40px;
   background-color: rgba(29, 29, 29, 1);

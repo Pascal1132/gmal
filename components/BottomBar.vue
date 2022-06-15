@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Calendar :show="showCalendar"></Calendar>
     <div class="bottom-bar">
       <div>
         <div class="toggle-menu" @click="toggleMenu()">
@@ -7,7 +8,7 @@
         </div>
       </div>
       <div>
-        <span class="clock noselect">
+        <span class="clock" @click="toggleCalendar()">
           <span id="current-time">{{ currentTime.time }}</span>
           <span id="current-date">{{ currentTime.date }}</span>
         </span>
@@ -24,11 +25,15 @@ export default {
         time: '',
         date: '',
       },
+      showCalendar: false,
     }
   },
   methods: {
     toggleMenu() {
       this.$emit('toggle-menu')
+    },
+    toggleCalendar() {
+      this.showCalendar = !this.showCalendar
     },
     getTimeAndDate() {
 var date = new Date()
@@ -53,6 +58,16 @@ var date = new Date()
       this.getTimeAndDate()
     }, 1000)
     this.getTimeAndDate();
+    // on click outside, close the Calendar
+        document.addEventListener('click', (e) => {
+            if (this.showCalendar) {
+                this.showCalendar = false;
+            }
+        });
+        // prevent propagation
+        this.$el.querySelector('.clock').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
   },
 }
 </script>
