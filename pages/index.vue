@@ -1,14 +1,23 @@
 <template>
   <div>
-    <h1>Hello World</h1>
-    <p>This is a simple example of a Vue.js component.</p>
-    <BottomBar></BottomBar>
+    <Menu :showMenu="showMenu" @toggle-menu="toggleMenu"></Menu>
+    <BottomBar @toggle-menu="toggleMenu()"></BottomBar>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="js">
 export default {
   name: 'Index',
+  data() {
+    return {
+      showMenu: false,
+    }
+  },
+  methods: {
+    toggleMenu(state = null) {
+      this.showMenu =   state === null ? !this.showMenu : state
+    },
+  },
 }
 </script>
 <style lang="scss">

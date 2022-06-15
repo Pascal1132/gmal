@@ -24,7 +24,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '~assets/css/main.css'
+    '~assets/css/main.css',
+    '@fortawesome/fontawesome-svg-core/styles.css'
   ],
 
 
@@ -32,7 +33,6 @@ export default {
     '@nuxtjs/style-resources',
     '@nuxtjs/moment',
   ],
-
 
   styleResources: {
     scss: [
@@ -42,6 +42,7 @@ export default {
   },
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/fontawesome.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
