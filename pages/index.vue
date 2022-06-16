@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Window v-for="(window, index) in windows" :key="index" v-bind="window">
+    <Window v-for="window in windows" :key="window.id" v-bind="window">
       <div v-html="window.content"></div>
     </Window>
     <Desktop></Desktop>
@@ -15,7 +15,6 @@ export default {
   data() {
     return {
       showMenu: false,
-      windows: []
     }
   },
   methods: {
@@ -25,14 +24,16 @@ export default {
   },
   mounted() {
     // add a base window
-    this.windows.push({
+    this.$store.commit('openWindow', {
       id: 1,
       title: 'Base Window',
       content: '<div>Base Window</div>',
         top: 0,
         left: 0,
-        width: 300,
-        height: 300,
+        size: {
+            width: 400,
+            height: 300,
+        },
 
       isMaximized: false,
       isMinimized: false,
@@ -50,6 +51,12 @@ export default {
       isContextMenuPositioned: false,
     });
   },
+  computed: {
+    windows(){
+      return this.$store.state.windows
+    },
+
+  }
 }
 </script>
 <style lang="scss">

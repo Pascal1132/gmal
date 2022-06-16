@@ -49,6 +49,7 @@ export default {
                 top: 0,
                 left: 0,
             },
+            loaded: false,
         }
     },
     methods: {
@@ -71,6 +72,7 @@ export default {
         },
     },
     mounted() {
+      if (!this.loaded){
     // on click outside of the menu
     document.addEventListener('click', (e) => {
         if (this.showPopup) {
@@ -89,6 +91,8 @@ export default {
     document.querySelector('.toggle-menu').addEventListener('click', (e) => {
       e.stopPropagation();
     });
+    this.loaded = true;
+      }
   },
 }
 </script>
@@ -112,6 +116,7 @@ export default {
   -webkit-backdrop-filter: blur(4px);
   bottom: 50px;
   transform: translateY(110%);
+  z-index: 99;
   margin: 10px;
   border: 1.5px solid rgba(125, 125, 125, 0.5);
   transition: all 0.2s ease-in-out;

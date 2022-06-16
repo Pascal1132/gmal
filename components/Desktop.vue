@@ -33,9 +33,11 @@ export default {
             },
             currentContextMenuElementSelected: null,
             currentElementDrag: null,
+            loaded: false,
         }
     },
     mounted() {
+        if (!this.loaded){
         // on right click on the desktop
         document.addEventListener('contextmenu', (e) => {
             // if currenttarget is a launcher or the parent div contains a launcher
@@ -91,6 +93,8 @@ export default {
 
             }
         });
+        this.loaded = true;
+        }
     },
 }
 </script>

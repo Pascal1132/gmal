@@ -35,7 +35,7 @@ export default {
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
   min-width: 100px;
   font-size: 13px;
-  z-index: 44;
+  z-index: 101;
   &.show {
     display: flex;
   }

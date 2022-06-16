@@ -22,14 +22,18 @@ export default {
             fr: fr,
             en: en,
             selectedDate: new Date(),
+            loaded: false
         }
     },
     mounted() {
-
-        // on click stop propagation to prevent closing the calendar
+        if (!this.loaded) {
+ // on click stop propagation to prevent closing the calendar
         this.$el.addEventListener('click', (e) => {
             e.stopPropagation();
         });
+        this.loaded = true;
+        }
+       
 
     },
     // on show =false, reset the calendar
