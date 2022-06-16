@@ -24,7 +24,7 @@ export default {
     },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .popup-menu {
   display: none;
   position: absolute;
@@ -36,7 +36,6 @@ export default {
   min-width: 100px;
   font-size: 13px;
   z-index: 44;
-  transition: all 0.2s ease-in-out;
   &.show {
     display: flex;
   }

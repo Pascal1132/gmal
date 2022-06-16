@@ -1,10 +1,13 @@
 <template>
   <div class="calendar" :class="{ show }">
     <!-- simple calendar -->
-    <span class="calendar-header">{{ currentDateString }}</span>
+    <div class="calendar-body">
+      <date-picker :language="fr" :inline="true" v-model="selectedDate"></date-picker>
+    </div>
   </div>
 </template>
 <script lang="js">
+import {en, fr} from 'vuejs-datepicker/dist/locale'
 export default {
     name: 'Calendar',
     props: {
@@ -16,79 +19,155 @@ export default {
     data() {
         return {
             currentDateString: '',
+            fr: fr,
+            en: en,
+            selectedDate: new Date(),
         }
     },
-    methods: {
-        getCurrentDateString(){
-            /*const date = new Date();
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear();
-            this.currentDateString = `${day}/${month}/${year}`;*/
-            // Like above but with full string for month
-            const date = new Date();
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear();
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            this.currentDateString = `${day} ${months[month - 1]} ${year}`;
-
-        },
-    },
     mounted() {
-        this.getCurrentDateString();
-        setInterval(() => {
-            this.getCurrentDateString();
-        }, 1000);
-        
+
+        // on click stop propagation to prevent closing the calendar
+        this.$el.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+    },
+    // on show =false, reset the calendar
+    watch: {
+        show(val) {
+            if (!val) {
+                setTimeout(() => {
+                    this.selectedDate = new Date();
+                }, 200);
+            }
+        },
     },
     }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .calendar {
-  display: none;
+  display: flex;
   position: absolute;
   padding: 5px;
+  justify-content: center;
+  flex-direction: column;
   color: #f5f5f5;
   background-color: rgba(34, 34, 34, 0.95);
+
   border-radius: 6px;
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
   min-width: 100px;
   font-size: 13px;
   bottom: 0;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   right: 0;
   margin-bottom: 60px;
   margin-right: 10px;
   z-index: 44;
   transition: all 0.2s ease-in-out;
+  transform: translateX(calc(100% + 10px));
   &.show {
-    display: flex;
+    transform: translateX(0);
   }
-  ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    li {
-      width: 100%;
-      display: flex;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      align-items: center;
-      justify-content: space-between;
-    }
+  *{
+    transition: all 0.2s ease-in-out;
   }
   .calendar-header {
     font-size: 20px;
     padding: 5px;
     font-weight: bold;
     margin-bottom: 10px;
+  }
+  .calendar-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    .vdp-datepicker__calendar {
+      background-color: transparent;
+      border: none;
+
+      header {
+        display: flex;
+        .prev:not(.disabled):hover,
+        .next:not(.disabled):hover,
+        .up:not(.disabled):hover {
+          background: rgba(125, 125, 125, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+        .prev {
+          display: flex;
+          order: 1;
+          border-radius: 5px;;
+          &:after {
+            border-right: 10px solid #f5f5f5;
+          }
+          
+          transform: rotate(-90deg);
+        }
+        .next {
+          display: flex;
+          order: 2;
+          color: #f5f5f5;
+          border-radius: 5px;
+          &:after {
+            border-left: 10px solid #f5f5f5;
+          }
+          transform: rotate(-90deg);
+        }
+        .up {
+          display: block;
+          order: 0;
+          text-align: left;
+          border-radius: 5px;;
+          padding-left: 10px;
+        }
+      }
+      .cell {
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        margin: 0;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        height: 40px;
+        line-height: 40px;
+        border: 1px solid transparent !important;
+        &.day {
+          justify-content: center;
+          &:hover {
+            background: rgba(125, 125, 125, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+          }
+          &.selected {
+            border: 1px solid $highlight-color !important;
+          }
+          &.today {
+            background: $highlight-color !important;
+          }
+        }
+        &.month, &.year {
+          justify-content: center;
+          height: 70px;
+          width: 70px;
+          padding: 5px;
+          &:hover {
+            background: rgba(125, 125, 125, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+          }
+          &.selected {
+            border: 1px solid $highlight-color !important;
+          }
+          &.today {
+            background: $highlight-color !important;
+          }
+        }
+      }
+    }
   }
 }
 </style>

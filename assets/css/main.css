@@ -23,3 +23,14 @@ html {
                                     supported by Chrome, Edge, Opera and Firefox */
   box-sizing: border-box;
 }
+:root {
+  --highlight-color: rgb(165, 111, 165);
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}

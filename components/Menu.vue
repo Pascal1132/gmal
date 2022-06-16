@@ -87,7 +87,7 @@ export default {
     });
     // prevent propagation on .toggle-menu
     document.querySelector('.toggle-menu').addEventListener('click', (e) => {
-      e.stopPropagation()
+      e.stopPropagation();
     });
   },
 }
@@ -132,7 +132,7 @@ export default {
   width: 100%;
   padding: 10px;
   border-radius: 3px;
-  border-bottom: 2px solid rgb(165, 111, 165);
+  border-bottom: 2px solid var(--highlight-color);
 }
 
 .menu-header {

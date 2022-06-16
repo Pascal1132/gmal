@@ -30,19 +30,17 @@ export default {
 
 
   buildModules: [
-    '@nuxtjs/style-resources',
+    
     '@nuxtjs/moment',
   ],
 
   styleResources: {
-    scss: [
-      '~assets/scss/mixins.scss',
-      '~assets/scss/variables.scss'
-    ]
+    scss: ['~/assets/scss/*.scss']
   },
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/fontawesome.js'
+    '~/plugins/fontawesome.js',
+    '~/plugins/datepicker.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -56,6 +54,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/style-resources',
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

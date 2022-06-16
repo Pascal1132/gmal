@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Desktop></Desktop>
     <Menu :showMenu="showMenu" @toggle-menu="toggleMenu"></Menu>
     <BottomBar @toggle-menu="toggleMenu()"></BottomBar>
   </div>
