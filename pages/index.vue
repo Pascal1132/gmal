@@ -23,33 +23,6 @@ export default {
     },
   },
   mounted() {
-    // add a base window
-    this.$store.commit('openWindow', {
-      id: 1,
-      title: 'Base Window',
-      content: '<div>Base Window</div>',
-        top: 0,
-        left: 0,
-        size: {
-            width: 400,
-            height: 300,
-        },
-
-      isMaximized: false,
-      isMinimized: false,
-      isActive: true,
-      isDragged: false,
-      isResized: false,
-      isResizing: false,
-      isDraggable: true,
-      isResizable: true,
-      isCloseable: true,
-      isMaximizeable: true,
-      isMinimizeable: true,
-      isContextMenu: true,
-      isContextMenuVisible: false,
-      isContextMenuPositioned: false,
-    });
   },
   computed: {
     windows(){
