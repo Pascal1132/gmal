@@ -1,6 +1,10 @@
 <template>
   <div>
-    <PopupMenu class="contextmenu" :showMenu="showMenu" :pos="popupPosition">
+    <LazyPopupMenu
+      class="contextmenu"
+      :showMenu="showMenu"
+      :pos="popupPosition"
+    >
       <ul
         v-if="currentContextMenuElementSelected"
         v-html="currentContextMenuElementSelected"
@@ -8,8 +12,8 @@
       <ul v-else>
         <li>Changer l'image du fond</li>
       </ul>
-    </PopupMenu>
-    <div class="desktop">
+    </LazyPopupMenu>
+    <div class="desktop" @contextmenu="contextMenuClick">
       <!-- On right click -->
       <div class="launcher">
         <img src="images/recycle_bin.png" />
@@ -37,17 +41,14 @@ export default {
                 top: 0,
                 left: 0,
             },
-            nbOfIconPossible: 30,
+            nbOfIconPossible: 500,
             currentContextMenuElementSelected: null,
             currentElementDrag: null,
             loaded: false,
         }
     },
-    mounted() {
-        if (!this.loaded){
-        // on right click on the desktop
-        document.addEventListener('contextmenu', (e) => {
-            // if currenttarget is a launcher or the parent div contains a launcher
+    methods:{
+        contextMenuClick(e) {
             if (e.target.classList.contains('launcher') || e.target.parentElement.classList.contains('launcher')) {
                 this.currentContextMenuElementSelected = e.currentTarget.querySelector('.context-menu-properties')?.innerHTML ?? null;
             } else {
@@ -60,7 +61,10 @@ export default {
                 left: e.clientX,
             };
             this.showMenu = true;
-        });
+        },
+    },
+    mounted() {
+        if (!this.loaded){
 
         // on click outside of the menu
         document.addEventListener('click', (e) => {

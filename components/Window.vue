@@ -11,6 +11,7 @@
     :class="{
       draggable: isDraggable,
       minimized: isMinimized,
+      willMinimize: willMinimize,
       focused: isFocused,
     }"
     @click="onWindowClick"
@@ -74,6 +75,7 @@ export default {
             zIndex: 1,
             resizingW: false,
             resizingH: false,
+            willMinimize: false,
         }
     },
     props: {
@@ -94,6 +96,15 @@ export default {
             default: {
                 width: 400,
                 height: 300,
+                minWidth: 400,
+                minHeight: 300,
+            },
+        },
+        pos: {
+            type: Object,
+            default: {
+                x: 0,
+                y: 0,
             },
         },
         isMaximized: {
@@ -156,6 +167,25 @@ export default {
         this.loaded = true;
         }
     },
+    // watch size changes
+    watch: {
+        size: {
+            handler(val) {
+                this.width = val.width
+                this.height = val.height
+            },
+            deep: true,
+        },
+        pos: {
+            handler(val) {
+                this.x = val.x
+                this.y = val.y
+            },
+            deep: true,
+        },
+
+    },
+
     methods: {
         onMouseUp(e) {
 
@@ -209,10 +239,10 @@ export default {
                 }
 
             }
-            if(this.resizingW && (e.clientX - this.x) > 300){
+            if(this.resizingW && (e.clientX - this.x) > this.size.minWidth) {
                 this.width = e.clientX - this.x;
             }
-            if(this.resizingH){
+            if(this.resizingH && (e.clientY - this.y) > this.size.minHeight) {
                 this.height = e.clientY - this.y;
             }
         },
@@ -243,9 +273,9 @@ export default {
             this.isFullScreen = !this.isFullScreen;
         },
         minimize() {
+            this.willMinimize = true;
             console.log('minimize', this.id);
-            this.$store.commit('toggleMinimizeWindow', this.id);
-            console.log(this.isMinimized);
+            this.$store.commit('minimizeWindow', this.id);
         },
         resizeStart(e) {
             // if the mouse is at the right edge of the window
@@ -269,10 +299,25 @@ export default {
             //this.resizing = true;
         },
         onWindowClick(e) {
-            this.$store.commit('setActiveWindow', this.id);
+            if (!this.willMinimize){
+                this.$store.commit('setActiveWindow', this.id);
+                this.willMinimize = false;
+            } 
         },
-
-    }
+    },
+    // on isMinimized change
+    watch: {
+        isMinimized: {
+            handler(val) {
+                if (val) {
+                    setTimeout(() => {
+                        this.willMinimize = false;
+                    }, 500);
+                }
+            },
+            deep: true,
+        },
+    },
 }
 </script>
 <style lang="scss">
@@ -287,6 +332,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.2s ease-in-out;
   &.fullscreen {
     border-radius: 0;
     .window-header {
@@ -297,10 +343,14 @@ export default {
     }
   }
   &.focused {
-    z-index: 400;
+    z-index: 3;
   }
   &.minimized {
-    display: none;
+    animation: minimizeAnimation 0.2s ease-in-out;
+    opacity: 0;
+    &:not(.willMinimize) {
+      display: none;
+    }
   }
   // on screen mobile, force fullscreen
   @media (max-width: 768px) {
@@ -391,6 +441,26 @@ export default {
     width: 100%;
     height: 4px;
     cursor: s-resize;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes minimizeAnimation {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8) translateY(100px);
   }
 }
 </style>

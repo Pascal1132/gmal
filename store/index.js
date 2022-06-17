@@ -23,11 +23,22 @@ export const mutations = {
     setWindows: (state, payload) => {
         state.windows = payload
     },
-    toggleMinimizeWindow: (state, payload) => {
+    setWindow: (state, payload) => {
+        state.windows = state.windows.map(window => {
+            if (window.id === payload.id) {
+                // keep all properties not overridden by the payload
+                return { ...window, ...payload }
+            }
+            return window
+        });
+    },
+    minimizeWindow: (state, payload) => {
         state.windows.forEach(window => {
-            if (window.id === payload) {
+            if (window.id == payload) {
                 window.isMinimized = true;
-                window.isFocused = false;
+                if (window.id == state.activeWindow) {
+                    state.activeWindow = null;
+                }
             }
         })
     },
@@ -42,10 +53,4 @@ export const mutations = {
 }
 
 export const actions = {
-    async fetchCounter(state) {
-        // make request
-        const res = { data: 10 };
-        state.counter = res.data;
-        return res.data;
-    },
 }

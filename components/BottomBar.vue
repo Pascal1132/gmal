@@ -72,27 +72,8 @@ var date = new Date()
 
       this.$store.commit('openWindow', {
         id: id,
-        title: 'Template Window (' + id + ')',
-        content: '<div>Template Window</div>',
-        top: 0,
-        left: 0,
-        size: {
-            width: 400,
-            height: 300,
-        },
-        isMaximized: false,
-        isMinimized: false,
-        isDragged: false,
-        isResized: false,
-        isResizing: false,
-        isDraggable: true,
-        isResizable: true,
-        isCloseable: true,
-        isMaximizeable: true,
-        isMinimizeable: true,
-        isContextMenu: true,
-        isContextMenuVisible: false,
-        isContextMenuPositioned: false,
+        title: 'Explorateur de fichier',
+        component: 'ProgFileExplorer',
       });
       this.$store.commit('setActiveWindow', id);
     },

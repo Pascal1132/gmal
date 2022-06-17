@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id">
-      <div v-html="window.content"></div>
-    </Window>
+    <LazyWindow v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized">
+      <LazyComponent :is="window.component" :windowKey="window.id"></LazyComponent>
+    </LazyWindow>
     <Desktop></Desktop>
-    <Menu :showMenu="showMenu" @toggle-menu="toggleMenu"></Menu>
+    <LazyMenu :showMenu="showMenu" @toggle-menu="toggleMenu"></LazyMenu>
     <BottomBar @toggle-menu="toggleMenu()"></BottomBar>
   </div>
 </template>
