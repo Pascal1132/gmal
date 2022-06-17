@@ -40,7 +40,6 @@ export default {
       },
       showCalendar: false,
       loaded: false,
-      activeWindowId: '',
     }
   },
   methods: {
@@ -95,12 +94,10 @@ var date = new Date()
         isContextMenuVisible: false,
         isContextMenuPositioned: false,
       });
-      this.activeWindowId = id;
       this.$store.commit('setActiveWindow', id);
     },
     async onWindowClick(id){
       this.$store.commit('setActiveWindow', id);
-      this.activeWindowId = id;
     }
   },
   mounted() {
@@ -125,6 +122,9 @@ var date = new Date()
   computed: {
     windows(){
       return this.$store.state.windows;
+    },
+    activeWindowId(){
+      return this.$store.state.activeWindow;
     },
   }
 }

@@ -11,7 +11,9 @@
     :class="{
       draggable: isDraggable,
       minimized: isMinimized,
+      focused: isFocused,
     }"
+    @click="onWindowClick"
   >
     <div class="window-header" @mousedown="setItCurrentDrag">
       <div class="window-title">
@@ -198,6 +200,13 @@ export default {
                 }
                 this.x = x;
                 this.y = y;
+                // if is fullscreen than, disable fullscreen
+                if (this.isFullScreen) {
+                    this.toggleFullScreen();
+                    // startClientDifferenceX half of window width
+                    this.startClientDifferenceX = this.width / 2;
+                    this.startClientDifferenceY = 5;
+                }
 
             }
             if(this.resizingW && (e.clientX - this.x) > 300){
@@ -239,7 +248,6 @@ export default {
             console.log(this.isMinimized);
         },
         resizeStart(e) {
-            console.log('resizeStart', this.id);
             // if the mouse is at the right edge of the window
             if (e.clientX > this.x + this.width - 10) {
                 this.resizingW = true;
@@ -259,6 +267,9 @@ export default {
             }
 
             //this.resizing = true;
+        },
+        onWindowClick(e) {
+            this.$store.commit('setActiveWindow', this.id);
         },
 
     }

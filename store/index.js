@@ -37,7 +37,7 @@ export const mutations = {
                 window.isMinimized = false;
             }
         });
-        state.activeWindow = payload.id;
+        state.activeWindow = payload;
     }
 }
 

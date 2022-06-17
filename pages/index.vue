@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Window v-for="window in windows" :key="window.id" v-bind="window">
+    <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id">
       <div v-html="window.content"></div>
     </Window>
     <Desktop></Desktop>
@@ -28,7 +28,9 @@ export default {
     windows(){
       return this.$store.state.windows
     },
-
+    activeWindowId(){
+      return this.$store.state.activeWindow;
+    },
   }
 }
 </script>
