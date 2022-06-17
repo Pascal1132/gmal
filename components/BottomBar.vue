@@ -7,9 +7,15 @@
           <fa :icon="['fab', 'windows']" />
         </div>
         <div class="icon" @click="addTemplateWindow()">
-          <img src="images/file_explorer.png">
+          <img src="images/file_explorer.png" />
         </div>
-        <div class="label" v-for="window in windows" :key="window.id" @click="()=>{$store.commit('setActiveWindow', window.id)}" :class="{focused: window.isFocused}">
+        <div
+          class="label"
+          v-for="window in windows"
+          :key="window.id"
+          @click="onWindowClick(window.id)"
+          :class="{ focused: activeWindowId == window.id }"
+        >
           {{ window.title }}
         </div>
       </div>
@@ -34,6 +40,7 @@ export default {
       },
       showCalendar: false,
       loaded: false,
+      activeWindowId: '',
     }
   },
   methods: {
@@ -76,7 +83,6 @@ var date = new Date()
         },
         isMaximized: false,
         isMinimized: false,
-        isActive: true,
         isDragged: false,
         isResized: false,
         isResizing: false,
@@ -89,7 +95,13 @@ var date = new Date()
         isContextMenuVisible: false,
         isContextMenuPositioned: false,
       });
+      this.activeWindowId = id;
+      this.$store.commit('setActiveWindow', id);
     },
+    async onWindowClick(id){
+      this.$store.commit('setActiveWindow', id);
+      this.activeWindowId = id;
+    }
   },
   mounted() {
     if (!this.loaded){
@@ -133,6 +145,7 @@ var date = new Date()
     align-items: center;
     flex-direction: row;
     color: $txt-color;
+
     .separator {
       width: 1px;
       height: 20px;
@@ -145,15 +158,25 @@ var date = new Date()
         font-size: 25px;
         padding: 5px 8px;
         min-width: 40px;
-        img, svg {
+        flex-direction: column;
+        img,
+        svg {
           width: 22px;
           height: 22px;
+        }
+        &:active {
+          svg,
+          img {
+            color: rgb(85, 158, 241);
+            transform: scale(0.85);
+          }
         }
       }
       &.label {
         font-size: 15px;
         padding: 5px 8px;
         min-width: 40px;
+        flex-direction: column;
         //text overflow ellipsis
         white-space: nowrap;
         overflow: hidden;
@@ -162,19 +185,24 @@ var date = new Date()
           max-width: 80px;
           text-align: left;
         }
+        &:after {
+          // add a small line below
+          content: '';
+          display: block;
+          width: 5px;
+          height: 3px;
+          border-radius: 50px;
+          background-color: $txt-color;
+          margin-top: 3px;
+          transition: all 0.3s ease-in-out;
+        }
       }
+
       &.focused {
-        display: flex;
-        flex-direction: column;
         // add a dot after the label
         &:after {
-          content: '—';
-          text-align: center;
-          color: $highlight-color;
-          line-height: 10px;
-          font-weight: bold;
-          right: -5px;
-          top: -5px;
+          width: 18px;
+          background-color: $highlight-color;
         }
       }
 
@@ -197,14 +225,6 @@ var date = new Date()
   }
 }
 
-.bottom-bar * {
-  transition: all 0.2s cubic-bezier(0.02, 0.8, 0.34, 1.01);
-}
-
-.bottom-bar .toggle-menu:active svg {
-  color: rgb(85, 158, 241);
-  transform: scale(0.85);
-}
 
 .bottom-bar .clock {
   display: flex;

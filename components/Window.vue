@@ -43,11 +43,12 @@
         </div>
       </div>
     </div>
-    <div class="window-body">
+    <div class="window-body" @mousedown="resizeStart">
       <div class="window-content">
         <slot></slot>
       </div>
     </div>
+    <div class="window-footer" @mousedown="resizeStart"></div>
   </div>
 </template>
 <script lang="js">
@@ -69,6 +70,8 @@ export default {
             height: 0,
             width: 0,
             zIndex: 1,
+            resizingW: false,
+            resizingH: false,
         }
     },
     props: {
@@ -155,6 +158,16 @@ export default {
         onMouseUp(e) {
 
             this.currentDrag = false;
+            if (this.resizingH || this.resizingW) {
+                if (this.resizingH && this.resizingW) {
+                // set mouse cursor has default
+                document.body.style.cursor = 'default';
+            }
+                this.resizingH = false;
+                this.resizingW = false;
+
+
+            }
         },
         setItCurrentDrag(e) {
             this.currentDrag = true;
@@ -169,8 +182,29 @@ export default {
         },
         onMouseMove(e) {
             if (this.currentDrag) {
-                this.x =(e.clientX - this.startClientDifferenceX);
-                this.y =(e.clientY - this.startClientDifferenceY);
+                let x = (e.clientX - this.startClientDifferenceX);
+                let y =(e.clientY - this.startClientDifferenceY);
+                if (x < 0) {
+                    x = 0;
+                }
+                if (y < 0) {
+                    y = 0;
+                }
+                if (x > window.innerWidth - this.width) {
+                    x = window.innerWidth - this.width;
+                }
+                if (y > window.innerHeight - 85) {
+                    y = window.innerHeight - 85;
+                }
+                this.x = x;
+                this.y = y;
+
+            }
+            if(this.resizingW && (e.clientX - this.x) > 300){
+                this.width = e.clientX - this.x;
+            }
+            if(this.resizingH){
+                this.height = e.clientY - this.y;
             }
         },
         close() {
@@ -204,6 +238,28 @@ export default {
             this.$store.commit('toggleMinimizeWindow', this.id);
             console.log(this.isMinimized);
         },
+        resizeStart(e) {
+            console.log('resizeStart', this.id);
+            // if the mouse is at the right edge of the window
+            if (e.clientX > this.x + this.width - 10) {
+                this.resizingW = true;
+            }
+            // if the mouse is at the left edge of the window
+            if (e.clientX < this.x + 10) {
+                this.resizingW = true;
+            }
+            // if the mouse is at the bottom edge of the window
+            if (e.clientY > this.y + this.height - 10) {
+                this.resizingH = true;
+            }
+
+            if (this.resizingH && this.resizingW) {
+                // set mouse cursor has resize
+                document.body.style.cursor = 'nwse-resize';
+            }
+
+            //this.resizing = true;
+        },
 
     }
 }
@@ -216,6 +272,7 @@ export default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1;
   display: flex;
+  min-width: 300px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -307,7 +364,7 @@ export default {
     }
   }
   .window-body {
-    padding: 2px;
+    padding: 0 4px 0 3px;
     cursor: e-resize;
     height: 100%;
     width: 100%;
@@ -318,6 +375,11 @@ export default {
       overflow: auto;
       cursor: default;
     }
+  }
+  .window-footer {
+    width: 100%;
+    height: 4px;
+    cursor: s-resize;
   }
 }
 </style>

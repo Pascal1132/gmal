@@ -8,7 +8,7 @@
         </li>
       </ul>
     </PopupMenu>
-    <div class="menu" :class="{ show: showMenu }">
+    <div ref="menu" class="menu" :class="{ show: showMenu }">
       <div class="menu-header">
         <div class="search-bar">
           <span class="search-icon">
@@ -93,6 +93,14 @@ export default {
     });
     this.loaded = true;
       }
+  },
+  // watch showMenu if is true, than focus the search-bar input
+  watch: {
+    showMenu(val) {
+      if (val) {
+        this.$refs.menu.querySelector('.search-bar input').focus();
+      }
+    },
   },
 }
 </script>

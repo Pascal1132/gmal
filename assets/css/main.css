@@ -6,24 +6,19 @@ html {
   position: fixed;
   font-family: Arial, Helvetica, sans-serif;
   overflow: hidden;
-  background: linear-gradient(to bottom right, #00bcd4, #0064a7);
-  background-size: cover;
 }
 * {
-  -webkit-touch-callout: none;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Safari */
-  -khtml-user-select: none;
-  /* Konqueror HTML */
-  -moz-user-select: none;
-  /* Old versions of Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
+  user-drag: none;
+  -webkit-user-drag: none;
   user-select: none;
-  /* Non-prefixed version, currently
-  supported by Chrome, Edge, Opera and Firefox */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
   box-sizing: border-box;
+  
+}
+img{
+  pointer-events: none;
 }
 :root {
   --highlight-color: rgb(165, 111, 165);
