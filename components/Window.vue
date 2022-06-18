@@ -18,6 +18,7 @@
   >
     <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
+        <img v-if="iconPath" :src="iconPath" class="window-favicon"/>
         <span>{{ title }}</span>
       </div>
       <div class="window-controls">
@@ -108,6 +109,10 @@ export default {
                 x: 0,
                 y: 0,
             }),
+        },
+        iconPath: {
+            type: String,
+            default: '',
         },
         isMaximized: {
             type: Boolean,
@@ -398,6 +403,12 @@ export default {
       padding: 10px;
       font-size: 13px;
       color: $txt-color;
+      .window-favicon {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+        background-color: $bg-color-light;
+      }
     }
     .window-controls {
       display: flex;

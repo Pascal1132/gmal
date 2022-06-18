@@ -19,7 +19,8 @@
           @click="onWindowClick(window.id)"
           :class="{ focused: activeWindowId == window.id }"
         >
-          {{ window.title }}
+          <span class="label-container"><img :src="window.iconPath" v-if="window.iconPath" class="label-icon"/>
+          {{ window.title }}</span>
         </div>
       </div>
       <div></div>
@@ -197,6 +198,17 @@ var date = new Date()
           max-width: 80px;
           text-align: left;
         }
+        .label-container {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          .label-icon {
+          width: 20px;
+          height: 20px;
+          margin-right: 5px;
+        }
+        }
+        
         &:after {
           // add a small line below
           content: "";
