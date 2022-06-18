@@ -6,8 +6,11 @@
         <div class="toggle-menu icon" @click="toggleMenu()">
           <fa :icon="['fab', 'windows']" />
         </div>
-        <div class="icon" @click="addTemplateWindow()">
-          <img src="images/file_explorer.png" />
+        <div class="icon" @click="startFileExplorer()">
+          <img src="images/file_explorer.ico" />
+        </div>
+        <div class="icon" @click="startBrowser()">
+          <img src="images/chrome.png" />
         </div>
         <div
           class="label"
@@ -66,13 +69,12 @@ var date = new Date()
         date: year + '-' + month + '-' + day,
       }
     },
-    addTemplateWindow() {
+    startFileExplorer() {
       // get a new id random
       var id = Math.floor(Math.random() * 100000000)
 
       this.$store.commit('openWindow', {
         id: id,
-        title: 'Explorateur de fichier',
         component: 'ProgFileExplorer',
         size: {
           width: 800,
@@ -85,10 +87,29 @@ var date = new Date()
       });
       this.$store.commit('setActiveWindow', id);
     },
+    startBrowser() {
+    // get a new id random
+    var id = Math.floor(Math.random() * 100000000)
+
+    this.$store.commit('openWindow', {
+      id: id,
+      component: 'ProgBrowser',
+      size: {
+        width: 800,
+        height: 600,
+      },
+      pos: {
+        x: window.innerWidth / 2 - 400,
+        y: window.innerHeight / 2 - 300,
+      },
+    });
+    this.$store.commit('setActiveWindow', id);
+  },
     async onWindowClick(id){
       this.$store.commit('setActiveWindow', id);
     }
   },
+  
   mounted() {
     if (!this.loaded){
        setInterval(() => {
@@ -134,6 +155,7 @@ var date = new Date()
     align-items: center;
     flex-direction: row;
     color: $txt-color;
+    padding: 0 10px;
 
     .separator {
       width: 1px;
@@ -145,9 +167,10 @@ var date = new Date()
       &.icon {
         color: rgb(95, 211, 250);
         font-size: 25px;
-        padding: 5px 8px;
-        min-width: 40px;
+        padding: 8px 6px;
+        margin: 2px;
         flex-direction: column;
+        transition: all 0.1s ease;
         img,
         svg {
           width: 22px;
@@ -176,7 +199,7 @@ var date = new Date()
         }
         &:after {
           // add a small line below
-          content: '';
+          content: "";
           display: block;
           width: 5px;
           height: 3px;
@@ -213,7 +236,6 @@ var date = new Date()
     }
   }
 }
-
 
 .bottom-bar .clock {
   display: flex;

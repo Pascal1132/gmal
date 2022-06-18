@@ -119,7 +119,7 @@ export default {
   min-height: 300px;
   border-radius: 10px;
   background-color: rgba(34, 34, 34, 0.95);
-  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 8px 0 rgba(10, 10, 10, 0.6);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   bottom: 50px;

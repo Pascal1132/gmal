@@ -16,7 +16,7 @@
     }"
     @click="onWindowClick"
   >
-    <div class="window-header" @mousedown="setItCurrentDrag">
+    <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
         <span>{{ title }}</span>
       </div>
@@ -257,6 +257,8 @@ export default {
         toggleFullScreen() {
             console.log('toggleFullScreen', this.id);
             this.$refs.window.classList.toggle('fullscreen');
+            // add transition class
+            this.$refs.window.classList.add('transition');
 
             if (this.isFullScreen) {
                 this.width = this.lastWidth;
@@ -274,6 +276,11 @@ export default {
                 this.y = 0;
 
             }
+
+            // remove transition class
+            setTimeout(() => {
+                this.$refs.window.classList.remove('transition');
+            }, 200);
             this.isFullScreen = !this.isFullScreen;
         },
         minimize() {
@@ -337,6 +344,10 @@ export default {
   justify-content: flex-start;
   align-items: center;
   animation: fadeIn 0.2s ease-in-out;
+  &.transition {
+    transition: all 0.2s ease-in-out;
+  }
+
   &.fullscreen {
     border-radius: 0;
     .window-header {

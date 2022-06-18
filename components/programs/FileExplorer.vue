@@ -121,6 +121,7 @@ export default {
               minWidth: 400,
               minHeight: 400,
           },
+          iconPath: 'images/file_explorer.ico',
         });
     },
 }
@@ -231,6 +232,7 @@ export default {
       overflow-x: hidden;
       overflow-y: auto;
       width: 50%;
+      max-width: 200px;
       border-right: 2px solid $border-color;
       .accordion {
         display: flex;
