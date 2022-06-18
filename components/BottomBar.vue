@@ -74,6 +74,14 @@ var date = new Date()
         id: id,
         title: 'Explorateur de fichier',
         component: 'ProgFileExplorer',
+        size: {
+          width: 800,
+          height: 600,
+        },
+        pos: {
+          x: window.innerWidth / 2 - 400,
+          y: window.innerHeight / 2 - 300,
+        },
       });
       this.$store.commit('setActiveWindow', id);
     },

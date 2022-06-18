@@ -72,6 +72,8 @@ export default {
             lastHeight: 0,
             height: 0,
             width: 0,
+            minWidth: 200,
+            minHeight: 200,
             zIndex: 1,
             resizingW: false,
             resizingH: false,
@@ -93,19 +95,19 @@ export default {
         },
         size: {
             type: Object,
-            default: {
-                width: 400,
-                height: 300,
-                minWidth: 400,
-                minHeight: 300,
-            },
+            default: () => ({
+                width: 200,
+                height: 200,
+                minWidth: 200,
+                minHeight: 100,
+            }),
         },
         pos: {
             type: Object,
-            default: {
+            default: ()=>({
                 x: 0,
                 y: 0,
-            },
+            }),
         },
         isMaximized: {
             type: Boolean,
@@ -173,6 +175,8 @@ export default {
             handler(val) {
                 this.width = val.width
                 this.height = val.height
+                this.minWidth = val.minWidth
+                this.minHeight = val.minHeight
             },
             deep: true,
         },
@@ -330,7 +334,7 @@ export default {
   display: flex;
   min-width: 300px;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   animation: fadeIn 0.2s ease-in-out;
   &.fullscreen {
