@@ -106,7 +106,7 @@ export default {
         },
     },
     mounted() {
-        this.$store.commit('setWindow', {
+        this.$store.commit('windows/setWindow', {
             id: this.windowKey,
             title: 'File Explorer',
             isMinimized: false,

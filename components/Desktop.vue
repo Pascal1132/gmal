@@ -10,7 +10,7 @@
         v-html="currentContextMenuElementSelected"
       ></ul>
       <ul v-else>
-        <li>Changer l'image du fond</li>
+        <li @click="launchSettings">Changer l'image du fond</li>
       </ul>
     </LazyPopupMenu>
     <div class="desktop" @contextmenu="contextMenuClick">
@@ -61,6 +61,10 @@ export default {
                 left: e.clientX,
             };
             this.showMenu = true;
+        },
+        launchSettings() {
+            this.$store.dispatch('windows/createBaseWindow', ['ProgSettings', {defaultTab: 'customization'}]);
+            this.showMenu = false;
         },
     },
     mounted() {

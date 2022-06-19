@@ -71,43 +71,13 @@ var date = new Date()
       }
     },
     startFileExplorer() {
-      // get a new id random
-      var id = Math.floor(Math.random() * 100000000)
-
-      this.$store.commit('openWindow', {
-        id: id,
-        component: 'ProgFileExplorer',
-        size: {
-          width: 800,
-          height: 600,
-        },
-        pos: {
-          x: window.innerWidth / 2 - 400,
-          y: window.innerHeight / 2 - 300,
-        },
-      });
-      this.$store.commit('setActiveWindow', id);
+      this.$store.dispatch('windows/createBaseWindow', 'ProgFileExplorer');
     },
     startBrowser() {
-    // get a new id random
-    var id = Math.floor(Math.random() * 100000000)
-
-    this.$store.commit('openWindow', {
-      id: id,
-      component: 'ProgBrowser',
-      size: {
-        width: 800,
-        height: 600,
-      },
-      pos: {
-        x: window.innerWidth / 2 - 400,
-        y: window.innerHeight / 2 - 300,
-      },
-    });
-    this.$store.commit('setActiveWindow', id);
+      this.$store.dispatch('windows/createBaseWindow', 'ProgBrowser');
   },
     async onWindowClick(id){
-      this.$store.commit('setActiveWindow', id);
+      this.$store.commit('windows/setActiveWindow', id);
     }
   },
   
@@ -132,10 +102,10 @@ var date = new Date()
   },
   computed: {
     windows(){
-      return this.$store.state.windows;
+      return this.$store.state.windows.windows;
     },
     activeWindowId(){
-      return this.$store.state.activeWindow;
+      return this.$store.state.windows.activeWindow;
     },
   }
 }
@@ -203,7 +173,7 @@ var date = new Date()
           align-items: center;
           gap: 2px;
           .label-icon {
-          width: 20px;
+          width: auto;
           height: 20px;
           margin-right: 5px;
         }

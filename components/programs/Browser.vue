@@ -36,7 +36,7 @@ export default {
     methods: {
     },
     mounted() {
-        this.$store.commit('setWindow', {
+        this.$store.commit('windows/setWindow', {
             id: this.windowKey,
             title: 'Chrome',
             isMinimized: false,
@@ -63,7 +63,7 @@ export default {
     watch: {
         searchLink(newValue) {
           console.log('searchLink', newValue);
-            this.$store.commit('setWindow', {
+            this.$store.commit('windows/setWindow', {
                 id: this.windowKey,
                 title: newValue,
             });

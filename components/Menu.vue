@@ -22,13 +22,13 @@
       </div>
       <div></div>
       <div class="menu-footer">
-        <div class="login-user">
+        <div class="login-user" @click="loginClick">
           <img src="images/person.png" />
           <span>Utilisateur de G-Mal</span>
         </div>
-        <div class="shutdown-btn" @click="togglePopup">
+        <!--<div class="shutdown-btn" @click="togglePopup">
           <fa :icon="['fas', 'power-off']" />
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
@@ -69,6 +69,10 @@ export default {
                     left: posX,
                 }
             }
+        },
+        loginClick() {
+            this.$store.dispatch('windows/createBaseWindow', ['ProgSettings', {defaultTab: 'account'}]);
+            this.$emit('toggle-menu', false); 
         },
     },
     mounted() {

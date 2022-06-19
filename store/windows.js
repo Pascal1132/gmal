@@ -53,4 +53,28 @@ export const mutations = {
 }
 
 export const actions = {
+    createBaseWindow: ({ commit }, params) => {
+        // if params is an array then get the first element for the component
+        let windowParams = {};
+        let component = params;
+        if (Array.isArray(params)) {
+            component = params.length > 0 ? params[0] : params;
+            windowParams = params.length > 1 ? params[1] : {};
+        }
+        const id = Math.floor(Math.random() * 100000000)
+        commit('openWindow', {
+            id: id,
+            component: component,
+            size: {
+                width: 800,
+                height: 600,
+            },
+            pos: {
+                x: window.innerWidth / 2 - 400,
+                y: window.innerHeight / 2 - 300,
+            },
+            params: windowParams,
+        })
+        commit('setActiveWindow', id)
+    },
 }

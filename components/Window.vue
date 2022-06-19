@@ -257,7 +257,7 @@ export default {
         },
         close() {
             console.log('close', this.id);
-             this.$store.commit('closeWindow', this.id);
+             this.$store.commit('windows/closeWindow', this.id);
         },
         toggleFullScreen() {
             console.log('toggleFullScreen', this.id);
@@ -291,7 +291,7 @@ export default {
         minimize() {
             this.willMinimize = true;
             console.log('minimize', this.id);
-            this.$store.commit('minimizeWindow', this.id);
+            this.$store.commit('windows/minimizeWindow', this.id);
         },
         resizeStart(e) {
             // if the mouse is at the right edge of the window
@@ -316,7 +316,7 @@ export default {
         },
         onWindowClick(e) {
             if (!this.willMinimize){
-                this.$store.commit('setActiveWindow', this.id);
+                this.$store.commit('windows/setActiveWindow', this.id);
                 this.willMinimize = false;
             } 
         },
@@ -354,6 +354,7 @@ export default {
   }
 
   &.fullscreen {
+    height: $height-no-bottom-nav!important;
     border-radius: 0;
     .window-header {
       border-radius: 0;
@@ -404,7 +405,7 @@ export default {
       font-size: 13px;
       color: $txt-color;
       .window-favicon {
-        width: 15px;
+        width: auto;
         height: 15px;
         margin-right: 5px;
         background-color: $bg-color-light;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <LazyWindow v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized">
-      <LazyComponent :is="window.component" :windowKey="window.id"></LazyComponent>
+      <LazyComponent :is="window.component" :windowKey="window.id" v-bind="window.params"></LazyComponent>
     </LazyWindow>
     <Desktop></Desktop>
     <LazyMenu :showMenu="showMenu" @toggle-menu="toggleMenu"></LazyMenu>
@@ -26,10 +26,10 @@ export default {
   },
   computed: {
     windows(){
-      return this.$store.state.windows
+      return this.$store.state.windows.windows
     },
     activeWindowId(){
-      return this.$store.state.activeWindow;
+      return this.$store.state.windows.activeWindow;
     },
   }
 }

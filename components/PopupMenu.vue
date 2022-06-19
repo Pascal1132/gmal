@@ -1,10 +1,14 @@
 <template>
-    <div class="popup-menu" :class="{show: showMenu}" :style="{
-        top: pos.top + 'px',
-        left: pos.left + 'px',
-    }">
-        <slot></slot>
-    </div>
+  <div
+    class="popup-menu"
+    :class="{ show: showMenu }"
+    :style="{
+      top: pos.top + 'px',
+      left: pos.left + 'px',
+    }"
+  >
+    <slot></slot>
+  </div>
 </template>
 <script lang="js">
 export default {
@@ -30,9 +34,13 @@ export default {
   position: absolute;
   padding: 5px;
   color: #f5f5f5;
-  background-color: rgba(34, 34, 34, 0.95);
+  background-color: rgba(34, 34, 34, 0.8);
   border-radius: 6px;
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+  // blur filter
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
   min-width: 100px;
   font-size: 13px;
   z-index: 101;
@@ -63,7 +71,7 @@ export default {
       &:last-child {
         border-bottom: none;
       }
-      &:hover{
+      &:hover {
         background: rgba(125, 125, 125, 0.15);
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(4px);
