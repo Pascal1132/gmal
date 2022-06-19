@@ -5,12 +5,12 @@
         <div class="nav-header-account">
           <div class="nav-header-account-avatar">
             <img
-              src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200"
+              :src="loggedInUserPicture"
               alt=""
             />
           </div>
           <div class="nav-header-account-name">
-            <span>Utilisateur de G-mal</span>
+            <span>{{loggedInUserName}}</span>
             <span class="account-type">Compte local</span>
           </div>
         </div>
@@ -37,8 +37,6 @@
       </div>
     </nav>
     <main>
-        <!--<System :class="{active: currentTab == 'system'}"/>
-        <Account :class="{active: currentTab == 'account'}"/>-->
         <LazyComponent v-for="tab in tabs" :key="tab.name" :class="{active: currentTab == tab.name}"
           :is="tab.component" />
 
@@ -111,6 +109,12 @@ export default {
                 return tab.title.toLowerCase().includes(this.search.toLowerCase());
             });
         },
+        loggedInUserName() {
+            return this.$auth.user?.name || "Utilisateur de G-mal";
+        },
+        loggedInUserPicture() {
+            return this.$auth.user?.picture?.data?.url || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+        }
     }
 }
 </script>

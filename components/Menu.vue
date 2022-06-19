@@ -23,8 +23,8 @@
       <div></div>
       <div class="menu-footer">
         <div class="login-user" @click="loginClick">
-          <img src="images/person.png" />
-          <span>Utilisateur de G-Mal</span>
+          <img :src="loggedInUserPicture" />
+          <span>{{loggedInUserName}}</span>
         </div>
         <!--<div class="shutdown-btn" @click="togglePopup">
           <fa :icon="['fas', 'power-off']" />
@@ -72,7 +72,7 @@ export default {
         },
         loginClick() {
             this.$store.dispatch('windows/createBaseWindow', ['ProgSettings', {defaultTab: 'account'}]);
-            this.$emit('toggle-menu', false); 
+            this.$emit('toggle-menu', false);
         },
     },
     mounted() {
@@ -105,6 +105,14 @@ export default {
         this.$refs.menu.querySelector('.search-bar input').focus();
       }
     },
+  },
+  computed: {
+    loggedInUserName() {
+            return this.$auth.user?.name || "Utilisateur de G-mal";
+        },
+        loggedInUserPicture() {
+            return this.$auth.user?.picture?.data?.url || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+        }
   },
 }
 </script>
@@ -212,6 +220,13 @@ export default {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    img{
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      // cover
+      object-fit: cover;
+    }
   }
 }
 </style>
