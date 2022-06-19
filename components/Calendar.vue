@@ -2,7 +2,9 @@
   <div class="calendar" :class="{ show }">
     <!-- simple calendar -->
     <div class="calendar-body">
+      <client-only>
       <date-picker :language="fr" :inline="true" v-model="selectedDate"></date-picker>
+      </client-only>
     </div>
   </div>
 </template>
