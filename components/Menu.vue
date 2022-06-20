@@ -130,7 +130,7 @@ export default {
   width: calc(100% - 20px);
   min-height: 300px;
   border-radius: 10px;
-  background-color: rgba(34, 34, 34, 0.95);
+  background-color: rgba($hex-bg-color-1, 0.95);
   box-shadow: 0 8px 8px 0 rgba(10, 10, 10, 0.6);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -138,7 +138,7 @@ export default {
   transform: translateY(110%);
   z-index: 99;
   margin: 10px;
-  border: 1.5px solid rgba(125, 125, 125, 0.5);
+  border: 1.5px solid $border-color;
   transition: all 0.2s ease-in-out;
 }
 
@@ -152,12 +152,12 @@ export default {
   flex-direction: row;
   align-items: center;
   height: 40px;
-  background-color: rgba(29, 29, 29, 1);
-  border: 1px solid rgba(125, 125, 125, 0.3);
+  background-color: $bg-color-0;
+  border: 1px solid $border-color;
   width: 100%;
   padding: 10px;
   border-radius: 3px;
-  border-bottom: 2px solid var(--highlight-color);
+  border-bottom: 2px solid $highlight-color;
 }
 
 .menu-header {
@@ -168,10 +168,10 @@ export default {
 .search-bar input,
 .search-bar .search-icon {
   border: none;
-  background-color: rgba(29, 29, 29, 1);
+  background-color: transparent;
   padding: 0;
   margin: 0;
-  color: lightgrey;
+  color: $txt-color;
   outline: none;
 }
 
@@ -183,7 +183,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  color: lightgrey;
+  color: $txt-color;
   background: none;
   padding: 0 20px;
   font-size: 14px;
@@ -197,11 +197,11 @@ export default {
   width: 100%;
   padding: 5px 20px;
   font-size: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid $border-color;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  background-color: rgba(32, 32, 32, 0.95);
-  color: #f5f5f5;
+  background-color: rgba($hex-bg-color-1, 0.95);
+  color: $txt-color;
   > * {
     cursor: pointer;
     border-radius: 5px;

@@ -13,7 +13,7 @@
         <li @click="launchSettings">Changer l'image du fond</li>
       </ul>
     </LazyPopupMenu>
-    <div class="desktop" @contextmenu="contextMenuClick">
+    <div class="desktop" @contextmenu="contextMenuClick" :style="{ backgroundImage: `${getCurrentTheme.bg}` }">
       <!-- On right click -->
       <div class="launcher">
         <nuxt-img src="images/recycle_bin.png" format="webp"/>
@@ -166,6 +166,11 @@ export default {
         this.loaded = true;
         }
     },
+    computed: {
+        getCurrentTheme() {
+            return this.$store.state.settings.currentTheme;
+        },
+    },
 }
 </script>
 <style lang="scss" scoped>
@@ -185,7 +190,6 @@ export default {
   gap: 5px;
   height: $height-no-bottom-nav;
   color: white;
-  background: linear-gradient(to bottom right, #00bcd4, #0064a7);
   background-size: cover;
   z-index: -55;
   .launcher {

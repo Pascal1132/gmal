@@ -164,7 +164,7 @@ export default {
           font-size: 14px;
           .account-type {
             font-size: 11px;
-            color: #fff;
+            color: $txt-color;
           }
         }
       }
@@ -175,7 +175,7 @@ export default {
         justify-content: center;
         width: 100%;
         height: 50px;
-        background-color: $bg-color-lighter;
+        background-color: $bg-color-2;
         border-radius: $border-radius-sm;
         border-bottom: 1px solid #aaa;
         transition: all 0.2s ease-in-out;
@@ -204,7 +204,7 @@ export default {
         }
         &:focus-within {
           border-bottom: 2px solid $highlight-color;
-          background-color: $bg-color-dark;
+          background-color: $bg-color-0;
         }
       }
     }
@@ -273,7 +273,7 @@ export default {
         }
 
         &:hover, &.active {
-          background-color: $bg-color-lighter;
+          background-color: $bg-color-2;
         }
         &.active {
           &:before {
@@ -287,8 +287,10 @@ export default {
     main {
         flex: 1;
         overflow-y: auto;
+        overflow-x: hidden;
         padding: 10px;
         margin-left: 10px;
+          height: calc(100% - 40px);
         display:flex;
         flex-direction: column;
         align-items: flex-start;
@@ -298,7 +300,7 @@ export default {
         > :not(.active) {
             display: none;
         }
-        .active{
+        > .active{
             animation: tabEnter 0.3s ease-in-out;
         }
     }

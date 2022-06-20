@@ -23,7 +23,7 @@ export default {
   height: 100%;
   padding: 10px;
   border-radius: 5px;
-  background-color: $bg-color-lighter;
+  background-color: $bg-color-2;
   color: $txt-color;
 
   h1 {

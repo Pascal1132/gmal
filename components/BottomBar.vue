@@ -10,7 +10,7 @@
           <img src="images/file_explorer.ico"/>
         </div>
         <div class="icon" @click="startBrowser()">
-          <nuxt-img src="images/chrome.png" format="webp"/>
+          <nuxt-img src="/images/chrome.png" format="webp"/>
         </div>
         <div
           class="label"
@@ -118,7 +118,7 @@ var date = new Date()
   bottom: 0;
   width: 100%;
   z-index: 100;
-  background-color: rgba(34, 34, 34, 1);
+  background-color: $bg-color-1;
   height: 50px;
   .left {
     display: flex;
@@ -206,7 +206,7 @@ var date = new Date()
       align-items: center;
 
       margin: 5px;
-      border: 1px solid rgba(255, 255, 255, 0);
+      border: 1px solid transparent;
       box-sizing: border-box;
       &:hover {
         background: rgba(125, 125, 125, 0.15);
@@ -231,7 +231,7 @@ var date = new Date()
   border-radius: 5px;
   border: 1px solid rgba(255, 255, 255, 0);
   box-sizing: border-box;
-  color: white;
+  color: $txt-color;
   margin: 5px;
 }
 

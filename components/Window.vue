@@ -339,7 +339,7 @@ export default {
 <style lang="scss">
 .window {
   position: absolute;
-  background-color: $bg-color-light;
+  background-color: $bg-color-1;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -408,7 +408,7 @@ export default {
         width: auto;
         height: 15px;
         margin-right: 5px;
-        background-color: $bg-color-light;
+        background-color: $bg-color-1;
       }
     }
     .window-controls {

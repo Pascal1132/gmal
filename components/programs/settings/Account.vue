@@ -135,7 +135,7 @@ export default {
         }
         input {
           width: 100%;
-          background-color: $bg-color-lighter;
+          background-color: $bg-color-2;
           color: $txt-color;
           font-size: 14px;
           padding: 0;
@@ -169,7 +169,7 @@ export default {
     }
   }
   .logout-btn {
-    background-color: $bg-color-dark;
+    background-color: $bg-color-0;
     color: $txt-color;
     padding: 5px 7px;
     margin-top: 15px;

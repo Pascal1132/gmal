@@ -162,7 +162,7 @@ export default {
     }
   }
   .content {
-    background-color: $bg-color-dark;
+    background-color: $bg-color-0;
     height: calc(100% - 40px);
     overflow: auto;
     position: relative;
@@ -174,13 +174,13 @@ export default {
       height: 50px;
       width: 100%;
       gap: 10px;
-      background-color: $bg-color-dark;
+      background-color: $bg-color-0;
       .btn-container {
         display: flex;
         justify-content: flex-start;
         align-items: center;
         height: 40px;
-        background-color: $bg-color-dark;
+        background-color: $bg-color-0;
       }
       .breadcrumb-container {
         display: flex;
@@ -203,7 +203,7 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        background-color: $bg-color-dark;
+        background-color: $bg-color-0;
         input {
           max-width: 200px;
           min-width: 50px;
