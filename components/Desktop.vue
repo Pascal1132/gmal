@@ -16,7 +16,7 @@
     <div class="desktop" @contextmenu="contextMenuClick">
       <!-- On right click -->
       <div class="launcher">
-        <img src="images/recycle_bin.png" />
+        <nuxt-img src="images/recycle_bin.png" format="webp"/>
         <label>Corbeille</label>
         <div class="context-menu-properties">
           <li>Propriétés de la corbeille</li>

@@ -23,7 +23,7 @@
       <div></div>
       <div class="menu-footer">
         <div class="login-user" @click="loginClick">
-          <img :src="loggedInUserPicture" />
+          <nuxt-img :src="loggedInUserPicture" format="webp"/>
           <span>{{loggedInUserName}}</span>
         </div>
         <!--<div class="shutdown-btn" @click="togglePopup">

@@ -28,7 +28,7 @@
           @click="currentTab = tab.name"
         >
           <div class="nav-body-item-icon">
-            <img :src="'images/programs/settings/' + tab.icon" />
+            <img :src="'images/programs/settings/' + tab.icon"/>
           </div>
           <div class="nav-body-item-title">
             <span>{{ tab.title }}</span>

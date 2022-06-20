@@ -7,10 +7,10 @@
           <fa :icon="['fab', 'windows']" />
         </div>
         <div class="icon" @click="startFileExplorer()">
-          <img src="images/file_explorer.ico" />
+          <img src="images/file_explorer.ico"/>
         </div>
         <div class="icon" @click="startBrowser()">
-          <img src="images/chrome.png" />
+          <nuxt-img src="images/chrome.png" format="webp"/>
         </div>
         <div
           class="label"
