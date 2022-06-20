@@ -23,13 +23,13 @@
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "vuejs-datepicker": "^1.6.2",
-    "webpack": "^4.46.0"
+    "webpack": "^4.46.0",
+    "@nuxtjs/pwa": "^3.3.5",
+    "@nuxt/image": "^0.6.2"
   },
   "devDependencies": {
-    "@nuxt/image": "^0.6.2",
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
-    "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/style-resources": "^1.2.1",
     "sass": "^1.52.3",
     "sass-loader": "10.1.1",
