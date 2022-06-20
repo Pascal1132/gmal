@@ -61,6 +61,12 @@ export default {
     '@nuxtjs/auth-next',
   ],
   auth: {
+    redirect: {
+      login: '/',
+      logout: '/',
+      callback: '/',
+      home: '/'
+    },
     strategies: {
       facebook: {
         endpoints: {
