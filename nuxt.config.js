@@ -78,9 +78,6 @@ export default {
     '@nuxt/image',
     '@nuxtjs/pwa',
   ],
-  serverMiddleware: {
-    '/_ipx': '~/server/middleware/ipx.js'
-  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
