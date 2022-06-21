@@ -312,18 +312,29 @@ export default {
     > .active {
       animation: tabEnter 0.3s ease-in-out;
     }
+    @media screen and (max-width: 768px) {
+      overflow-x: auto;
+      
+    }
   }
 
   &.small {
     nav {
-      width: 70px;
-      .nav-header-account-name {
-        display: none;
-      }
-      .nav-header-search {
-        display: none;
+      width: 50px;
+      .nav-header {
+        padding: 0;
+        .nav-header-account {
+          justify-content: center;
+          .nav-header-account-name {
+            display: none;
+          }
+        }
+        .nav-header-search {
+          display: none;
+        }
       }
       .nav-body {
+        padding: 0;
         .nav-body-item {
           width: 100%;
           height: 40px;
@@ -333,11 +344,10 @@ export default {
             display: none;
           }
           &:before {
-              display:none
-            }
+            display: none;
+          }
 
           &.active {
-            
           }
         }
       }

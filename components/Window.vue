@@ -176,8 +176,11 @@ export default {
         document.addEventListener('mouseup', this.onMouseUp);
 
         document.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('resize', this.onResize);
         this.loaded = true;
         }
+
+
     },
     // watch size changes
     watch: {
@@ -256,11 +259,14 @@ export default {
             if(this.resizingH && (e.clientY - this.y) > this.size.minHeight) {
                 this.height = e.clientY - this.y;
             }
-            if (this.width < 600) {
+            this.onResize();
+        },
+        onResize(){
+          if (this.width < 600 || window.innerWidth < 600) {
                     this.isSmall = true;
-                } else {
+            } else {
                     this.isSmall = false;
-                } 
+                }
         },
         close() {
             console.log('close', this.id);
@@ -294,6 +300,12 @@ export default {
                 this.$refs.window.classList.remove('transition');
             }, 200);
             this.isFullScreen = !this.isFullScreen;
+
+            if (this.isFullScreen && window.innerWidth < 600) {
+                    this.isSmall = true;
+                } else {
+                    this.isSmall = false;
+                }
         },
         minimize() {
             this.willMinimize = true;
@@ -383,7 +395,7 @@ export default {
   // on screen mobile, force fullscreen
   @media (max-width: 768px) {
     width: 100% !important;
-    height: 100% !important;
+    height: $height-no-bottom-nav !important;
     border-radius: 0;
     .window-header {
       border-radius: 0;
