@@ -10,7 +10,7 @@
           <img src="images/file_explorer.ico"/>
         </div>
         <div class="icon" @click="startBrowser()">
-          <nuxt-img src="/images/chrome.png" format="webp"/>
+          <img src="/images/chrome.png"/>
         </div>
         <div
           class="label"

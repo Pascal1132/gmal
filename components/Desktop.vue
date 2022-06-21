@@ -16,7 +16,7 @@
     <div class="desktop" @contextmenu="contextMenuClick" :style="{ backgroundImage: `${getCurrentTheme.bg}` }">
       <!-- On right click -->
       <div class="launcher">
-        <nuxt-img src="images/recycle_bin.png" format="webp"/>
+        <img src="images/recycle_bin.png" format="webp"/>
         <label>Corbeille</label>
         <div class="context-menu-properties">
           <li>Propriétés de la corbeille</li>

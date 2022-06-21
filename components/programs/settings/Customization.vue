@@ -1,6 +1,5 @@
 <template>
   <div class="customization">
-
     <h2>Personnalisation</h2>
     <div class="theme-selector">
       <div class="current-bg">
@@ -17,79 +16,91 @@
           </div>
         </div>
       </div>
-      <div class="theme-list">
-        <div
-          class="theme-preview"
-          v-for="theme in themes"
-          :key="theme.name"
-          :style="{ backgroundImage: `${theme.bg}` }"
-          :class="{ active: currentTheme.name == theme.name }"
-          @click="changeTheme(theme)"
-        ></div>
+      <div>
+        <h5>Sélectionnez un thème à appliquer</h5>
+        <div class="theme-list">
+          <div
+            class="theme-preview theme-definer"
+            v-for="theme in themes"
+            :key="theme.name"
+            :style="{
+              backgroundImage: `${theme.bg}`,
+              '--highlight-color': theme.highlight,
+            }"
+            :class="[
+              { active: currentTheme.name == theme.name },
+              theme.interface,
+            ]"
+            @click="changeTheme(theme)"
+          >
+            <div class="over-bg">
+              <div class="button"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <ul class="customize-theme">
+      <!-- Background picture -->
+      <li>
+        <div @click="clickAccordionHeader('background-picture')" class="header">
+          <span class="left-icon"><fa :icon="['fas', 'image']" /></span>
+          <span>Image d'arrière-plan</span>
+          <span class="right-icon" :class="{ rotated: currentAccordion == 'background-picture'}"><fa :icon="['fas', 'chevron-down']" /></span>
+        </div>
+        <div
+          class="accordion-content"
+          :class="{ active: currentAccordion == 'background-picture' }"
+        >
+        <label class="file-btn">
+          <span>Téléverser votre image</span>
+          <input type="file" @change="changeBackgroundPicture" />
+        </label>
+        </div>
+      </li>
+      <!-- Colors -->
+      <li>
+        <div @click="clickAccordionHeader('colors')" class="header">
+          <span class="left-icon"><fa :icon="['fas', 'palette']" /></span>
+          <span>Couleurs</span>
+          <span class="right-icon" :class="{ rotated: currentAccordion == 'colors'}"><fa :icon="['fas', 'chevron-down']" /></span>
+        </div>
+        <div
+          class="accordion-content"
+          :class="{ active: currentAccordion == 'colors' }"
+        ></div>
+      </li>
+    </ul>
   </div>
 </template>
 <script lang="js">
+import themes from '~/assets/config/themes.js'
 export default {
     name: 'customization',
     data() {
         return {
-            themes: [
-                {
-                    name: 'blue',
-                    bg: 'linear-gradient(to bottom right, #00bcd4, #0064a7)',
-                    txt: '#fff',
-                    interface: 'dark',
-                    highlight: 'lightblue',
-                    btn: '#fff',
-                },
-                {
-                    name: 'gray',
-                    bg: 'linear-gradient(to bottom right, #777, #444)',
-                    txt: '#fff',
-                    interface: 'dark',
-                    highlight: 'lightgray',
-                    btn: '#fff',
-                },
-                {
-                    name: 'pink',
-                    bg: 'linear-gradient(0deg, hsla(305, 100%, 22%, 1) 0%, hsla(346, 88%, 38%, 1) 100%)',
-                    txt: '#000',
-                    interface: 'light',
-                    highlight: 'rgb(165, 111, 165)',
-                    btn: '#000',
-                },
-                {
-                    name: 'red',
-                    bg: 'linear-gradient(to bottom right, #800, #400)',
-                    txt: '#fff',
-                    interface: 'dark',
-                    highlight: 'indianred',
-                    btn: '#fff',
-                },
-                {
-                    name: 'black',
-                    bg: 'linear-gradient(to top, #000, #333)',
-                    txt: '#fff',
-                    interface: 'dark',
-                    highlight: '#fca311',
-                    btn: '#fff',
-                },
-                {
-                    name: 'orange',
-                    bg: 'linear-gradient(109.6deg, rgb(255, 194, 48) 11.2%, rgb(255, 124, 0) 100.2%)',
-                    txt: '#fff',
-                    interface: 'light',
-                    highlight: '#323031',
-                    btn: '#fff',
-                },
-            ],
+            themes: themes,
+            currentAccordion: null,
         }
     },
     methods: {
         changeTheme(theme) {
             this.$store.commit('settings/setTheme', theme);
+        },
+        clickAccordionHeader(name) {
+            if (this.currentAccordion == name) {
+                this.currentAccordion = null;
+            } else {
+                this.currentAccordion = name;
+            }
+        },
+        changeBackgroundPicture(e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.onload = (e) => {
+                this.$store.commit('settings/setBackgroundPicture', e.target.result);
+            };
+            reader.readAsDataURL(file);
         },
     },
     computed: {
@@ -106,6 +117,7 @@ export default {
 .customization {
   width: 100%;
   height: 100%;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -116,6 +128,11 @@ export default {
     align-items: center;
     justify-content: flex-start;
     gap: 30px;
+
+    h5 {
+      margin-bottom: 10px;
+      margin-top: 0;
+    }
 
     .current-bg {
       display: flex;
@@ -175,7 +192,7 @@ export default {
       align-items: flex-start;
       justify-content: flex-start;
       width: 350px;
-      gap: 5px;
+      gap: 10px;
       flex-wrap: wrap;
 
       .theme-preview {
@@ -190,8 +207,111 @@ export default {
         &.active {
           border: 2px solid $txt-color;
         }
+        .over-bg {
+          width: 35px;
+          height: 35px;
+          display: flex;
+          top: calc(100% - 45px);
+          left: calc(100% - 45px);
+          align-items: center;
+          justify-content: flex-end;
+          flex-direction: column;
+          background-color: $bg-color-1;
+          border-radius: 4px;
+          padding: 6px 10px;
+          position: relative;
+          .button {
+            height: 7px;
+            width: 18px;
+            background-color: $highlight-color;
+            border-radius: 2px;
+          }
+        }
       }
     }
+  }
+
+  .customize-theme {
+    display: flex;
+    margin-top: 30px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    li {
+      width: 100%;
+        border-radius: $border-radius-sm;
+        background-color: $bg-color-2;
+        transition: $transition;
+      .header {
+        font-size: 14px;
+        font-weight: 500;
+        color: $txt-color;
+        display: flex;
+        padding: 20px;
+        align-items: center;
+        justify-content: flex-start;
+        transition: $transition;
+        .left-icon {
+          margin-right: 10px;
+          font-size: 16px;
+        }
+        .right-icon {
+          margin-left: auto;
+          margin-right: 10px;
+          font-size: 18px;
+          transition: transform 0.4s ease-in-out;
+          &.rotated {
+            transform: rotate(180deg);
+          }
+        }
+        &:hover {
+          filter: brightness(1.2);
+        }
+      }
+      .accordion-content {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 10px;
+        width: 100%;
+        background-color: $bg-color-2;
+
+        &.active{
+          display: flex;
+          animation: fade-in 0.5s ease-in-out;
+        }
+
+        .file-btn {
+          width: 100%;
+            height: 40px;
+            border-radius: $border-radius-sm;
+            background-color: $bg-color-1;
+            border: 1px solid $border-color;
+            transition: $transition;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+          input{
+            display: none;
+          }
+          &:hover {
+              filter: brightness(1.2);
+            }
+        }
+      }
+    }
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>

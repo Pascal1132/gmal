@@ -1,12 +1,6 @@
+import themes from '~/assets/config/themes.js'
 export const state = () => ({
-    currentTheme: {
-        name: 'blue',
-        bg: 'linear-gradient(to bottom right, #00bcd4, #0064a7)',
-        txt: '#fff',
-        interface: 'dark',
-        highlight: 'lightblue',
-        btn: '#fff',
-    }
+    currentTheme: themes[0],
 })
 
 export const getters = {
