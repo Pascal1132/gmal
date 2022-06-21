@@ -68,7 +68,25 @@
         <div
           class="accordion-content"
           :class="{ active: currentAccordion == 'colors' }"
-        ></div>
+        >
+        <!-- Highlight color -->
+        <div class="color-picker">
+          <label>
+            <span>Couleur d'accent</span>
+            <input type="color" @change="changeAccentColor" />
+          </label>
+        </div>
+        <!-- Interface (light or dark) -->
+        <div class="color-picker">
+          <label>
+            <select @change="changeInterfaceColor" :value="currentTheme.interface">
+              <option value="light">Clair</option>
+              <option value="dark">Foncé</option>
+            </select>
+          </label>
+        </div>
+
+        </div>
       </li>
     </ul>
   </div>
@@ -98,9 +116,28 @@ export default {
             var file = e.target.files[0];
             var reader = new FileReader();
             reader.onload = (e) => {
-                this.$store.commit('settings/setBackgroundPicture', e.target.result);
+                this.$store.commit('settings/setTheme', {
+                  name: 'Custom',
+                  bg: `url("${e.target.result}")`,
+                  });
             };
+            try{
             reader.readAsDataURL(file);
+            }catch(e){
+              console.log(e);
+            }
+        },
+        changeAccentColor(e) {
+            this.$store.commit('settings/setTheme', {
+              name: 'Custom',
+              highlight: e.target.value,
+            });
+        },
+        changeInterfaceColor(e) {
+            this.$store.commit('settings/setTheme', {
+              name: 'Custom',
+              interface: e.target.value,
+            });
         },
     },
     computed: {
@@ -294,9 +331,40 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
           input{
             display: none;
+          }
+          &:hover {
+              filter: brightness(1.2);
+            }
+        }
+
+        .color-picker, .color-picker label {
+          width: 100%;
+          height: 40px;
+          border-radius: $border-radius-sm;
+          background-color: $bg-color-1;
+          border: 1px solid $border-color;
+          transition: $transition;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          input[type="color"]{
+            display: none;
+          }
+          select{
+            padding: 5px;
+            height: 100%;
+            outline: none;
+            border: none;
+            width: 100%;
+            color: $txt-color;
+            background-color: $bg-color-1;
+          }
+          .color-picker-icon {
+            font-size: 16px;
+            margin-right: 10px;
           }
           &:hover {
               filter: brightness(1.2);

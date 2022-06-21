@@ -191,6 +191,7 @@ export default {
   height: $height-no-bottom-nav;
   color: white;
   background-size: cover;
+  background-position: center;
   z-index: -55;
   .launcher {
     width: 85px;

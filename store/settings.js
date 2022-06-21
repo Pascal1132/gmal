@@ -10,8 +10,9 @@ export const getters = {
 
 export const mutations = {
     setTheme: (state, payload) => {
-        console.log(payload)
-        state.currentTheme = payload;
+        console.log(payload, state.currentTheme)
+        state.currentTheme = {...state.currentTheme, ...payload};
+        console.log(state.currentTheme)
     }
 }
 

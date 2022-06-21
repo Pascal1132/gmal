@@ -37,3 +37,11 @@ ul {
   margin: 0;
   padding: 0;
 }
+::-webkit-scrollbar {
+  width: 5px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--highlight-color);
+  border-radius: 5px;
+}
