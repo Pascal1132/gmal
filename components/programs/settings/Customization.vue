@@ -155,6 +155,7 @@ export default {
   width: 100%;
   height: 100%;
   max-width: 800px;
+  
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -276,6 +277,7 @@ export default {
     justify-content: flex-start;
     gap: 10px;
     width: 100%;
+    padding-bottom: 20px;
     li {
       width: 100%;
         border-radius: $border-radius-sm;
