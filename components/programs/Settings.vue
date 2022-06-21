@@ -1,21 +1,22 @@
 <template>
-  <div class="settings">
+  <div class="settings" :class="{ small: isSmall }">
     <nav>
       <div class="nav-header">
         <div class="nav-header-account">
           <div class="nav-header-account-avatar">
-            <img
-              :src="loggedInUserPicture"
-              alt=""
-            />
+            <img :src="loggedInUserPicture" alt="" />
           </div>
           <div class="nav-header-account-name">
-            <span>{{loggedInUserName}}</span>
+            <span>{{ loggedInUserName }}</span>
             <span class="account-type">Compte local</span>
           </div>
         </div>
         <div class="nav-header-search">
-          <input type="search" placeholder="Trouver un paramètre" v-model="search" />
+          <input
+            type="search"
+            placeholder="Trouver un paramètre"
+            v-model="search"
+          />
           <fa class="search-icon" :icon="['fas', 'magnifying-glass']" />
         </div>
       </div>
@@ -28,7 +29,7 @@
           @click="currentTab = tab.name"
         >
           <div class="nav-body-item-icon">
-            <img :src="'images/programs/settings/' + tab.icon"/>
+            <img :src="'images/programs/settings/' + tab.icon" />
           </div>
           <div class="nav-body-item-title">
             <span>{{ tab.title }}</span>
@@ -37,9 +38,12 @@
       </div>
     </nav>
     <main>
-        <LazyComponent v-for="tab in tabs" :key="tab.name" :class="{active: currentTab == tab.name}"
-          :is="tab.component" />
-
+      <LazyComponent
+        v-for="tab in tabs"
+        :key="tab.name"
+        :class="{ active: currentTab == tab.name }"
+        :is="tab.component"
+      />
     </main>
   </div>
 </template>
@@ -87,7 +91,11 @@ export default {
         defaultTab: {
             type: String,
             default: '',
-        }
+        },
+        isSmall: {
+            type: Boolean,
+            default: false,
+        },
     },
     mounted() {
         this.currentTab = this.defaultTab;
@@ -214,11 +222,11 @@ export default {
       overflow-y: auto;
       padding: 10px;
       margin-top: 10px;
-      display:flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
 
       .nav-body-item {
         display: flex;
@@ -228,7 +236,7 @@ export default {
         width: 100%;
         height: 30px;
         padding: 5px 7px;
-        
+
         overflow: hidden;
 
         border-radius: $border-radius-sm;
@@ -272,7 +280,8 @@ export default {
           color: $txt-color;
         }
 
-        &:hover, &.active {
+        &:hover,
+        &.active {
           background-color: $bg-color-2;
         }
         &.active {
@@ -284,35 +293,68 @@ export default {
       }
     }
   }
-    main {
-        flex: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding: 10px;
-        margin-left: 10px;
-          height: calc(100% - 40px);
-        display:flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 4px;
+  main {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+    margin-left: 10px;
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 4px;
 
-        > :not(.active) {
-            display: none;
-        }
-        > .active{
-            animation: tabEnter 0.3s ease-in-out;
-        }
+    > :not(.active) {
+      display: none;
     }
+    > .active {
+      animation: tabEnter 0.3s ease-in-out;
+    }
+  }
+
+  &.small {
+    nav {
+      width: 70px;
+      .nav-header-account-name {
+        display: none;
+      }
+      .nav-header-search {
+        display: none;
+      }
+      .nav-body {
+        .nav-body-item {
+          width: 100%;
+          height: 40px;
+          justify-content: center;
+
+          .nav-body-item-title {
+            display: none;
+          }
+          &:before {
+              display:none
+            }
+
+          &.active {
+            
+          }
+        }
+      }
+    }
+    main {
+      width: 100%;
+    }
+  }
 }
 @keyframes tabEnter {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 </style>

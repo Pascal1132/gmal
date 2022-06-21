@@ -16,9 +16,13 @@
     }"
     @click="onWindowClick"
   >
-    <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
+    <div
+      class="window-header"
+      @mousedown="setItCurrentDrag"
+      @dblclick="toggleFullScreen"
+    >
       <div class="window-title">
-        <img v-if="iconPath" :src="iconPath" class="window-favicon"/>
+        <img v-if="iconPath" :src="iconPath" class="window-favicon" />
         <span>{{ title }}</span>
       </div>
       <div class="window-controls">
@@ -49,7 +53,7 @@
     </div>
     <div class="window-body" @mousedown="resizeStart">
       <div class="window-content">
-        <slot></slot>
+        <slot :isSmall="isSmall"></slot>
       </div>
     </div>
     <div class="window-footer" @mousedown="resizeStart"></div>
@@ -79,6 +83,7 @@ export default {
             resizingW: false,
             resizingH: false,
             willMinimize: false,
+            isSmall:false,
         }
     },
     props: {
@@ -197,7 +202,6 @@ export default {
 
     methods: {
         onMouseUp(e) {
-
             this.currentDrag = false;
             if (this.resizingH || this.resizingW) {
                 if (this.resizingH && this.resizingW) {
@@ -206,8 +210,6 @@ export default {
             }
                 this.resizingH = false;
                 this.resizingW = false;
-
-
             }
         },
         setItCurrentDrag(e) {
@@ -254,6 +256,11 @@ export default {
             if(this.resizingH && (e.clientY - this.y) > this.size.minHeight) {
                 this.height = e.clientY - this.y;
             }
+            if (this.width < 600) {
+                    this.isSmall = true;
+                } else {
+                    this.isSmall = false;
+                } 
         },
         close() {
             console.log('close', this.id);
@@ -318,7 +325,7 @@ export default {
             if (!this.willMinimize){
                 this.$store.commit('windows/setActiveWindow', this.id);
                 this.willMinimize = false;
-            } 
+            }
         },
     },
     // on isMinimized change
@@ -354,7 +361,7 @@ export default {
   }
 
   &.fullscreen {
-    height: $height-no-bottom-nav!important;
+    height: $height-no-bottom-nav !important;
     border-radius: 0;
     .window-header {
       border-radius: 0;

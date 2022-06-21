@@ -1,7 +1,7 @@
 <template>
   <div class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
-    <LazyWindow v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized">
-      <LazyComponent :is="window.component" :windowKey="window.id" v-bind="window.params"></LazyComponent>
+    <LazyWindow v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized" v-slot="slotProps">
+      <LazyComponent :is="window.component" :windowKey="window.id" v-bind="{...window.params, ...slotProps}" ></LazyComponent>
     </LazyWindow>
     <Desktop></Desktop>
     <LazyMenu :showMenu="showMenu" @toggle-menu="toggleMenu"></LazyMenu>

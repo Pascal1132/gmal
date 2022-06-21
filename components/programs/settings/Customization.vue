@@ -46,16 +46,21 @@
         <div @click="clickAccordionHeader('background-picture')" class="header">
           <span class="left-icon"><fa :icon="['fas', 'image']" /></span>
           <span>Image d'arrière-plan</span>
-          <span class="right-icon" :class="{ rotated: currentAccordion == 'background-picture'}"><fa :icon="['fas', 'chevron-down']" /></span>
+          <span
+            class="right-icon"
+            :class="{ rotated: currentAccordion == 'background-picture' }"
+          >
+            <fa :icon="['fas', 'chevron-down']" />
+          </span>
         </div>
         <div
           class="accordion-content"
           :class="{ active: currentAccordion == 'background-picture' }"
         >
-        <label class="file-btn">
-          <span>Téléverser votre image</span>
-          <input type="file" @change="changeBackgroundPicture" />
-        </label>
+          <label class="file-btn">
+            <span>Téléverser votre image</span>
+            <input type="file" @change="changeBackgroundPicture" />
+          </label>
         </div>
       </li>
       <!-- Colors -->
@@ -63,29 +68,36 @@
         <div @click="clickAccordionHeader('colors')" class="header">
           <span class="left-icon"><fa :icon="['fas', 'palette']" /></span>
           <span>Couleurs</span>
-          <span class="right-icon" :class="{ rotated: currentAccordion == 'colors'}"><fa :icon="['fas', 'chevron-down']" /></span>
+          <span
+            class="right-icon"
+            :class="{ rotated: currentAccordion == 'colors' }"
+          >
+            <fa :icon="['fas', 'chevron-down']" />
+          </span>
         </div>
         <div
           class="accordion-content"
           :class="{ active: currentAccordion == 'colors' }"
         >
-        <!-- Highlight color -->
-        <div class="color-picker">
-          <label>
-            <span>Couleur d'accent</span>
-            <input type="color" @change="changeAccentColor" />
-          </label>
-        </div>
-        <!-- Interface (light or dark) -->
-        <div class="color-picker">
-          <label>
-            <select @change="changeInterfaceColor" :value="currentTheme.interface">
-              <option value="light">Clair</option>
-              <option value="dark">Foncé</option>
-            </select>
-          </label>
-        </div>
-
+          <!-- Highlight color -->
+          <div class="color-picker">
+            <label>
+              <span>Couleur d'accent</span>
+              <input type="color" @change="changeAccentColor" />
+            </label>
+          </div>
+          <!-- Interface (light or dark) -->
+          <div class="color-picker">
+            <label>
+              <select
+                @change="changeInterfaceColor"
+                :value="currentTheme.interface"
+              >
+                <option value="light">Clair</option>
+                <option value="dark">Foncé</option>
+              </select>
+            </label>
+          </div>
         </div>
       </li>
     </ul>
@@ -155,7 +167,7 @@ export default {
   width: 100%;
   height: 100%;
   max-width: 800px;
-  
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -280,9 +292,9 @@ export default {
     padding-bottom: 20px;
     li {
       width: 100%;
-        border-radius: $border-radius-sm;
-        background-color: $bg-color-2;
-        transition: $transition;
+      border-radius: $border-radius-sm;
+      background-color: $bg-color-2;
+      transition: $transition;
       .header {
         font-size: 14px;
         font-weight: 500;
@@ -318,31 +330,12 @@ export default {
         width: 100%;
         background-color: $bg-color-2;
 
-        &.active{
+        &.active {
           display: flex;
           animation: fade-in 0.5s ease-in-out;
         }
 
         .file-btn {
-          width: 100%;
-            height: 40px;
-            border-radius: $border-radius-sm;
-            background-color: $bg-color-1;
-            border: 1px solid $border-color;
-            transition: $transition;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-          input{
-            display: none;
-          }
-          &:hover {
-              filter: brightness(1.2);
-            }
-        }
-
-        .color-picker, .color-picker label {
           width: 100%;
           height: 40px;
           border-radius: $border-radius-sm;
@@ -352,10 +345,30 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          input[type="color"]{
+
+          input {
             display: none;
           }
-          select{
+          &:hover {
+            filter: brightness(1.2);
+          }
+        }
+
+        .color-picker,
+        .color-picker label {
+          width: 100%;
+          height: 40px;
+          border-radius: $border-radius-sm;
+          background-color: $bg-color-1;
+          border: 1px solid $border-color;
+          transition: $transition;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          input[type='color'] {
+            display: none;
+          }
+          select {
             padding: 5px;
             height: 100%;
             outline: none;
@@ -369,8 +382,8 @@ export default {
             margin-right: 10px;
           }
           &:hover {
-              filter: brightness(1.2);
-            }
+            filter: brightness(1.2);
+          }
         }
       }
     }
