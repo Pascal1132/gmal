@@ -154,6 +154,8 @@ export default {
           }
           &.today {
             background: $highlight-color !important;
+            color: $txt-contrast-color !important;
+            font-weight: bold;
           }
         }
         &.month, &.year {
@@ -170,6 +172,7 @@ export default {
           }
           &.today {
             background: $highlight-color !important;
+            
           }
         }
       }

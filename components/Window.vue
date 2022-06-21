@@ -200,7 +200,16 @@ export default {
             },
             deep: true,
         },
-
+        isMinimized: {
+            handler(val) {
+                if (val) {
+                    setTimeout(() => {
+                        this.willMinimize = false;
+                    }, 500);
+                }
+            },
+            deep: true,
+        },
     },
 
     methods: {
@@ -338,19 +347,6 @@ export default {
                 this.$store.commit('windows/setActiveWindow', this.id);
                 this.willMinimize = false;
             }
-        },
-    },
-    // on isMinimized change
-    watch: {
-        isMinimized: {
-            handler(val) {
-                if (val) {
-                    setTimeout(() => {
-                        this.willMinimize = false;
-                    }, 500);
-                }
-            },
-            deep: true,
         },
     },
 }

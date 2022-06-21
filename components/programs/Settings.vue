@@ -4,7 +4,7 @@
       <div class="nav-header">
         <div class="nav-header-account">
           <div class="nav-header-account-avatar">
-            <img :src="loggedInUserPicture" alt="" />
+            <img :src="loggedInUserPicture" alt="" format="webp" />
           </div>
           <div class="nav-header-account-name">
             <span>{{ loggedInUserName }}</span>

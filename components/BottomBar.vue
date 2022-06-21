@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Calendar :show="showCalendar"></Calendar>
+    <LazyCalendar :show="showCalendar" v-if="loaded"></LazyCalendar>
     <div class="bottom-bar">
       <div class="left">
         <div class="toggle-menu icon" @click="toggleMenu()">
@@ -10,7 +10,7 @@
           <img src="images/file_explorer.ico"/>
         </div>
         <div class="icon" @click="startBrowser()">
-          <img src="/images/chrome.png"/>
+          <img src="/images/chrome.png" format="webp"/>
         </div>
         <div
           class="label"
@@ -116,6 +116,7 @@ var date = new Date()
   display: flex;
   justify-content: space-between;
   bottom: 0;
+  left: 0;
   width: 100%;
   z-index: 100;
   background-color: $bg-color-1;

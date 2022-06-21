@@ -1,4 +1,6 @@
-export default {
+import { defineNuxtConfig } from '@nuxt/bridge'
+
+export default defineNuxtConfig({
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: true,
 
@@ -30,7 +32,7 @@ export default {
 
 
   buildModules: [
-    '@nuxtjs/moment',
+    '@nuxt/image',
   ],
 
   styleResources: {
@@ -56,9 +58,10 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxtjs/style-resources',
+
   ],
   auth: {
     strategies: {
@@ -74,12 +77,9 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@nuxtjs/style-resources',
-    '@nuxt/image',
-    '@nuxtjs/pwa',
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
-}
+})

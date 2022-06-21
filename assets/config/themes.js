@@ -25,15 +25,15 @@ export default [
     },
     {
         name: 'red',
-        bg: 'linear-gradient(to bottom right, #800, #400)',
+        bg: 'linear-gradient(to bottom, #522, #411)',
         txt: '#fff',
         interface: 'dark',
         highlight: 'indianred',
         btn: '#fff',
     },
     {
-        name: 'black',
-        bg: 'linear-gradient(to top, #000, #333)',
+        name: 'darkblue',
+        bg: 'linear-gradient(to bottom, #123, #456)',
         txt: '#fff',
         interface: 'dark',
         highlight: '#fca311',

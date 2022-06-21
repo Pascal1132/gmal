@@ -194,13 +194,13 @@ export default {
   background-position: center;
   z-index: -55;
   .launcher {
-    width: 85px;
     height: 85px;
+    width: 85px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     border-radius: 5px;
-    padding: 7px;
+    
     align-items: center;
     gap: 2px;
     svg,

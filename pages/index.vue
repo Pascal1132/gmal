@@ -19,6 +19,11 @@ export default {
       showMenu: false,
     }
   },
+  async asyncData(){
+    return {
+      showMenu: false,
+    }
+  },
   methods: {
     toggleMenu(state = null) {
       this.showMenu = state === null ? !this.showMenu : state
