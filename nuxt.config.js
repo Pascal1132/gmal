@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     // https://go.nuxtjs.dev/typescript
     '@nuxt/image',
     '@nuxtjs/style-resources',
+    '@nuxtjs/pwa',
 
   ],
   modules: [

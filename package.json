@@ -17,7 +17,6 @@
     "@nuxtjs/auth-next": "5.0.0-1648802546.c9880dc",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/moment": "^1.6.1",
-    "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^2.6.12",
     "nuxt-edge": "latest",
     "sharp": "^0.30.6",
@@ -30,6 +29,7 @@
   "devDependencies": {
     "@nuxt/bridge": "npm:@nuxt/bridge-edge@^3.0.0-27566698.2b0045e",
     "@nuxt/image": "^0.6.2",
+    "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/style-resources": "^1.2.1",
     "nuxt-compress": "^5.0.0",
     "sass": "^1.52.3",
