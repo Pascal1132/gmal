@@ -90,7 +90,7 @@ export default {
         },
         defaultTab: {
             type: String,
-            default: '',
+            default: 'system',
         },
         isSmall: {
             type: Boolean,

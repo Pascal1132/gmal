@@ -80,8 +80,15 @@ export default {
             minWidth: 200,
             minHeight: 200,
             zIndex: 1,
-            resizingW: false,
-            resizingH: false,
+            // Resize the width from the right side
+            resizingWR: false,
+            // Resize the height from the bottom
+            resizingHB: false,
+            // Resize the width from the left side
+            resizingWL: false,
+            // Resize the height from the top
+            resizingHT: false,
+            
             willMinimize: false,
             isSmall:false,
         }
@@ -119,19 +126,7 @@ export default {
             type: String,
             default: '',
         },
-        isMaximized: {
-            type: Boolean,
-            default: false,
-        },
         isMinimized: {
-            type: Boolean,
-            default: false,
-        },
-        isDragged: {
-            type: Boolean,
-            default: false,
-        },
-        isResized: {
             type: Boolean,
             default: false,
         },
@@ -139,31 +134,7 @@ export default {
             type: Boolean,
             default: false,
         },
-        isSelected: {
-            type: Boolean,
-            default: false,
-        },
         isDraggable: {
-            type: Boolean,
-            default: true,
-        },
-        isResizable: {
-            type: Boolean,
-            default: true,
-        },
-        isCloseable: {
-            type: Boolean,
-            default: true,
-        },
-        isMaximizeable: {
-            type: Boolean,
-            default: true,
-        },
-        isMinimizeable: {
-            type: Boolean,
-            default: true,
-        },
-        isContextMenu: {
             type: Boolean,
             default: true,
         },
@@ -215,13 +186,15 @@ export default {
     methods: {
         onMouseUp(e) {
             this.currentDrag = false;
-            if (this.resizingH || this.resizingW) {
-                if (this.resizingH && this.resizingW) {
+            if (this.resizingHB || this.resizingWR) {
+                if (this.resizingHB && this.resizingWR || 
+                    this.resizingHB && this.resizingWL
+                ) {
                 // set mouse cursor has default
                 document.body.style.cursor = 'default';
             }
-                this.resizingH = false;
-                this.resizingW = false;
+                this.resizingHB = false;
+                this.resizingWR = false;
             }
         },
         setItCurrentDrag(e) {
@@ -262,10 +235,15 @@ export default {
                 }
 
             }
-            if(this.resizingW && (e.clientX - this.x) > this.size.minWidth) {
+            if(this.resizingWR && (e.clientX - this.x) > this.size.minWidth) {
                 this.width = e.clientX - this.x;
             }
-            if(this.resizingH && (e.clientY - this.y) > this.size.minHeight) {
+            if(this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
+                this.height = e.clientY - this.y;
+            }
+
+
+            if(this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
                 this.height = e.clientY - this.y;
             }
             this.onResize();
@@ -323,19 +301,26 @@ export default {
         },
         resizeStart(e) {
             // if the mouse is at the right edge of the window
-            if (e.clientX > this.x + this.width - 10) {
-                this.resizingW = true;
-            }
+            this.resizingWR = (e.clientX > this.x + this.width - 10);
             // if the mouse is at the left edge of the window
-            if (e.clientX < this.x + 10) {
-                this.resizingW = true;
-            }
-            // if the mouse is at the bottom edge of the window
-            if (e.clientY > this.y + this.height - 10) {
-                this.resizingH = true;
-            }
+            this.resizingWL = (e.clientX < this.x + 10);
 
-            if (this.resizingH && this.resizingW) {
+
+            // if the mouse is at the bottom edge of the window
+            this.resizingHB = (e.clientY > this.y + this.height - 10);
+            // if the mouse is at the top edge of the window
+            //this.resizingHT = (e.clientY < this.y + 10);
+
+            if (this.resizingHB && this.resizingWR) {
+                // set mouse cursor has resize
+                document.body.style.cursor = 'nwse-resize';
+            } else if (this.resizingHB && this.resizingWL) {
+                // set mouse cursor has resize
+                document.body.style.cursor = 'nesw-resize';
+            } else if (this.resizingHT && this.resizingWR) {
+                // set mouse cursor has resize
+                document.body.style.cursor = 'nesw-resize';
+            } else if (this.resizingHT && this.resizingWL) {
                 // set mouse cursor has resize
                 document.body.style.cursor = 'nwse-resize';
             }
