@@ -310,7 +310,7 @@ export default {
             }, 200);
             this.isFullScreen = !this.isFullScreen;
 
-            if (this.isFullScreen && window.innerWidth < 600) {
+            if (window.innerWidth < 600) {
                     this.isSmall = true;
                 } else {
                     this.isSmall = false;

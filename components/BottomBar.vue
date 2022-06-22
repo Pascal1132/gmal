@@ -7,10 +7,10 @@
           <fa :icon="['fab', 'windows']" />
         </div>
         <div class="icon" @click="startFileExplorer()">
-          <img src="images/file_explorer.ico"/>
+          <img src="images/file_explorer.ico" />
         </div>
         <div class="icon" @click="startBrowser()">
-          <img src="/images/chrome.png" format="webp"/>
+          <img src="/images/chrome.png" format="webp" />
         </div>
         <div
           class="label"
@@ -19,8 +19,14 @@
           @click="onWindowClick(window.id)"
           :class="{ focused: activeWindowId == window.id }"
         >
-          <span class="label-container"><img :src="window.iconPath" v-if="window.iconPath" class="label-icon"/>
-          {{ window.title }}</span>
+          <div class="label-container">
+            <img
+              :src="window.iconPath"
+              v-if="window.iconPath"
+              class="label-icon"
+            />
+            <span class="label-span"> {{ window.title }}</span>
+          </div>
         </div>
       </div>
       <div></div>
@@ -80,7 +86,7 @@ var date = new Date()
       this.$store.commit('windows/setActiveWindow', id);
     }
   },
-  
+
   mounted() {
     if (!this.loaded){
        setInterval(() => {
@@ -160,26 +166,13 @@ var date = new Date()
         font-size: 15px;
         padding: 5px 8px;
         min-width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
         //text overflow ellipsis
         white-space: nowrap;
         overflow: hidden;
-        @media screen and (max-width: 768px) {
-          font-size: 12px;
-          max-width: 80px;
-          text-align: left;
-        }
-        .label-container {
-          display: flex;
-          align-items: center;
-          gap: 2px;
-          .label-icon {
-          width: auto;
-          height: 20px;
-          margin-right: 5px;
-        }
-        }
-        
         &:after {
           // add a small line below
           content: "";
@@ -190,6 +183,28 @@ var date = new Date()
           background-color: $txt-color;
           margin-top: 3px;
           transition: all 0.3s ease-in-out;
+        }
+        .label-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+        }
+        @media screen and (max-width: 768px) {
+          .label-span {
+            display: none;
+          }
+          &.focused::after {
+            width: 5px;
+          }
+          &.focused {
+            background-color: $hover-btn-color;
+          }
+        }
+
+        .label-icon {
+          width: auto;
+          height: 20px;
         }
       }
 

@@ -1,7 +1,15 @@
 <template>
     <div class="system">
-        <div class="warning"><fa :icon="['fas', 'computer']" />
-        Le menu Système est en cours de développement</div>
+        <h1>À propos</h1>
+        <p>G-mal est un site web qui a été conçu par Pascal Parent. Il s'agit d'un service gratuit qui vous permet de je sais pas quoi en ligne. Vous pouvez également y accéder à partir de votre ordinateur ou de votre téléphone portable.</p>
+        <h4>Technologies</h4>
+        <p>G-mal utilise les technologies suivantes :</p>
+        <ul>
+            <li>Nuxt</li>
+            <li>Vue</li>
+            <li>Vuex</li>
+            <li>Axios</li>
+        </ul>
     </div>
 </template>
 <script lang="js">
@@ -13,18 +21,22 @@ export default {
 .system {
     width: 100%;
     height: 20%;
-    .warning {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-        gap: 10px;
-        width: 100%;
-        height: 100%;
-        color: $highlight-color;
-        border-radius: 6px;
-        border: 2px solid $highlight-color;
+    max-width: 600px;
+
+    ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display:flex;gap:4px;
+        flex-wrap: wrap;
+        li {
+            margin-bottom: 10px;
+            background-color: $bg-color-0;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            border-radius: 5px;
+        }
     }
 }
 </style>

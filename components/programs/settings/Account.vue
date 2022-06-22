@@ -1,46 +1,6 @@
 <template>
   <div class="account">
     <h3>Votre compte :</h3>
-    <!--<div class="account-info-item-title">
-          Nom d'utilisateur :
-        </div>
-        <div class="account-info-item-value">
-          <input type="text" v-model="user.username" />
-        </div>
-      </div>
-      <div class="account-info-item">
-        <div class="account-info-item-title">
-          Nom :
-        </div>
-        <div class="account-info-item-value">
-          <input type="text" v-model="user.name" />
-        </div>
-      </div>
-      <div class="account-info-item">
-        <div class="account-info-item-title">
-          Prénom :
-        </div>
-        <div class="account-info-item-value">
-          <input type="text" v-model="user.firstname" />
-        </div>
-      </div>
-      <div class="account-info-item">
-        <div class="account-info-item-title">
-          Email :
-        </div>
-        <div class="account-info-item-value">
-          <input type="text" v-model="user.email" />
-        </div>
-      </div>
-      <div class="account-info-item">
-        <div class="account-info-item-title">
-          Date de naissance :
-        </div>
-        <div class="account-info-item-value">
-          <input type="date" v-model="user.birthdate" />
-        </div>
-      </div>-->
-    <!-- Button connect with gmail or facebook -->
     <div v-if="!$auth.loggedIn">
       Connectez-vous avec
       <button class="facebook-btn" @click="connectWithFacebook">

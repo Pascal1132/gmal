@@ -33,7 +33,7 @@ export default [
     },
     {
         name: 'darkblue',
-        bg: 'linear-gradient(to bottom, #123, #456)',
+        bg: 'radial-gradient(at 79% 9%, rgb(122, 255, 255) 0, transparent 57%), radial-gradient(at 18% 11%, rgb(147, 197, 253) 0, transparent 20%), radial-gradient(at 4% 18%, rgb(192, 38, 211) 0, transparent 51%), radial-gradient(at 43% 14%, rgb(253, 230, 138) 0, transparent 9%), radial-gradient(at 32% 30%, rgb(56, 189, 248) 0, transparent 41%), radial-gradient(at 21% 87%, rgb(37, 99, 235) 0, transparent 88%)',
         txt: '#fff',
         interface: 'dark',
         highlight: '#fca311',

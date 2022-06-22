@@ -388,6 +388,24 @@ export default {
       }
     }
   }
+
+  // on mobile devices
+  @media screen and (max-width: 768px) {
+    // set bg-preview width to 250px
+    .theme-selector{
+
+    .current-bg .bg-preview {
+      width: 250px;
+      .over-bg {
+        left: 150px;
+      }
+    }
+    .theme-list{
+      width: 250px;
+      justify-content: center;
+    }
+    }
+  }
 }
 @keyframes fade-in {
   from {
