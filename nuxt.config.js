@@ -30,11 +30,6 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
 
-
-  buildModules: [
-    '@nuxt/image',
-  ],
-
   styleResources: {
     scss: ['~/assets/scss/*.scss']
   },
@@ -58,10 +53,13 @@ export default defineNuxtConfig({
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/typescript
-    '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
+    '@nuxt/image',
     '@nuxtjs/style-resources',
 
+  ],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
   ],
   auth: {
     strategies: {
@@ -74,10 +72,6 @@ export default defineNuxtConfig({
       },
     }
   },
-
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
