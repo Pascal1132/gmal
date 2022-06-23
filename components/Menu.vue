@@ -20,6 +20,7 @@
             <div class="menu-list" :class="{ search: search !== '' }">
                 <div class="menu-item" v-for="(menu, index) in menuItems" :key="index" @click="() => {
                     $store.dispatch('windows/createBaseWindow', menu.program);
+                    $emit('toggle-menu')
                 }">
                     <img :src="menu.imagePath" />
                     <span>{{ menu.title }}</span>
