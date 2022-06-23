@@ -4,16 +4,16 @@
       <button @click="restart()">Restart</button>
       <label>
         Mines:
-        <input type="number" v-model="numberOfMines" min="0" :max="(cellsByRows * rows) - 1"/>
+        <input type="text" v-model="numberOfMines" min="0" :max="(cellsByRows * rows) - 1"/>
         
       </label>
       <label>
         Colonnes:
-        <input type="number" v-model="cellsByRows" min="1" max="100"/>
+        <input type="text" v-model="cellsByRows" min="1" max="100"/>
       </label>
       <label>
         Lignes:
-        <input type="number" v-model="rows" min="1" max="10"/>
+        <input type="text" v-model="rows" min="1" max="10"/>
       </label>
     </div>
     <div class="body"><main-grid ref="mainGrid" :numberOfMines="numberOfMines" :cellsByRows="cellsByRows" :rows="rows"/></div>
@@ -29,8 +29,8 @@ export default {
     },
     data() {
         return {
-            numberOfMines: 30,
-            cellsByRows: 8,
+            numberOfMines: 20,
+            cellsByRows: 10,
             rows: 8,
         }
     },
