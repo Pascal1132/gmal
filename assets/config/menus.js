@@ -17,6 +17,11 @@ export const mainMenu = [
         program: 'ProgMinesweeper',
     },
     {
+        title: 'Tetris',
+        imagePath: '/images/tetris.png',
+        program: 'ProgTetris',
+    },
+    {
         title: 'Explorateur de fichiers',
         imagePath: '/images/file_explorer.ico',
         program: 'ProgFileExplorer',

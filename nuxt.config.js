@@ -37,6 +37,8 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/fontawesome.js',
     { src: '~/plugins/datepicker.js', mode: 'client' },
+    { src: '~/plugins/lodash.js', mode: 'client' },
+  
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
