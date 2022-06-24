@@ -3,7 +3,11 @@
     <div
       class="game-over-curtain"
       :class="{ show: isGameOver, won: isGameWon }"
-    ><div class="curtain-text">Vous avez {{isGameWon ? 'gagné ! 🤩' : 'perdu !😭'}}</div></div>
+    >
+      <div class="curtain-text">
+        Vous avez {{ isGameWon ? 'gagné ! 🤩' : 'perdu !😭' }}
+      </div>
+    </div>
     <div v-for="(row, rowIndex) in cells" :key="rowIndex" class="row">
       <div v-for="(cell, colIndex) in row" :key="colIndex" class="col">
         <div
@@ -63,36 +67,6 @@ export default {
           }
         }
       }
-      // set up mines
-      for (let i = 0; i < this.numberOfMines; i++) {
-        let row = Math.floor(Math.random() * this.rows)
-        let col = Math.floor(Math.random() * this.cellsByRows)
-        let cell = this.getCell(row, col)
-        if (cell != null && !cell.isMine) {
-          cell.isMine = true
-        } else {
-          i--
-        }
-      }
-      // setup numbers
-      for (let row = 0; row < this.rows; row++) {
-        for (let col = 0; col < this.cellsByRows; col++) {
-          let cell = this.getCell(row, col)
-          if (cell != null && !cell.isMine) {
-            let number = 0
-            for (let i = -1; i <= 1; i++) {
-              for (let j = -1; j <= 1; j++) {
-                let neighbor = this.getCell(row + i, col + j)
-                if (neighbor != null && neighbor.isMine) {
-                  number++
-                }
-              }
-            }
-            cell.isNumber = number > 0
-            cell.number = cell.isNumber ? number : ''
-          }
-        }
-      }
     },
     getCell(row, col) {
       // check if row exists
@@ -114,6 +88,51 @@ export default {
       }
     },
     revealCell(cell, row, col) {
+      // if there is no cell revealed, generate the grid
+      if (!this.checkIfACellIsReaveled()) {
+        // set up mines
+        for (let i = 0; i < this.numberOfMines; i++) {
+          let tempRow = Math.floor(Math.random() * this.rows)
+          let tempCol = Math.floor(Math.random() * this.cellsByRows)
+          let tempCell = this.getCell(tempRow, tempCol)
+          // dont place a mine on cell passed as param and all around
+          let isNotNearCells = true
+          for (let j = -1; j <= 1; j++) {
+            for (let k = -1; k <= 1; k++) {
+              if (row + j == tempRow && col + k == tempCol) {
+                isNotNearCells = false
+              }
+            }
+          }
+
+          if (tempCell != null && !tempCell.isMine && isNotNearCells) {
+            tempCell.isMine = true
+          } else {
+            i--
+          }
+        }
+        // setup numbers
+        for (let tempRow = 0; tempRow < this.rows; tempRow++) {
+          for (let tempCol = 0; tempCol < this.cellsByRows; tempCol++) {
+            let tempCell = this.getCell(tempRow, tempCol)
+            if (tempCell != null && !tempCell.isMine) {
+              let number = 0
+              for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                  let neighbor = this.getCell(tempRow + i, tempCol + j)
+                  if (neighbor != null && neighbor.isMine) {
+                    number++
+                  }
+                }
+              }
+              tempCell.isNumber = number > 0
+              tempCell.number = tempCell.isNumber ? number : ''
+            }
+          }
+          this.updateRow(tempRow);
+        }
+      }
+
       if (cell.isMine) {
         cell.isError = true
         this.gameOver(false)
@@ -147,6 +166,17 @@ export default {
         }
       }
       return true
+    },
+    checkIfACellIsReaveled() {
+      for (let row = 0; row < this.rows; row++) {
+        for (let col = 0; col < this.cellsByRows; col++) {
+          let cell = this.getCell(row, col)
+          if (cell.isRevealed) {
+            return true
+          }
+        }
+      }
+      return false
     },
     gameOver(success = true) {
       for (let row = 0; row < this.rows; row++) {
@@ -227,21 +257,21 @@ export default {
     backdrop-filter: brightness(60%);
     transform: translateY(-100%);
     z-index: 10;
-    .curtain-text{
+    .curtain-text {
       font-size: 20px;
       padding: 10px;
       text-align: center;
       font-weight: bolder;
       text-transform: uppercase;
     }
-    
+
     &.show {
       height: 100%;
       width: 100%;
       transform: translateY(0);
       opacity: 1;
       transition: opacity 1s ease-in-out;
-    transition-delay: 1s;
+      transition-delay: 1s;
     }
     &.won {
       border-color: $success-color;
@@ -283,7 +313,7 @@ export default {
           border: 2px solid $border-color;
         }
         &.error {
-          span{
+          span {
             transform: scale(3);
             z-index: 5;
           }

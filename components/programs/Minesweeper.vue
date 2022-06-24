@@ -4,18 +4,18 @@
       <button @click="restart()">Restart</button>
       <label>
         Mines:
-        <input type="text" v-model="numberOfMines" min="0" :max="(cellsByRows * rows) - 1"/>
-        
+        <input type="text" @change="changeMines" :max="(cellsByRows * rows) - 1" :value="numberOfMines"/>
       </label>
       <label>
         Colonnes:
-        <input type="text" v-model="cellsByRows" min="1" max="100"/>
+        <input type="text" @change="changeCols" :value="cellsByRows"/>
       </label>
       <label>
         Lignes:
-        <input type="text" v-model="rows" min="1" max="10"/>
+        <input type="text" @change="changeRows" :value="rows"/>
       </label>
     </div>
+    <span class="message">{{message}}</span>
     <div class="body"><main-grid ref="mainGrid" :numberOfMines="numberOfMines" :cellsByRows="cellsByRows" :rows="rows"/></div>
   </div>
 </template>
@@ -32,6 +32,7 @@ export default {
             numberOfMines: 20,
             cellsByRows: 10,
             rows: 8,
+            message: '',
         }
     },
     props: {
@@ -44,6 +45,52 @@ export default {
         restart() {
             this.$refs.mainGrid.generateCells();
         },
+        changeMines(e) {
+            // check if mines are less than cellsByRows * rows minus 8
+            if (e.target.value > (this.cellsByRows * this.rows) - 9) {
+                this.numberOfMines = (this.cellsByRows * this.rows) - 9;
+                this.displayMessage('Mines cannot be more than ' + (parseInt(this.cellsByRows * this.rows) - 9));
+            } else if (e.target.value < 0) {
+                this.numberOfMines = 0;
+                this.displayMessage('Mines cannot be less than 0');
+            } else {
+                this.numberOfMines = e.target.value;
+            }
+        },
+        changeCols(e) {
+            // check if cols are less than 4
+            if (e.target.value < 4) {
+                this.cellsByRows = 4;
+                this.displayMessage('Cols cannot be less than 4');
+            } else {
+                this.cellsByRows = parseInt(e.target.value);
+            }
+
+            if (this.numberOfMines > (this.cellsByRows * this.rows) - 9) {
+                this.numberOfMines = (this.cellsByRows * this.rows) - 9;
+            }
+            
+        },
+        changeRows(e) {
+            // check if rows are less than 4
+            if (e.target.value < 4) {
+                this.rows = 4;
+                this.displayMessage('Rows cannot be less than 4');
+            } else {
+                this.rows = parseInt(e.target.value);
+            }
+
+            if (this.numberOfMines > (this.cellsByRows * this.rows) - 9) {
+                this.numberOfMines = (this.cellsByRows * this.rows) - 9;
+            }
+        },
+        displayMessage(message) {
+            this.message = message;
+            setTimeout(() => {
+                this.message = '';
+            }, 2000);
+        },
+
     },
     mounted() {
         this.$store.commit('windows/setWindow', {
@@ -108,6 +155,13 @@ export default {
       }
     }
   }
+  .message {
+    font-size: 1rem;
+    color: $danger-color;
+    text-align: center;
+    width: 100%;
+    height: 20px;
+  }
 
   .body {
     display: flex;
@@ -116,7 +170,7 @@ export default {
     justify-content: flex-start;
     width: 100%;
     overflow: auto;
-    height: calc(100% - 100px);
+    height: calc(100% - 140px);
     gap: 10px;
     padding: 0 10px;
   }
