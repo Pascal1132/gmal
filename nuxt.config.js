@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     dirs: [
       '~/components',
       {
-        path: '~/components/programs/',
+        path: '~/components/programs',
         prefix: 'Prog'
       },
     ],

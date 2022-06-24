@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="player">
     <div
       :style="{
@@ -67,6 +68,12 @@
       </div>-->
       <h2 class="state">{{ stateText }}</h2>
     </div>
+  </div>
+  <div class="mobile-buttons" v-if="canPlay"><button @click="move(-1, 0)"><fa :icon="['fas', 'left-long']"/></button>
+  <button @click="move(1,0)"><fa :icon="['fas', 'right-long']"/></button>
+  <button @click="rotate()"><fa :icon="['fas', 'rotate-right']"/></button>
+  <button  @click="moveStraight()"><fa :icon="['fas', 'down-long']"/></button></div>
+  
   </div>
 </template>
 
@@ -351,6 +358,60 @@ export default {
 }
 .state {
   text-align: center;
+}
+
+.mobile-buttons {
+  display: none;
+}
+
+// on mobile, remove score margin
+@media (max-width: 768px) {
+  .score {
+    margin: 0;
+    .row span {
+      width: 10px;
+    }
+  }
+  .panel {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+  .nextBox {
+    width: 100px;
+    height: 100px;
+  }
+  h2{
+    font-size: 20px;
+  }
+  .mobile-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+    button{
+      font-size: 20px;
+      padding: 5px;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      border: none;
+      border-radius: 50%;
+      margin: 0 10px;
+      height: 50px;
+      width: 50px;
+      background-color: $bg-color-2;
+      color: $txt-color;
+      transition: $transition;
+      
+      &:active{
+        background-color: $hover-btn-color;
+      }
+    }
+  }
 }
 .statistics {
   margin-bottom: 20px;
