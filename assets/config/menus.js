@@ -22,6 +22,11 @@ export const mainMenu = [
         program: 'ProgTetris',
     },
     {
+        title: '2 miles et 40 huitres',
+        imagePath: '/images/2048.png',
+        program: 'ProgTwoZeroFourEight',
+    },
+    {
         title: 'Explorateur de fichiers',
         imagePath: '/images/file_explorer.ico',
         program: 'ProgFileExplorer',

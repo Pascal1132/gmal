@@ -197,7 +197,7 @@ export default {
             gap: 6px;
             padding: 10px 0;
             width: 80px;
-            height: 80px;
+            height: 83px;
             margin: 5px;
             border-radius: 3px;
             transition: $transition;
