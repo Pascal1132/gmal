@@ -33,7 +33,7 @@ export default {
     mounted() {
         this.$store.commit('windows/setWindow', {
             id: this.windowKey,
-            title: 'Tetris',
+            title: 'T\'es triste ?',
             size: {
                 width: 700,
                 height: 500,

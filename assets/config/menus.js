@@ -17,7 +17,7 @@ export const mainMenu = [
         program: 'ProgMinesweeper',
     },
     {
-        title: 'Tetris',
+        title: 'T\'es triste ?',
         imagePath: '/images/tetris.png',
         program: 'ProgTetris',
     },
