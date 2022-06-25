@@ -95,7 +95,7 @@ export default {
     mounted() {
         this.$store.commit('windows/setWindow', {
             id: this.windowKey,
-            title: 'Démineur',
+            title: 'Des mineurs',
             size: {
                 width: 700,
                 height: 500,

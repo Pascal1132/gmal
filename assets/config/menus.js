@@ -12,7 +12,7 @@ export const bottomBarMenu = [
 ];
 export const mainMenu = [
     {
-        title: 'Démineur',
+        title: 'Des mineurs',
         imagePath: '/images/minesweeper.png',
         program: 'ProgMinesweeper',
     },
