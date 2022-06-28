@@ -1,0 +1,28 @@
+// schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Create a user model with a many to one relationship to the login model
+
+model User {
+  id        String           @id @default(cuid())
+  name      String
+  picture   String?
+  settings  String?
+  loginRefs LoginReference[]
+}
+
+// LoginReference is to save external id like for facebook
+model LoginReference {
+  id         String  @id @default(cuid())
+  provider   String
+  externalId String
+  User       User?   @relation(fields: [userId], references: [id])
+  userId     String?
+}

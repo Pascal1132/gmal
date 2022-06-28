@@ -19,6 +19,7 @@ export default {
       showMenu: false,
     }
   },
+  middleware: ['store-populate'],
   async asyncData(){
     return {
       showMenu: false,

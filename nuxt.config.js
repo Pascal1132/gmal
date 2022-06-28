@@ -51,7 +51,6 @@ export default defineNuxtConfig({
       },
     ],
   },
-
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/typescript
@@ -70,13 +69,14 @@ export default defineNuxtConfig({
         endpoints: {
           userInfo: 'https://graph.facebook.com/v6.0/me?fields=id,name,picture{url}'
         },
-        clientId: '325294096468429',
-        scope: ['public_profile', 'email']
+        clientId: "325294096468429",
+        //clientId: '325294096468429',
+        scope: ['public_profile'] //, 'email'
       },
     }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
 })

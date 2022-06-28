@@ -8,6 +8,8 @@
   </div>
 </template>
 <script lang="js">
+import { $fetch } from 'ohmyfetch'
+
 export default {
     name: 'TwoZeroFourEight',
     components: {
@@ -24,10 +26,9 @@ export default {
         },
     },
     methods: {
-        start() {
-            this.$refs.game.start();
+        async start() {
+            console.log(await $fetch('/api/hello'));
         },
-
     },
     mounted() {
         this.$store.commit('windows/setWindow', {

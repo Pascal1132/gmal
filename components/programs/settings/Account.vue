@@ -35,7 +35,9 @@ export default {
     },
     methods: {
         connectWithFacebook() {
-            this.$auth.loginWith('facebook')
+            this.$auth.loginWith('facebook').then((response) => {
+                console.log(response);
+            });
         },
         logoutWithFacebook() {
             this.$auth.logout('facebook')

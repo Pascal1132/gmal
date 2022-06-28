@@ -115,7 +115,7 @@ export default {
     },
     methods: {
         changeTheme(theme) {
-            this.$store.commit('settings/setTheme', theme);
+            this.$store.dispatch('settings/setTheme', theme);
         },
         clickAccordionHeader(name) {
             if (this.currentAccordion == name) {
@@ -128,7 +128,7 @@ export default {
             var file = e.target.files[0];
             var reader = new FileReader();
             reader.onload = (e) => {
-                this.$store.commit('settings/setTheme', {
+                this.$store.dispatch('settings/setTheme', {
                   name: 'Custom',
                   bg: `url("${e.target.result}")`,
                   });
@@ -140,13 +140,13 @@ export default {
             }
         },
         changeAccentColor(e) {
-            this.$store.commit('settings/setTheme', {
+            this.$store.dispatch('settings/setTheme', {
               name: 'Custom',
               highlight: e.target.value,
             });
         },
         changeInterfaceColor(e) {
-            this.$store.commit('settings/setTheme', {
+            this.$store.dispatch('settings/setTheme', {
               name: 'Custom',
               interface: e.target.value,
             });
