@@ -1,82 +1,55 @@
-import { defineNuxtConfig } from '@nuxt/bridge'
-
+// https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
-
-  // Target: https://go.nuxtjs.dev/config-target
-  target: 'server',
-
-  // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'G-mal',
-    htmlAttrs: {
-      lang: 'en'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
-  },
-
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '~assets/css/main.css',
-    '@fortawesome/fontawesome-svg-core/styles.css'
-  ],
-
-  styleResources: {
-    scss: ['~/assets/scss/*.scss']
-  },
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/fontawesome.js',
-    { src: '~/plugins/datepicker.js', mode: 'client' },
-    { src: '~/plugins/lodash.js', mode: 'client' },
-  
-  ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
-  components: {
-    dirs: [
-      '~/components',
-      {
-        path: '~/components/programs',
-        prefix: 'Prog'
-      },
-    ],
-  },
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/image',
-    '@nuxtjs/style-resources',
-    '@nuxtjs/pwa',
-
-  ],
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
-  ],
-  auth: {
-    strategies: {
-      facebook: {
-        endpoints: {
-          userInfo: 'https://graph.facebook.com/v6.0/me?fields=id,name,picture{url}'
+    runtimeConfig: {
+        public: {
+            // Public runtime config
         },
-        clientId: "325294096468429",
-        //clientId: '325294096468429',
-        scope: ['public_profile'] //, 'email'
-      },
-    }
-  },
+    },
+    css: [
+        // CSS file in the project
+        '@/assets/css/main.css',
+        '@fortawesome/fontawesome-svg-core/styles.css'
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  },
+    ],
+    vite: {
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: '@import "@/assets/scss/variables.scss";',
+                },
+            },
+        },
+    },
+    modules: [
+        [
+            '@pinia/nuxt',
+            {
+                autoImports: ['defineStore', 'acceptHMRUpdate'],
+            },
+        ],
+    ],
+    imports: {
+        dirs: ['store'],
+    },
+    build: {
+        transpile: [
+            '@fortawesome/fontawesome-svg-core',
+            '@fortawesome/free-brands-svg-icons',
+            '@fortawesome/free-solid-svg-icons',
+            '@fortawesome/free-regular-svg-icons',
+            '@fortawesome/vue-fontawesome',
+
+        ]
+    },
+    components: {
+        global: true,
+        dirs: [
+            '~/components',
+        ],
+    },
+    server: {
+        port: 3000, // default: 3000
+        host: '0.0.0.0', // default: localhost,
+        timing: false
+    },
 })

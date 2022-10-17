@@ -1,25 +1,35 @@
 <template>
   <div class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
-    <LazyWindow v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized" v-slot="slotProps">
-      <LazyComponent :is="window.component" :windowKey="window.id" v-bind="{...window.params, ...slotProps}" ></LazyComponent>
-    </LazyWindow>
+    <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized" v-slot="slotProps"  >
+      <Component :is="resolveComponent(window.component)" :windowKey="window.id" v-bind="{...window.params, ...slotProps}" @set-window-frame="setWindowFrame" ></Component>
+    </Window>
+
     <Desktop></Desktop>
-    <LazyMenu :showMenu="showMenu" @toggle-menu="toggleMenu"></LazyMenu>
+    <Menu :showMenu="showMenu" @toggle-menu="toggleMenu"></Menu>
     <BottomBar @toggle-menu="toggleMenu()"></BottomBar>
   </div>
 </template>
 
 <script lang="js">
-import { mapGetters } from 'vuex'
+import { mapActions, mapState } from 'pinia';
+import { useThemeStore } from '../store/theme'
+import { useWindowsStore } from '../store/windows'
+
 
 export default {
-  name: 'Index',
+  setup() {
+    const {getWindows, getActiveWindowId} = useWindowsStore();
+    return {
+      getWindows,
+      getActiveWindowId,
+    }
+  },
   data() {
     return {
       showMenu: false,
     }
   },
-  middleware: ['store-populate'],
+  //middleware: ['store-populate'],
   async asyncData(){
     return {
       showMenu: false,
@@ -29,25 +39,22 @@ export default {
     toggleMenu(state = null) {
       this.showMenu = state === null ? !this.showMenu : state
     },
+    setWindowFrame(data) {
+      this.setWindow(data.id, data);
+    },
+    ...mapActions(useWindowsStore, ['setWindow']),
   },
   mounted() {
   },
   computed: {
-    windows(){
-      return this.$store.state.windows.windows
-    },
-    activeWindowId(){
-      return this.$store.state.windows.activeWindow;
-    },
-    ...mapGetters({
-      currentTheme: 'settings/currentTheme',
-    }),
     generateStyleFromTheme() {
       return {
         '--highlight-color': this.currentTheme.highlight,
       };
-    }
-  }
+    },
+    ...mapState(useThemeStore, ['currentTheme']),
+    ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
+  },
 }
 </script>
 <style lang="scss">

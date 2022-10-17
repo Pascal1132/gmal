@@ -3,13 +3,12 @@
     <!-- simple calendar -->
     <div class="calendar-body">
       <client-only>
-      <date-picker :language="fr" :inline="true" v-model="selectedDate"></date-picker>
+      <!--<date-picker :language="fr" :inline="true" v-model="selectedDate"></date-picker>-->
       </client-only>
     </div>
   </div>
 </template>
 <script lang="js">
-import {en, fr} from 'vuejs-datepicker/dist/locale'
 export default {
     name: 'Calendar',
     props: {
@@ -21,8 +20,6 @@ export default {
     data() {
         return {
             currentDateString: '',
-            fr: fr,
-            en: en,
             selectedDate: new Date(),
             loaded: false
         }
