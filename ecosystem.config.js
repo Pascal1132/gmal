@@ -1,8 +1,10 @@
 module.exports = {
-  apps: [{
-    name: 'gmal', exec_mode:
-      'cluster', instances: '1', script: './node_modules/nuxt/bin/nuxt.js', args:
-      'start'
-  }
+  apps: [
+    {
+      name: 'gmal',
+      exec_mode: 'cluster',
+      instances: '1',
+      script: './.output/server/index.mjs'
+    }
   ]
 }
