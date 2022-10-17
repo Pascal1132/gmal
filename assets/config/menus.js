@@ -12,19 +12,19 @@ export const bottomBarMenu = [
 ];
 export const mainMenu = [
     {
-        title: 'Des mineurs',
+        title: 'Démineur',
         imagePath: '/images/minesweeper.png',
         program: 'ProgMinesweeper',
     },
-    {
-        title: 'T\'es triste ?',
+    /*{
+        title: 'Tétris',
         imagePath: '/images/tetris.png',
         program: 'ProgTetris',
-    },
+    },*/
     {
-        title: '2 miles et 40 huitres',
-        imagePath: '/images/2048.png',
-        program: 'ProgTwoZeroFourEight',
+        title: 'Terminal',
+        imagePath: '/images/programs/terminal.ico',
+        program: 'ProgTerminal',
     },
     {
         title: 'Explorateur de fichiers',

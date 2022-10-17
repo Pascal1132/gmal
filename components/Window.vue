@@ -1,26 +1,16 @@
 <template>
-  <div
-    ref="window"
-    class="window"
-    :style="{
-      width: width + 'px',
-      height: height + 'px',
-      top: y + 'px',
-      left: x + 'px',
-    }"
-    :class="{
+  <div ref="window" class="window" :style="{
+    width: width + 'px',
+    height: height + 'px',
+    top: y + 'px',
+    left: x + 'px',
+  }" :class="{
       draggable: isDraggable,
       minimized: isMinimized,
       willMinimize: willMinimize,
       focused: isFocused,
-    }"
-    @click="onWindowClick"
-  >
-    <div
-      class="window-header"
-      @mousedown="setItCurrentDrag"
-      @dblclick="toggleFullScreen"
-    >
+    }" @click.prevent="onWindowClick">
+    <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
         <img v-if="iconPath" :src="iconPath" class="window-favicon" />
         <span>{{ title }}</span>
@@ -29,20 +19,10 @@
         <div class="window-controls-right">
           <div class="window-control" @click="minimize()">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <line
-                x1="10"
-                y1="50"
-                x2="90"
-                y2="50"
-                stroke="white"
-                stroke-width="7px"
-              />
+              <line x1="10" y1="50" x2="90" y2="50" stroke="white" stroke-width="7px" />
             </svg>
           </div>
-          <div
-            class="window-control fullscreen-toggle"
-            @click="toggleFullScreen()"
-          >
+          <div class="window-control fullscreen-toggle" @click="toggleFullScreen()">
             <fa :icon="['far', 'square']" />
           </div>
           <div class="window-control close" @click="close()">
@@ -60,280 +40,280 @@
   </div>
 </template>
 <script lang="js">
+import { mapActions } from 'pinia';
+
 export default {
-    name: 'Window',
-    data() {
-        return {
-            currentDrag: false,
-            x: 0,
-            y: 0,
-            startClientDifferenceX: 0,
-            startClientDifferenceY: 0,
-            loaded: false,
-            isFullScreen: false,
-            lastX: 0,
-            lastY: 0,
-            lastWidth: 0,
-            lastHeight: 0,
-            height: 0,
-            width: 0,
-            minWidth: 200,
-            minHeight: 200,
-            zIndex: 1,
-            // Resize the width from the right side
-            resizingWR: false,
-            // Resize the height from the bottom
-            resizingHB: false,
-            // Resize the width from the left side
-            resizingWL: false,
-            // Resize the height from the top
-            resizingHT: false,
-            
-            willMinimize: false,
-            isSmall:false,
+  name: 'Window',
+  data() {
+    return {
+      currentDrag: false,
+      x: 0,
+      y: 0,
+      startClientDifferenceX: 0,
+      startClientDifferenceY: 0,
+      loaded: false,
+      isFullScreen: false,
+      lastX: 0,
+      lastY: 0,
+      lastWidth: 0,
+      lastHeight: 0,
+      height: 0,
+      width: 0,
+      minWidth: 200,
+      minHeight: 200,
+      zIndex: 1,
+      // Resize the width from the right side
+      resizingWR: false,
+      // Resize the height from the bottom
+      resizingHB: false,
+      // Resize the width from the left side
+      resizingWL: false,
+      // Resize the height from the top
+      resizingHT: false,
+
+      willMinimize: false,
+      isSmall: false,
+    }
+  },
+  props: {
+    id: {
+      type: Number,
+      default: 0,
+    },
+    title: {
+      type: String,
+      default: 'Window 1',
+    },
+    content: {
+      type: String,
+      default: '<div>Window 1 content</div>',
+    },
+    size: {
+      type: Object,
+      default: () => ({
+        width: 200,
+        height: 200,
+        minWidth: 200,
+        minHeight: 100,
+      }),
+    },
+    pos: {
+      type: Object,
+      default: () => ({
+        x: 0,
+        y: 0,
+      }),
+    },
+    iconPath: {
+      type: String,
+      default: '',
+    },
+    isMinimized: {
+      type: Boolean,
+      default: false,
+    },
+    isFocused: {
+      type: Boolean,
+      default: false,
+    },
+    isDraggable: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  mounted() {
+    // on mouse up
+    if (!this.loaded) {
+      this.width = this.size.width
+      this.height = this.size.height
+      document.addEventListener('mouseup', this.onMouseUp);
+
+      document.addEventListener('mousemove', this.onMouseMove);
+      window.addEventListener('resize', this.onResize);
+      this.loaded = true;
+    }
+
+
+  },
+  // watch size changes
+  watch: {
+    size: {
+      handler(val) {
+        this.width = val.width
+        this.height = val.height
+        this.minWidth = val.minWidth
+        this.minHeight = val.minHeight
+      },
+      deep: true,
+    },
+    pos: {
+      handler(val) {
+        this.x = val.x
+        this.y = val.y
+      },
+      deep: true,
+    },
+    isMinimized: {
+      handler(val) {
+        if (val) {
+          setTimeout(() => {
+            this.willMinimize = false;
+          }, 500);
         }
+      },
+      deep: true,
     },
-    props: {
-        id: {
-            type: Number,
-            default: 0,
-        },
-        title: {
-            type: String,
-            default: 'Window 1',
-        },
-        content: {
-            type: String,
-            default: '<div>Window 1 content</div>',
-        },
-        size: {
-            type: Object,
-            default: () => ({
-                width: 200,
-                height: 200,
-                minWidth: 200,
-                minHeight: 100,
-            }),
-        },
-        pos: {
-            type: Object,
-            default: ()=>({
-                x: 0,
-                y: 0,
-            }),
-        },
-        iconPath: {
-            type: String,
-            default: '',
-        },
-        isMinimized: {
-            type: Boolean,
-            default: false,
-        },
-        isFocused: {
-            type: Boolean,
-            default: false,
-        },
-        isDraggable: {
-            type: Boolean,
-            default: true,
-        },
-    },
-    mounted() {
-        // on mouse up
-        if (!this.loaded){
-            this.width = this.size.width
-            this.height = this.size.height
-        document.addEventListener('mouseup', this.onMouseUp);
+  },
 
-        document.addEventListener('mousemove', this.onMouseMove);
-        window.addEventListener('resize', this.onResize);
-        this.loaded = true;
+  methods: {
+    ...mapActions(useWindowsStore, ['closeWindow']),
+    onMouseUp(e) {
+      this.currentDrag = false;
+      if (this.resizingHB || this.resizingWR) {
+        if (this.resizingHB && this.resizingWR ||
+          this.resizingHB && this.resizingWL
+        ) {
+          // set mouse cursor has default
+          document.body.style.cursor = 'default';
+        }
+        this.resizingHB = false;
+        this.resizingWR = false;
+      }
+    },
+    setItCurrentDrag(e) {
+      this.currentDrag = true;
+
+      // get rectangle of window
+      let rect = this.$refs.window.getBoundingClientRect();
+      this.x = rect.left;
+      this.y = rect.top;
+      this.startClientDifferenceX = e.clientX - rect.left;
+      this.startClientDifferenceY = e.clientY - rect.top;
+
+    },
+    onMouseMove(e) {
+      if (this.currentDrag) {
+        let x = (e.clientX - this.startClientDifferenceX);
+        let y = (e.clientY - this.startClientDifferenceY);
+        if (x < 0) {
+          x = 0;
+        }
+        if (y < 0) {
+          y = 0;
+        }
+        if (x > window.innerWidth - this.width) {
+          x = window.innerWidth - this.width;
+        }
+        if (y > window.innerHeight - 85) {
+          y = window.innerHeight - 85;
+        }
+        this.x = x;
+        this.y = y;
+        // if is fullscreen than, disable fullscreen
+        if (this.isFullScreen) {
+          this.toggleFullScreen();
+          // startClientDifferenceX half of window width
+          this.startClientDifferenceX = this.width / 2;
+          this.startClientDifferenceY = 5;
         }
 
+      }
+      if (this.resizingWR && (e.clientX - this.x) > this.size.minWidth) {
+        this.width = e.clientX - this.x;
+      }
+      if (this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
+        this.height = e.clientY - this.y;
+      }
 
+
+      if (this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
+        this.height = e.clientY - this.y;
+      }
+      this.onResize();
     },
-    // watch size changes
-    watch: {
-        size: {
-            handler(val) {
-                this.width = val.width
-                this.height = val.height
-                this.minWidth = val.minWidth
-                this.minHeight = val.minHeight
-            },
-            deep: true,
-        },
-        pos: {
-            handler(val) {
-                this.x = val.x
-                this.y = val.y
-            },
-            deep: true,
-        },
-        isMinimized: {
-            handler(val) {
-                if (val) {
-                    setTimeout(() => {
-                        this.willMinimize = false;
-                    }, 500);
-                }
-            },
-            deep: true,
-        },
+    onResize() {
+      if (this.width < 600 || window.innerWidth < 600) {
+        this.isSmall = true;
+      } else {
+        this.isSmall = false;
+      }
     },
-
-    methods: {
-        onMouseUp(e) {
-            this.currentDrag = false;
-            if (this.resizingHB || this.resizingWR) {
-                if (this.resizingHB && this.resizingWR || 
-                    this.resizingHB && this.resizingWL
-                ) {
-                // set mouse cursor has default
-                document.body.style.cursor = 'default';
-            }
-                this.resizingHB = false;
-                this.resizingWR = false;
-            }
-        },
-        setItCurrentDrag(e) {
-            this.currentDrag = true;
-
-            // get rectangle of window
-            let rect = this.$refs.window.getBoundingClientRect();
-            this.x = rect.left;
-            this.y = rect.top;
-            this.startClientDifferenceX = e.clientX - rect.left;
-            this.startClientDifferenceY = e.clientY - rect.top;
-
-        },
-        onMouseMove(e) {
-            if (this.currentDrag) {
-                let x = (e.clientX - this.startClientDifferenceX);
-                let y =(e.clientY - this.startClientDifferenceY);
-                if (x < 0) {
-                    x = 0;
-                }
-                if (y < 0) {
-                    y = 0;
-                }
-                if (x > window.innerWidth - this.width) {
-                    x = window.innerWidth - this.width;
-                }
-                if (y > window.innerHeight - 85) {
-                    y = window.innerHeight - 85;
-                }
-                this.x = x;
-                this.y = y;
-                // if is fullscreen than, disable fullscreen
-                if (this.isFullScreen) {
-                    this.toggleFullScreen();
-                    // startClientDifferenceX half of window width
-                    this.startClientDifferenceX = this.width / 2;
-                    this.startClientDifferenceY = 5;
-                }
-
-            }
-            if(this.resizingWR && (e.clientX - this.x) > this.size.minWidth) {
-                this.width = e.clientX - this.x;
-            }
-            if(this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
-                this.height = e.clientY - this.y;
-            }
-
-
-            if(this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
-                this.height = e.clientY - this.y;
-            }
-            this.onResize();
-        },
-        onResize(){
-          if (this.width < 600 || window.innerWidth < 600) {
-                    this.isSmall = true;
-            } else {
-                    this.isSmall = false;
-                }
-        },
-        close() {
-            console.log('close', this.id);
-             this.$store.commit('windows/closeWindow', this.id);
-        },
-        toggleFullScreen() {
-            console.log('toggleFullScreen', this.id);
-            this.$refs.window.classList.toggle('fullscreen');
-            // add transition class
-            this.$refs.window.classList.add('transition');
-
-            if (this.isFullScreen) {
-                this.width = this.lastWidth;
-                this.height = this.lastHeight;
-                this.x = this.lastX;
-                this.y = this.lastY;
-            } else {
-                this.lastX = this.x;
-                this.lastY = this.y;
-                this.lastWidth = this.width;
-                this.lastHeight = this.height;
-                this.width = window.innerWidth;
-                this.height = window.innerHeight;
-                this.x = 0;
-                this.y = 0;
-
-            }
-
-            // remove transition class
-            setTimeout(() => {
-                this.$refs.window.classList.remove('transition');
-            }, 200);
-            this.isFullScreen = !this.isFullScreen;
-
-            if (window.innerWidth < 600) {
-                    this.isSmall = true;
-                } else {
-                    this.isSmall = false;
-                }
-        },
-        minimize() {
-            this.willMinimize = true;
-            console.log('minimize', this.id);
-            this.$store.commit('windows/minimizeWindow', this.id);
-        },
-        resizeStart(e) {
-            // if the mouse is at the right edge of the window
-            this.resizingWR = (e.clientX > this.x + this.width - 10);
-            // if the mouse is at the left edge of the window
-            this.resizingWL = (e.clientX < this.x + 10);
-
-
-            // if the mouse is at the bottom edge of the window
-            this.resizingHB = (e.clientY > this.y + this.height - 10);
-            // if the mouse is at the top edge of the window
-            //this.resizingHT = (e.clientY < this.y + 10);
-
-            if (this.resizingHB && this.resizingWR) {
-                // set mouse cursor has resize
-                document.body.style.cursor = 'nwse-resize';
-            } else if (this.resizingHB && this.resizingWL) {
-                // set mouse cursor has resize
-                document.body.style.cursor = 'nesw-resize';
-            } else if (this.resizingHT && this.resizingWR) {
-                // set mouse cursor has resize
-                document.body.style.cursor = 'nesw-resize';
-            } else if (this.resizingHT && this.resizingWL) {
-                // set mouse cursor has resize
-                document.body.style.cursor = 'nwse-resize';
-            }
-
-            //this.resizing = true;
-        },
-        onWindowClick(e) {
-            if (!this.willMinimize){
-                this.$store.commit('windows/setActiveWindow', this.id);
-                this.willMinimize = false;
-            }
-        },
+    close() {
+      this.closeWindow(this.id);
+      this.$emit('closed-window', this.id);
     },
+    toggleFullScreen() {
+      this.$refs.window.classList.toggle('fullscreen');
+      // add transition class
+      this.$refs.window.classList.add('transition');
+
+      if (this.isFullScreen) {
+        this.width = this.lastWidth;
+        this.height = this.lastHeight;
+        this.x = this.lastX;
+        this.y = this.lastY;
+      } else {
+        this.lastX = this.x;
+        this.lastY = this.y;
+        this.lastWidth = this.width;
+        this.lastHeight = this.height;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.x = 0;
+        this.y = 0;
+
+      }
+
+      // remove transition class
+      setTimeout(() => {
+        this.$refs.window.classList.remove('transition');
+      }, 200);
+      this.isFullScreen = !this.isFullScreen;
+
+      if (window.innerWidth < 600) {
+        this.isSmall = true;
+      } else {
+        this.isSmall = false;
+      }
+    },
+    minimize() {
+      this.willMinimize = true;
+      this.setMinimized(this.id, true);
+    },
+    resizeStart(e) {
+      // if the mouse is at the right edge of the window
+      this.resizingWR = (e.clientX > this.x + this.width - 10);
+      // if the mouse is at the left edge of the window
+      this.resizingWL = (e.clientX < this.x + 10);
+
+
+      // if the mouse is at the bottom edge of the window
+      this.resizingHB = (e.clientY > this.y + this.height - 10);
+      // if the mouse is at the top edge of the window
+      //this.resizingHT = (e.clientY < this.y + 10);
+
+      if (this.resizingHB && this.resizingWR) {
+        // set mouse cursor has resize
+        document.body.style.cursor = 'nwse-resize';
+      } else if (this.resizingHB && this.resizingWL) {
+        // set mouse cursor has resize
+        document.body.style.cursor = 'nesw-resize';
+      } else if (this.resizingHT && this.resizingWR) {
+        // set mouse cursor has resize
+        document.body.style.cursor = 'nesw-resize';
+      } else if (this.resizingHT && this.resizingWL) {
+        // set mouse cursor has resize
+        document.body.style.cursor = 'nwse-resize';
+      }
+
+      //this.resizing = true;
+    },
+    onWindowClick(e) {
+      this.setActiveWindow(this.id);
+    },
+    ...mapActions(useWindowsStore, ['setMinimized', 'setWindow', 'setActiveWindow']),
+    
+  },
 }
 </script>
 <style lang="scss">
@@ -349,6 +329,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   animation: fadeIn 0.2s ease-in-out;
+
   &.transition {
     transition: all 0.2s ease-in-out;
   }
@@ -356,33 +337,42 @@ export default {
   &.fullscreen {
     height: $height-no-bottom-nav !important;
     border-radius: 0;
+
     .window-header {
       border-radius: 0;
+
       .window-controls .window-controls-right .window-control:last-child {
         border-top-right-radius: 0;
       }
     }
   }
+
   &.focused {
     z-index: 3;
   }
+
   &.minimized {
     animation: minimizeAnimation 0.2s ease-in-out;
     opacity: 0;
+
     &:not(.willMinimize) {
       display: none;
     }
   }
+
   // on screen mobile, force fullscreen
   @media (max-width: 768px) {
     width: 100% !important;
     height: $height-no-bottom-nav !important;
     border-radius: 0;
+
     .window-header {
       border-radius: 0;
+
       .window-controls .window-controls-right .window-control:last-child {
         border-top-right-radius: 0;
       }
+
       .fullscreen-toggle {
         display: none !important;
       }
@@ -404,6 +394,7 @@ export default {
       padding: 10px;
       font-size: 13px;
       color: $txt-color;
+
       .window-favicon {
         width: auto;
         height: 15px;
@@ -411,10 +402,12 @@ export default {
         background-color: $bg-color-1;
       }
     }
+
     .window-controls {
       display: flex;
       align-items: center;
       justify-content: flex-end;
+
       .window-controls-right {
         display: flex;
         height: 100%;
@@ -422,6 +415,7 @@ export default {
 
         align-items: center;
         justify-content: flex-start;
+
         .window-control {
           display: flex;
           align-items: center;
@@ -433,17 +427,21 @@ export default {
           color: lightgrey;
           transition: $btn-transition;
           cursor: pointer;
+
           &:hover {
             background-color: $hover-btn-color;
+
             &.close {
               background-color: $danger-color;
             }
           }
+
           svg {
             width: 10px;
             height: 100%;
             color: $txt-color;
           }
+
           &:last-child {
             border-top-right-radius: 5px;
           }
@@ -451,12 +449,14 @@ export default {
       }
     }
   }
+
   .window-body {
     padding: 0 4px 0 3px;
     cursor: e-resize;
-    height: 100%;
+    height: calc(100% - 40px);
     width: 100%;
     color: $txt-color;
+
     .window-content {
       height: 100%;
       width: 100%;
@@ -464,27 +464,32 @@ export default {
       cursor: default;
     }
   }
+
   .window-footer {
     width: 100%;
     height: 4px;
     cursor: s-resize;
   }
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: scale(0.8) translateY(100px);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
   }
 }
+
 @keyframes minimizeAnimation {
   from {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+
   to {
     opacity: 0;
     transform: scale(0.8) translateY(100px);

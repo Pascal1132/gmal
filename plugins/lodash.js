@@ -1,8 +1,10 @@
-import Vue from 'vue'
-import '~/components/programs/tetris/util/filters.mjs'
-import _ from 'lodash'
-import { lodashMixin } from '~/components/programs/tetris/util/util.mjs'
+import { defineNuxtPlugin } from "#app";
+import lodash from "lodash";
 
-_.mixin(lodashMixin)
-
-Vue.use(lodashMixin, { name: '_', _ })
+export default defineNuxtPlugin(() => {
+  return {
+    provide: {
+      _: lodash
+    }
+  };
+});

@@ -18,10 +18,7 @@
                 </div>
             </div>
             <div class="menu-list" :class="{ search: search !== '' }">
-                <div class="menu-item" v-for="(menu, index) in menuItems" :key="index" @click="() => {
-                    $store.dispatch('windows/createBaseWindow', menu.program);
-                    $emit('toggle-menu')
-                }">
+                <div class="menu-item" v-for="(menu, index) in menuItems" :key="index" @click="onMenuItemClick(menu)">
                     <img :src="menu.imagePath" />
                     <span>{{ menu.title }}</span>
                 </div>
@@ -31,15 +28,18 @@
                     <img :src="loggedInUserPicture" format="webp" />
                     <span>{{ loggedInUserName }}</span>
                 </div>
-                <!--<div class="shutdown-btn" @click="togglePopup">
+                <div class="shutdown-btn" @click="togglePopup">
           <fa :icon="['fas', 'power-off']" />
-        </div>-->
+        </div>
             </div>
         </div>
     </div>
 </template>
 <script lang="js">
 import { mainMenu } from '~/assets/config/menus.js'
+import { mapActions} from 'pinia'
+import { useWindowsStore } from '~/store/windows.js'
+
 export default {
     name: 'Menu',
     props: {
@@ -60,6 +60,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(useWindowsStore, ['createBaseWindow']),
         togglePopup(e) {
             this.showPopup = !this.showPopup;
             if (e) {
@@ -78,7 +79,11 @@ export default {
             }
         },
         loginClick() {
-            this.$store.dispatch('windows/createBaseWindow', ['ProgSettings', { defaultTab: 'account' }]);
+            this.createBaseWindow('ProgSettings', { defaultTab: 'account' });
+            this.$emit('toggle-menu', false);
+        },
+        onMenuItemClick(menu) {
+            this.createBaseWindow(menu.program);
             this.$emit('toggle-menu', false);
         },
     },
@@ -91,8 +96,6 @@ export default {
                 } else if (!this.$el.contains(e.target) && this.showMenu) {
                     this.$emit('toggle-menu', false);
                 }
-
-
             });
             // prevent propagation of click event
             this.$el.addEventListener('click', (e) => {
@@ -108,17 +111,22 @@ export default {
     // watch showMenu if is true, than focus the search-bar input
     watch: {
         showMenu(val) {
-            if (val) {
-                this.$refs.menu.querySelector('.search-bar input').focus();
+            // if is not in mobile mode
+            if (window.innerWidth > 768) {
+                if (val) {
+                    this.$nextTick(() => {
+                        this.$refs.menu.querySelector('input').focus();
+                    });
+                }
             }
         },
     },
     computed: {
         loggedInUserName() {
-            return this.$auth.user?.name || "Utilisateur de G-mal";
+            return "Utilisateur de G-mal";
         },
         loggedInUserPicture() {
-            return this.$auth.user?.picture?.data?.url || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+            return  "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
         },
         menuItems() {
             return mainMenu.filter(item => {

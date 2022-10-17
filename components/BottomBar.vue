@@ -6,9 +6,7 @@
                 <div class="toggle-menu icon" @click="toggleMenu()">
                     <fa :icon="['fab', 'windows']" />
                 </div>
-                <div class="icon" v-for="(menu, index) in bottomLeftMenu" :key="index" @click="() => {
-                        $store.dispatch('windows/createBaseWindow', menu.program);
-                    }">
+                <div class="icon" v-for="(menu, index) in bottomLeftMenu" :key="index" @click="createBaseWindow(menu.program)">
                     <img :src="menu.imagePath" format="webp" />
                 </div>
                 <div class="label" v-for="window in windows" :key="window.id" @click="onWindowClick(window.id)"
@@ -31,6 +29,8 @@
 </template>
 <script lang="js">
 import { bottomBarMenu } from '~/assets/config/menus.js'
+import { useWindowsStore } from '~/store/windows.js'
+import { mapActions, mapState } from 'pinia'
 export default {
     name: 'BottomBar',
     data() {
@@ -45,6 +45,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(useWindowsStore, ['openWindow', 'setActiveWindow', 'createBaseWindow', 'setMinimized']),
         toggleMenu() {
             this.$emit('toggle-menu')
         },
@@ -68,9 +69,10 @@ export default {
                 date: year + '-' + month + '-' + day,
             }
         },
-        async onWindowClick(id) {
-            this.$store.commit('windows/setActiveWindow', id);
-        }
+        onWindowClick(id) {
+             this.setActiveWindow(id);
+             this.setMinimized(id, false);
+        },
     },
 
     mounted() {
@@ -93,13 +95,8 @@ export default {
         }
     },
     computed: {
-        windows() {
-            return this.$store.state.windows.windows;
-        },
-        activeWindowId() {
-            return this.$store.state.windows.activeWindow;
-        },
-    }
+        ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
+    },
 }
 </script>
 <style lang="scss">
