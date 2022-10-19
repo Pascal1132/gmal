@@ -1,25 +1,32 @@
 <template>
-  <div ref="terminal" id="terminal" :class="[currentTheme.interface]">
+  <div ref="terminal" id="terminal" :class="[currentTheme.interface]" @click="focusDummyInput()">
     <div class="body" ref="terminalBody">
       <p>Welcome to GMalTerminal!</p>
       <p></p>
       <p>Enter a command to get started.</p>
       <p></p>
-      <p style="color:gray">Tap : help to see all commands.</p>
+      <p style="color: gray">Tap : help to see all commands.</p>
       <p></p>
-      <p v-for="(message, index) in notHiddenMessages">
-        <span class="prefix" v-if="message.prefix">{{message.prefix}}</span>
-        <span class="message" v-if="message.body">{{message.body}}</span>
+      <p v-for="(message, index) in notHiddenMessages" :key="index">
+        <span class="prefix" v-if="message.prefix">{{ message.prefix }}</span>
+        <span class="message" v-if="message.body">{{ message.body }}</span>
         <span class="message-html" v-if="message.html" v-html="message.html"></span>
       </p>
-      <p v-if="showInput"><span class="prefix">{{currentPrefix}}</span><span
-          class="message">{{currentCommand}}</span><span id="blink-indicator"
-          :class="{stopAnimation: (stopBlinkAnimation || !isCurrentActiveWindow)}"></span></p>
+      <p v-if="showInput">
+        <span class="prefix">{{ currentPrefix }}</span><span class="message">{{ startPartOfCurrentCommand }}</span><span id="blink-indicator" :class="{
+            stopAnimation: stopBlinkAnimation || !(isCurrentActiveWindow),
+          }">{{middlePartOfCurrentCommand}}</span>
+          <span>{{ endPartOfCurrentCommand }}</span>
+      </p>
+      <input
+          type="search" ref="dummyInput" @input="onInput" id="dummyInput" :value="currentCommand" @blur="onBlur"
+          v-on:keyup.enter="onSubmit" @keydown.up="onUp" @keydown.down="onDown" @keydown="updateSelectionStart()" @keyup="updateSelectionStart()"/>
     </div>
+
   </div>
 </template>
 <script lang="js">
-import { mapState } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import CommandHandler from './terminal/CommandHandler.js';
 
 export default {
@@ -35,6 +42,8 @@ export default {
       stopBlinkAnimation: false,
       currentPrefix: 'root@g-mal.ca:~/# ',
       indexArrowSelection: -1,
+      inputSelectionStart: 0,
+      isMobileDevice: false,
     }
   },
   props: {
@@ -44,10 +53,93 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useWindowsStore, ['setActiveWindow']),
     async newTab() {
       // random id
       const id = Math.floor(Math.random() * 100000000);
       this.tabs.push(id);
+    },
+    focusDummyInput() {
+      this.$refs.dummyInput.focus();
+      this.stopBlinkAnimation = false;
+    },
+    async onSubmit() {
+     this.showInput = false;
+      this.messages = await CommandHandler.handleCommand(this.currentCommand, this.messages, this.currentPrefix);
+      this.currentCommand = '';
+      this.showInput = true;
+      this.$nextTick(() => {
+        this.$refs.terminalBody.scrollTop = this.$refs.terminalBody.scrollHeight;
+        
+      });
+      this.indexArrowSelection = -1;
+      this.focusDummyInput();
+    },
+    onInput(e) {
+      this.stopBlinkAnimation = true;
+      this.currentCommand = e.target.value;
+      const prevCurrentCommandString = this.currentCommand;
+
+      this.inputSelectionStart = e.target.selectionStart;
+      setTimeout(() => {
+        if (this.currentCommand == prevCurrentCommandString) {
+          this.stopBlinkAnimation = false;
+        }
+      }, 500);
+    },
+    onUp(e) {
+      // if device is not a mobile device
+      if (this.isMobileDevice) return;
+      if (!this.isCurrentActiveWindow) return;
+      this.stopBlinkAnimation = false;
+      e.preventDefault();
+
+      if (this.currentCommand == '') {
+        this.prevCurrentCommandString = '';
+      }
+      if ((this.indexArrowSelection + 1) < this.messages.length) {
+        const filteredMessages = this.messages.filter((message) => message.prefix);
+        if (filteredMessages.length - 1 - (this.indexArrowSelection + 1) >= 0) {
+          this.indexArrowSelection++;
+          this.currentCommand = filteredMessages[filteredMessages.length - 1 - this.indexArrowSelection].body;
+        }
+      }
+      this.inputSelectionStart = e.target.selectionStart;
+
+    },
+    onDown(e) {
+      if (this.isMobileDevice) return;
+      if (!this.isCurrentActiveWindow) return;
+      this.stopBlinkAnimation = false;
+      e.preventDefault();
+      if (this.indexArrowSelection > 0) {
+        this.indexArrowSelection--;
+        const filteredMessages = this.messages.filter((message) => message.prefix);
+        if (filteredMessages.length - 1 - this.indexArrowSelection >= 0) {
+          const tempCommand = filteredMessages[filteredMessages.length - 1 - this.indexArrowSelection].body;
+          this.currentCommand = tempCommand ? tempCommand : '';
+        }
+      }
+      // if index arrow selection is equal to 0, than 
+      else if (this.indexArrowSelection == 0) {
+        this.currentCommand = this.prevCurrentCommandString;
+        this.indexArrowSelection = -1;
+      }
+      this.inputSelectionStart = e.target.selectionStart;
+
+    },
+    updateSelectionStart() {
+      this.stopBlinkAnimation = true;
+      this.inputSelectionStart = this.$refs.dummyInput.selectionStart;
+      const prevInputSelectionStart = this.inputSelectionStart;
+      setTimeout(() => {
+        if (this.inputSelectionStart == prevInputSelectionStart) {
+          this.stopBlinkAnimation = false;
+        }
+      }, 500);
+    },
+    onBlur() {
+      this.setActiveWindow(null);
     },
   },
   mounted() {
@@ -62,72 +154,9 @@ export default {
       },
       iconPath: 'images/programs/terminal.ico',
     });
-    // listen to keydown
-    document.addEventListener('keydown', async (e) => {
-      if (!this.isCurrentActiveWindow) return;
-      e.preventDefault();
-      this.stopBlinkAnimation = true;
-      if (e.key == 'Enter') {
-        this.showInput = false;
-        this.messages = await CommandHandler.handleCommand(this.currentCommand, this.messages, this.currentPrefix);
-        this.currentCommand = '';
-        this.showInput = true;
-        this.$nextTick(() => {
-          this.$refs.terminalBody.scrollTop = this.$refs.terminalBody.scrollHeight;
-        });
-
-        //force scroll to bottom to parent of terminal
-      } else if (e.key == 'Backspace') {
-        this.currentCommand = this.currentCommand.slice(0, -1);
-      } else {
-        // check if the key is a letter or number
-        if (e.key.length == 1) {
-          this.currentCommand += e.key;
-        }
-        // If the key is a space or a period, add it
-        if (e.key == ' ' || e.key == '.') {
-          this.currentCommand += e.key;
-        }
-
-        // If it is an arrow key, take the previous command
-        if (e.key == 'ArrowUp') {
-          // take the indexArrowSelection and get the command from the messages with a prefix
-          if ((this.indexArrowSelection + 1) < this.messages.length) {
-            const filteredMessages = this.messages.filter((message) => message.prefix);
-            if (filteredMessages.length - 1 - (this.indexArrowSelection + 1) >= 0) {
-              this.indexArrowSelection++;
-              this.currentCommand = filteredMessages[filteredMessages.length - 1 - this.indexArrowSelection].body;
-            }
-          }
-        }
-        // If it is an arrow key down
-        if (e.key == 'ArrowDown') {
-          if (this.indexArrowSelection > 0) {
-            this.indexArrowSelection--;
-            const filteredMessages = this.messages.filter((message) => message.prefix);
-            if (filteredMessages.length - 1 - this.indexArrowSelection >= 0) {
-              const tempCommand = filteredMessages[filteredMessages.length - 1 - this.indexArrowSelection].body;
-              this.currentCommand = tempCommand ? tempCommand : '';
-            }
-          }
-          // if index arrow selection is equal to 0, than 
-          else if (this.indexArrowSelection == 0) {
-            this.currentCommand = this.prevCurrentCommandString;
-            this.indexArrowSelection = -1;
-          }
-        }
-      }
-      const prevCurrentCommandString = this.currentCommand;
-      setTimeout(() => {
-        if (this.currentCommand == prevCurrentCommandString) {
-          this.stopBlinkAnimation = false;
-        }
-      }, 500);
-    });
-  },
-  // Destroy, remove listener
-  beforeDestroy() {
-    document.removeEventListener('keydown');
+    // focus on input
+    this.$refs.dummyInput.focus();
+    this.isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   },
   computed: {
     ...mapState(useThemeStore, ['currentTheme']),
@@ -141,7 +170,24 @@ export default {
     notHiddenMessages() {
       return this.messages.filter((message) => !message.hidden);
     },
-  }
+    startPartOfCurrentCommand() {
+      return this.currentCommand.substring(0, this.inputSelectionStart);
+    },
+    endPartOfCurrentCommand() {
+      return this.currentCommand.substring(this.inputSelectionStart + 1, this.currentCommand.length);
+    },
+    middlePartOfCurrentCommand() {
+      return this.currentCommand.substring(this.inputSelectionStart, this.inputSelectionStart + 1);
+    },
+  },
+  // watch on isCurrentActiveWindow, if it is true, then focus on input
+  watch: {
+    isCurrentActiveWindow() {
+      if (this.isCurrentActiveWindow) {
+        this.focusDummyInput();
+      }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -187,11 +233,9 @@ export default {
 
         &.active {
           background: var(--tab-active-bg);
-
         }
       }
     }
-
   }
 
   .body {
@@ -204,7 +248,7 @@ export default {
     flex-direction: column;
     overflow: scroll;
 
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
 
     p {
       padding: 0;
@@ -222,8 +266,12 @@ export default {
         animation: blink 1s infinite;
         height: 15px;
         display: inline-block;
+        vertical-align: middle;
+        margin-top: -3px;
         width: 9px;
         background: #aaa;
+        color: #aaa;
+
 
         &.stopAnimation {
           animation: none;
@@ -232,22 +280,41 @@ export default {
 
       @keyframes blink {
         0% {
-          opacity: 0;
+          background: rgba(170, 170, 170, 0);
+        color: #fff;
+
         }
 
         49% {
-          opacity: 0;
+          background: rgba(170, 170, 170, 0);
+        color: #fff;
+
         }
 
         50% {
-          opacity: 1;
+          background: #aaa;
+        color: #aaa;
+
         }
 
         100% {
-          opacity: 1;
+          background: #aaa;
+        color: #aaa;
+
         }
       }
     }
+  }
+
+  #dummyInput {
+    opacity: 0;
+    -webkit-transition: 200ms;
+    -moz-transition: 200ms;
+    -ms-transition: 200ms;
+    -o-transition: 200ms;
+    transition: 200ms;
+    position: absolute;
+    user-select: none;
   }
 }
 </style>
