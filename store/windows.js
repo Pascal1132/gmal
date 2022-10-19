@@ -12,13 +12,16 @@ export const useWindowsStore = defineStore({
         getActiveWindowId: (state) => state.activeWindowId,
     },
     actions: {
-        createBaseWindow(params) {
+        createBaseWindow(params, props) {
             // if params is an array then get the first element for the component
             let windowParams = {};
             let component = params;
             if (Array.isArray(params)) {
                 component = params.length > 0 ? params[0] : params;
                 windowParams = params.length > 1 ? params[1] : {};
+            }
+            if (typeof props === "object") {
+                windowParams = { ...windowParams, ...props };
             }
             const id = Math.floor(Math.random() * 100000000);
             const data = {

@@ -333,6 +333,15 @@ export default {
           .nav-header-account-name {
             display: none;
           }
+          .nav-header-account-avatar {
+            width: 30px;
+            height: 30px;
+
+            img {
+              width: 30px;
+              height: 30px;
+            }
+          }
         }
 
         .nav-header-search {

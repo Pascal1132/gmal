@@ -7,7 +7,7 @@ html {
   font-family: Arial, Helvetica, sans-serif;
   overflow: hidden;
 }
-* {
+*:not(input, textarea) {
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;

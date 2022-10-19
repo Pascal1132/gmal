@@ -45,7 +45,7 @@
         <div class="accordion-content" :class="{ active: currentAccordion == 'background-picture' }">
           <label class="file-btn">
             <span>Téléverser votre image</span>
-            <input type="file" @change="changeBackgroundPicture" />
+            <input type="file" @change="changeBackgroundPicture"  ref="bgImageInput"/>
           </label>
         </div>
       </li>
@@ -65,7 +65,7 @@
           <div class="color-picker">
             <label>
               <span>Couleur d'accent</span>
-              <input type="color" @change="changeAccentColor" />
+              <input type="color" @change="changeAccentColor"/>
             </label>
           </div>
           <!-- Interface (light or dark) -->
@@ -96,7 +96,11 @@ export default {
   },
   methods: {
     changeTheme(theme) {
-      this.currentTheme = theme;
+      // clone theme object
+      const newTheme = JSON.parse(JSON.stringify(theme))
+      this.currentTheme = newTheme;
+      //reset the background picture
+      this.$refs.bgImageInput.value = null;
     },
     clickAccordionHeader(name) {
       if (this.currentAccordion == name) {

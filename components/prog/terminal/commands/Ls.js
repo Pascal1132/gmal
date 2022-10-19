@@ -1,7 +1,7 @@
 import ACommand from "./ACommand";
 
 export default class Ls extends ACommand{
-    execute(str) {
+    execute(args) {
         // do something
     }
 }

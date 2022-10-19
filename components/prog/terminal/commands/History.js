@@ -1,7 +1,7 @@
 import ACommand from './ACommand';
 
 export default class History extends ACommand{
-    execute(str) {
+    execute(args) {
         // List all commands
         this.print("Latest commands: \\n");
 

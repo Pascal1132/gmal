@@ -9,7 +9,7 @@
       minimized: isMinimized,
       willMinimize: willMinimize,
       focused: isFocused,
-    }" @click.prevent="onWindowClick">
+    }" @click="onWindowClick">
     <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
         <img v-if="iconPath" :src="iconPath" class="window-favicon" />
@@ -72,7 +72,6 @@ export default {
       resizingHT: false,
 
       willMinimize: false,
-      isSmall: false,
     }
   },
   props: {
@@ -129,7 +128,6 @@ export default {
       document.addEventListener('mouseup', this.onMouseUp);
 
       document.addEventListener('mousemove', this.onMouseMove);
-      window.addEventListener('resize', this.onResize);
       this.loaded = true;
     }
 
@@ -229,14 +227,6 @@ export default {
       if (this.resizingHB && (e.clientY - this.y) > this.size.minHeight) {
         this.height = e.clientY - this.y;
       }
-      this.onResize();
-    },
-    onResize() {
-      if (this.width < 600 || window.innerWidth < 600) {
-        this.isSmall = true;
-      } else {
-        this.isSmall = false;
-      }
     },
     close() {
       this.closeWindow(this.id);
@@ -270,11 +260,6 @@ export default {
       }, 200);
       this.isFullScreen = !this.isFullScreen;
 
-      if (window.innerWidth < 600) {
-        this.isSmall = true;
-      } else {
-        this.isSmall = false;
-      }
     },
     minimize() {
       this.willMinimize = true;
@@ -314,6 +299,11 @@ export default {
     ...mapActions(useWindowsStore, ['setMinimized', 'setWindow', 'setActiveWindow']),
     
   },
+  computed: {
+    isSmall() {
+      return this.width < 600 || window.innerWidth < 600
+    },
+  }
 }
 </script>
 <style lang="scss">

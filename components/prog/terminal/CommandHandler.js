@@ -5,6 +5,7 @@ export default class CommandHandler {
     static async handleCommand(command, messages, prefix) {
         // take the first word of the command
         const commandName = command.split(' ')[0]?.toLowerCase() ?? '';
+        const commandArgs = command.split(' ').slice(1);
         // to lower case
         if (commandName in Commands) {
             messages.push({
@@ -16,7 +17,7 @@ export default class CommandHandler {
              */
             const handler = Commands[commandName].handler;
             const instance = new handler(messages, prefix);
-            await instance.execute(command);
+            await instance.execute(commandArgs);
             return instance.messages;
         } else {
             messages.push({

@@ -2,7 +2,7 @@ import ACommand from './ACommand';
 import {Commands} from '../config';
 
 export default class Help extends ACommand{
-    execute(str) {
+    execute(args) {
         // List all commands
         this.print("Available commands: \\n");
 

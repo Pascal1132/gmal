@@ -9,6 +9,8 @@
 <script lang="js">
 export default {
     name: 'Login',
+    mounted() {
+    },
 }
 </script>
 <style lang="scss" scoped>

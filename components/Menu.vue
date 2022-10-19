@@ -177,6 +177,7 @@ export default {
             padding: 10px;
             border-radius: 3px;
             border-bottom: 2px solid $highlight-color;
+
         }
     }
 

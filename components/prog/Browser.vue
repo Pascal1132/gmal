@@ -35,10 +35,6 @@ export default {
       id: this.windowKey,
       title: 'Chrome',
       isMinimized: false,
-      pos: {
-        x: window.innerWidth / 2 - 300,
-        y: (window.innerHeight > 600 ) ? window.innerHeight / 2 - 300 : 0,
-      },
       size: {
         width: 700,
         height: 500,
