@@ -19,6 +19,8 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.4.3",
+    "firebase": "^9.12.1",
+    "firebase-admin": "^11.2.0",
     "lodash": "^4.17.21",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",

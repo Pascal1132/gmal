@@ -1,36 +1,146 @@
 <template>
   <div class="account">
-    <h3>Votre compte :</h3>
+    
     <!--<div>
-      Connectez-vous avec
-      <button class="facebook-btn" @click="connectWithFacebook" disabled>
-        <fa class="btn-icon" :icon="['fab', 'facebook']" />
-        Facebook
-      </button>
-    </div>-->
-    <pre>La connexion à un compte est présentement en développement</pre>
+      <label>Téléphone </label>
+      <input type="phone" v-model="user.phone" />
+
+      <div v-if="waitingForCode">
+        <label>Code de vérification</label>
+        <input type="text" v-model="user.phoneVerificationCode" />
+        <button @click="verifyCode" class="btn">Vérifier</button>
+      </div>
+    </div>
+    <button @click="signIn" id="recaptcha-container" class="btn">logins</button>
+    <div v-if="firebaseUser">
+      <client-only>
+        <pre>{{ firebaseUser }}</pre>
+      </client-only>
+      <button @click="signOut">Logout</button>
+    </div>
+    <div v-else>Statut: déconnecté</div>-->
+    <div v-if="firebaseUser">
+      <h3>Votre compte :</h3>
+      <pre>{{firebaseUser}}</pre>
+      <button @click="signOut" class="btn">Déconnexion</button>
+    </div>
+    <div v-else class="login-container">
+      <div class="phone-form">
+        <fa class="icon" :icon="['fas', 'phone']" />
+        <input type="phone" id="phone" @input="onPhoneInput" :readonly="waitingForCode" v-model="user.phone"
+          placeholder="Téléphone (+1)" />
+        {{ error.phone }}
+      </div>
+      <button class="btn" v-if="!waitingForCode" @click="signIn" id="recaptcha-container">Se connecter</button>
+      <div class="phone-verification-form" v-if="waitingForCode">
+        <label>Entrer le code</label>
+        <div id="code-input" @click.prevent="onCodeInputClick">
+          <span class="number" v-for="(n, i) in 6" :key="i" :class="{active: (selectionStartInputCodeVerification == i && !isBlured)}">
+            {{phoneVerificationCodeDigits[i] || ''}}
+          </span>
+        </div>
+        {{ error.phoneVerificationCode }}
+        <input id="dummyInputCodeVerification" ref="dummyInputCodeVerification" @input="updateSelectionStart"
+          type="text" maxlength="6" v-model="user.phoneVerificationCode" @focusout="onBlur" @focusin="onFocus">
+      </div>
+    </div>
   </div>
 </template>
 <script lang="js">
+
 export default {
-    name: 'Account',
-    data() {
-        return {
-            user: {
-                username: '',
-                name: '',
-                firstname: '',
-                email: '',
-                birthdate: '',
-            },
-        };
+  name: 'Account',
+  setup() {
+    const firebaseUser = useFirebaseUser();
+
+    return {
+      firebaseUser,
+    };
+  },
+  data() {
+    return {
+      user: {
+        phone: '',
+        phoneVerificationCode: '',
+      },
+      error: {
+        phone: '',
+        phoneVerificationCode: '',
+      },
+      data: {},
+      waitingForCode: false,
+      verifier: null,
+      canLogin: false,
+      selectionStartInputCodeVerification: 0,
+      isBlured: false,
+    };
+  },
+  async mounted() {
+    const { data } = useFetch('/api/animal');
+    this.data = data;
+    if (!this.verifier) {
+      this.verifier = setupVerifier("recaptcha-container");
+    }
+  },
+  methods: {
+    connectWithFacebook() {
     },
-    methods: {
-        connectWithFacebook() {
-        },
-        logoutWithFacebook() {
-        }
+    logoutWithFacebook() {
     },
+    onPhoneInput() {
+      this.error.phone = '';
+
+      if (this.user.phone.length === 10) {
+        this.canLogin = true;
+      }
+    },
+    async signOut() {
+      await signOutUser();
+      this.verifier = setupVerifier("recaptcha-container");
+    },
+    async signIn() {
+      await signInUser(`+1${this.user.phone}`, this.verifier);
+      this.waitingForCode = true;
+    },
+    verifyCode() {
+      window.confirmationResult.confirm(this.user.phoneVerificationCode).then((result) => {
+        this.user = result.user;
+        this.user.selectionStartInputCodeVerification = 0;
+        this.waitingForCode = false;
+        this.user.phoneVerificationCode = '';
+        this.verifier.clear();
+        this.error.phoneVerificationCode = '';
+      }).catch((error) => {
+        this.error.phoneVerificationCode = error.message;
+      });
+    },
+    onCodeInputClick(e) {
+      e.preventDefault();
+      this.$refs.dummyInputCodeVerification.focus();
+    },
+    updateSelectionStart() {
+      const selection = this.$refs.dummyInputCodeVerification.selectionStart;
+      this.selectionStartInputCodeVerification = (selection > 5) ? 5 : selection;
+
+      // check if all digits are numbers
+      const digits = this.user.phoneVerificationCode.split('');
+      const isAllDigits = digits.every(d => !isNaN(d));
+      if (this.user.phoneVerificationCode.length === 6 && isAllDigits) {
+        this.verifyCode();
+      }
+    },
+    onBlur() {
+      this.isBlured = true;
+    },
+    onFocus() {
+      this.isBlured = false;
+    },
+  },
+  computed: {
+    phoneVerificationCodeDigits() {
+      return this.user.phoneVerificationCode.split('');
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -49,90 +159,114 @@ export default {
     margin-bottom: 10px;
   }
 
-  .account-info {
+  .login-container{
     display: flex;
-    flex-direction: column;
-    width: 100%;
+  flex-direction: column;
+  align-items: left;
+  width: 100%;
     height: 100%;
-    padding: 10px;
+  }
+  .phone-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 20px);
+    height: 50px;
+    background-color: $bg-color-2;
+    border-radius: $border-radius-sm;
+    border: 1px solid $border-color;
+    transition: all 0.2s ease-in-out;
+    margin: 5px;
 
-    .account-info-item {
+    overflow: hidden;
+
+    input {
+      border: none;
+      outline: none;
+      width: 100%;
+      background: transparent;
+      padding: 10px;
+      font-size: 15px;
+      color: $txt-color;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      margin-left: 10px;
+      height: 12px;
+
+      overflow: hidden;
+      transform: rotate(90deg);
+    }
+
+    &:focus-within {
+      border: 2px solid $highlight-color;
+      background-color: $bg-color-0;
+    }
+  }
+
+  .phone-verification-form {
+    display: flex;
+    margin: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    #code-input {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       width: 100%;
-      padding: 5px;
 
-      overflow: hidden;
-      .account-info-item-title {
-        font-size: 14px;
-        margin-right: 10px;
-        width: 250px;
-      }
-      .account-info-item-value {
+      .number {
+        height: 50px;
+        width: 50px;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
         display: flex;
-        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        align-items: flex-start;
-        width: 100%;
+        font-size: 20px;
+        margin: 5px;
 
-        margin-left: 10px;
-        font-size: 14px;
-        .account-type {
-          font-size: 11px;
-          color: #fff;
-        }
-        input {
-          width: 100%;
-          background-color: $bg-color-2;
-          color: $txt-color;
-          font-size: 14px;
-          padding: 0;
-          margin: 0;
-          width: 100%;
-          padding: 5px;
-          border: 1px solid $border-color;
-          border-radius: $border-radius-sm;
-          outline: none;
-          transition: all 0.2s ease-in-out;
-          &:focus {
-            border: 1px solid $highlight-color;
-          }
+        &.active {
+          border: 2px solid $highlight-color;
         }
       }
     }
   }
-  .facebook-btn {
-    background-color: #007bff;
-    border-color: #007bff;
-    color: #fff;
-    padding: 5px 7px;
-    border-radius: 5px;
+
+  .btn {
+    width: 50%;
+    height: 40px;
+    background-color: $bg-color-2;
+    border-radius: $border-radius-sm;
+    border: 2px solid $border-color;
     outline: none;
-    border: none;
+    color: $highlight-color;
+    font-size: 15px;
+
+    font-weight: bold;
+    margin: 15px 5px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
     &:hover {
-      background-color: #0069d9;
-      border-color: #0062cc;
-      color: #fff;
+      background-color: $highlight-color;
+      color: $bg-color-0;
     }
   }
-  .logout-btn {
-    background-color: $bg-color-0;
-    color: $txt-color;
-    padding: 5px 7px;
-    margin-top: 15px;
-    font-size: 14px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    transition: $transition;
-    &:hover {
-      background-color: $hover-btn-color;
-      border-color: #dee2e6;
-    }
-  }
+}
+
+#dummyInputCodeVerification {
+  position: absolute;
+  opacity: 0;
+
 }
 </style>

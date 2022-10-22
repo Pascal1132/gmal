@@ -1,7 +1,9 @@
 <template>
   <div class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
-    <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id" :isMinimized="window.isMinimized" v-slot="slotProps"  >
-      <Component :is="resolveComponent(window.component)" :windowKey="window.id" v-bind="{...window.params, ...slotProps}" @set-window-frame="setWindowFrame" ></Component>
+    <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id"
+      :isMinimized="window.isMinimized" v-slot="slotProps">
+      <Component :is="resolveComponent(window.component)" :windowKey="window.id"
+        v-bind="{...window.params, ...slotProps}" @set-window-frame="setWindowFrame"></Component>
     </Window>
 
     <Desktop></Desktop>
@@ -15,10 +17,10 @@ import { mapActions, mapState } from 'pinia';
 import { useThemeStore } from '../store/theme'
 import { useWindowsStore } from '../store/windows'
 
-
 export default {
   setup() {
-    const {getWindows, getActiveWindowId} = useWindowsStore();
+    const { getWindows, getActiveWindowId } = useWindowsStore();
+    
     return {
       getWindows,
       getActiveWindowId,
@@ -30,10 +32,13 @@ export default {
     }
   },
   //middleware: ['store-populate'],
-  async asyncData(){
+  async asyncData() {
     return {
       showMenu: false,
     }
+  },
+  mounted() {
+  console.log('mounted', this.auth);
   },
   methods: {
     toggleMenu(state = null) {
@@ -44,8 +49,7 @@ export default {
     },
     ...mapActions(useWindowsStore, ['setWindow']),
   },
-  mounted() {
-  },
+
   computed: {
     generateStyleFromTheme() {
       return {

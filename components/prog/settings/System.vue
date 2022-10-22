@@ -1,13 +1,13 @@
 <template>
     <div class="system">
         <h1>À propos</h1>
-        <p>G-mal est un site web qui a été conçu par Pascal Parent. Il s'agit d'un service gratuit qui vous permet de je sais pas quoi en ligne. Vous pouvez également y accéder à partir de votre ordinateur ou de votre téléphone portable.</p>
+        <p>G-mal est un site web qui a été conçu par Pascal Parent. Il s'agit d'un service gratuit qui vous permet de je ne sais pas quoi en ligne. Vous pouvez également y accéder à partir de votre ordinateur ou de votre téléphone portable.</p>
         <h4>Technologies</h4>
         <p>G-mal utilise les technologies suivantes :</p>
         <ul>
-            <li>Nuxt</li>
+            <li>Nuxt 3</li>
             <li>Vue</li>
-            <li>Vuex</li>
+            <li>Pinia</li>
             <li>Axios</li>
         </ul>
     </div>
