@@ -52,4 +52,16 @@ export default defineNuxtConfig({
         host: '0.0.0.0', // default: localhost,
         timing: false
     },
+    // add a meta description
+    head: {
+        title: 'G-mal',
+        meta: [
+            { charset: 'utf-8' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { hid: 'description', name: 'description', content: 'Avez vous mal ? Si oui, vous devez aller sur G-mal.ca. Par contre, si vous n\'avez pas mal, allez y pareil ça me ferait super plaisir :).' }
+        ],
+        link: [
+            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        ]
+    },
 })

@@ -1,45 +1,43 @@
 <template>
   <div class="account">
-    
-    <!--<div>
-      <label>Téléphone </label>
-      <input type="phone" v-model="user.phone" />
-
-      <div v-if="waitingForCode">
-        <label>Code de vérification</label>
-        <input type="text" v-model="user.phoneVerificationCode" />
-        <button @click="verifyCode" class="btn">Vérifier</button>
-      </div>
-    </div>
-    <button @click="signIn" id="recaptcha-container" class="btn">logins</button>
-    <div v-if="firebaseUser">
-      <client-only>
-        <pre>{{ firebaseUser }}</pre>
-      </client-only>
-      <button @click="signOut">Logout</button>
-    </div>
-    <div v-else>Statut: déconnecté</div>-->
     <div v-if="firebaseUser">
       <h3>Votre compte :</h3>
-      <pre>{{firebaseUser}}</pre>
-      <button @click="signOut" class="btn">Déconnexion</button>
+      <h4>Vous pouvez compléter votre profil :</h4>
+      <!-- Display name -->
+      <div class="input-form">
+        <fa class="icon" :icon="['fas', 'user']" />
+        <input type="text" id="displayName" ref="displayNameInput" v-model="firebaseUser.displayName"
+          placeholder="Nom d'utilisateur" @focusout="triggerUpdate" />
+      </div>
+      <!-- photoUrl -->
+      <div class="input-form">
+        <fa class="icon" :icon="['fas', 'image']" />
+        <input type="text" id="photoUrl" ref="photoUrlInput" @focusout="triggerUpdate" v-model="firebaseUser.photoURL" placeholder="URL de votre photo"/>
+      </div>
+      <button @click="signOut" class="btn full-width btn-danger visible">Déconnexion</button>
     </div>
     <div v-else class="login-container">
-      <div class="phone-form">
+      <h3>Connexion</h3>
+      <div class="input-form" :class="{disabled: waitingForCode}">
         <fa class="icon" :icon="['fas', 'phone']" />
-        <input type="phone" id="phone" @input="onPhoneInput" :readonly="waitingForCode" v-model="user.phone"
-          placeholder="Téléphone (+1)" />
-        {{ error.phone }}
+        <input type="phone" id="phone" ref="phoneInput" @input="onPhoneInput" :readonly="waitingForCode"
+          v-model="user.phone" placeholder="Téléphone (+1)" />
+        <button class="edit-btn" @click="onEditNumberClick">Modifier le numéro</button>
       </div>
-      <button class="btn" v-if="!waitingForCode" @click="signIn" id="recaptcha-container">Se connecter</button>
+      <span class="error" :class="{visible: errors.phone != ''}">{{ errors.phone }}</span>
+
+      <button class="btn" :class="{visible:!waitingForCode}" @click="signIn" id="recaptcha-container">Se
+        connecter</button>
       <div class="phone-verification-form" v-if="waitingForCode">
-        <label>Entrer le code</label>
+        <label class="phone-verification-form-title">Entrer le code</label>
         <div id="code-input" @click.prevent="onCodeInputClick">
-          <span class="number" v-for="(n, i) in 6" :key="i" :class="{active: (selectionStartInputCodeVerification == i && !isBlured)}">
+          <span class="number" v-for="(n, i) in 6" :key="i"
+            :class="{active: (selectionStartInputCodeVerification == i && !isBlured)}">
             {{phoneVerificationCodeDigits[i] || ''}}
           </span>
         </div>
-        {{ error.phoneVerificationCode }}
+        <span class="error"
+          :class="{visible: errors.phoneVerificationCode != ''}">{{errors.phoneVerificationCode}}</span>
         <input id="dummyInputCodeVerification" ref="dummyInputCodeVerification" @input="updateSelectionStart"
           type="text" maxlength="6" v-model="user.phoneVerificationCode" @focusout="onBlur" @focusin="onFocus">
       </div>
@@ -60,13 +58,14 @@ export default {
   data() {
     return {
       user: {
+        phone: '6505553434',
+        phoneVerificationCode: '',
+      },
+      errors: {
         phone: '',
         phoneVerificationCode: '',
       },
-      error: {
-        phone: '',
-        phoneVerificationCode: '',
-      },
+      profileData: {},
       data: {},
       waitingForCode: false,
       verifier: null,
@@ -78,9 +77,8 @@ export default {
   async mounted() {
     const { data } = useFetch('/api/animal');
     this.data = data;
-    if (!this.verifier) {
-      this.verifier = setupVerifier("recaptcha-container");
-    }
+    this.checkVerifier();
+    console.log(this.firebaseUser);
   },
   methods: {
     connectWithFacebook() {
@@ -88,7 +86,7 @@ export default {
     logoutWithFacebook() {
     },
     onPhoneInput() {
-      this.error.phone = '';
+      this.errors.phone = '';
 
       if (this.user.phone.length === 10) {
         this.canLogin = true;
@@ -96,11 +94,27 @@ export default {
     },
     async signOut() {
       await signOutUser();
-      this.verifier = setupVerifier("recaptcha-container");
+      this.checkVerifier();
     },
     async signIn() {
-      await signInUser(`+1${this.user.phone}`, this.verifier);
-      this.waitingForCode = true;
+      console.log('signIn');
+      this.checkVerifier();
+      const req = await signInUser(`+1${this.user.phone}`, this.verifier);
+      if (req == true) {
+        this.waitingForCode = true;
+        // focus on the input next tick
+        this.$nextTick(() => {
+          this.$refs.dummyInputCodeVerification.focus();
+        });
+      } else {
+        // add error message
+        this.errors.phone = req.message;
+        // reset errors after 3s
+        setTimeout(() => {
+          this.errors.phone = '';
+        }, 3000);
+      }
+
     },
     verifyCode() {
       window.confirmationResult.confirm(this.user.phoneVerificationCode).then((result) => {
@@ -109,9 +123,9 @@ export default {
         this.waitingForCode = false;
         this.user.phoneVerificationCode = '';
         this.verifier.clear();
-        this.error.phoneVerificationCode = '';
+        this.errors.phoneVerificationCode = '';
       }).catch((error) => {
-        this.error.phoneVerificationCode = error.message;
+        this.errors.phoneVerificationCode = error.message;
       });
     },
     onCodeInputClick(e) {
@@ -135,6 +149,23 @@ export default {
     onFocus() {
       this.isBlured = false;
     },
+    onEditNumberClick() {
+      this.waitingForCode = false;
+      this.user.phoneVerificationCode = '';
+      this.$nextTick(() => {
+        this.$refs.phoneInput.focus();
+      });
+
+      this.errors.phoneVerificationCode = '';
+    },
+    triggerUpdate() {
+      updateUser(this.firebaseUser);
+    },
+    checkVerifier() {
+      if (this.verifier == null && this.firebaseUser == null) {
+        this.verifier = setupVerifier("recaptcha-container");
+      }
+    },
   },
   computed: {
     phoneVerificationCodeDigits() {
@@ -152,6 +183,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: left;
+  overflow-x: hidden;
 
   h3 {
     font-size: 20px;
@@ -159,14 +191,15 @@ export default {
     margin-bottom: 10px;
   }
 
-  .login-container{
+  .login-container {
     display: flex;
-  flex-direction: column;
-  align-items: left;
-  width: 100%;
+    flex-direction: column;
+    align-items: left;
+    width: 100%;
     height: 100%;
   }
-  .phone-form {
+
+  .input-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -178,7 +211,6 @@ export default {
     border: 1px solid $border-color;
     transition: all 0.2s ease-in-out;
     margin: 5px;
-
     overflow: hidden;
 
     input {
@@ -200,22 +232,60 @@ export default {
       height: 12px;
 
       overflow: hidden;
-      transform: rotate(90deg);
     }
 
-    &:focus-within {
+    &:focus-within:not(.disabled) {
       border: 2px solid $highlight-color;
       background-color: $bg-color-0;
+    }
+
+    .edit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      border: none;
+      visibility: hidden;
+      opacity: 0;
+      outline: none;
+      background: rgba($hex-bg-color-1, 0.95);
+      color: $txt-color;
+      border-radius: $border-radius-sm;
+      padding: 5px 10px;
+      position: absolute;
+      right: 30px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+
+    &.disabled {
+      border: none;
+
+      .edit-btn {
+        visibility: visible;
+        opacity: 1;
+      }
     }
   }
 
   .phone-verification-form {
     display: flex;
-    margin: 5px;
+    margin: 25px 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
+
+    .phone-verification-form-title {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
     #code-input {
       display: flex;
@@ -260,6 +330,50 @@ export default {
     &:hover {
       background-color: $highlight-color;
       color: $bg-color-0;
+    }
+
+    &:not(.visible) {
+      display: none;
+    }
+
+    &.full-width {
+      width: calc(100% - 20px);
+    }
+
+    &.btn-danger {
+      background-color: $bg-color-2;
+      border: 2px solid $danger-color;
+      color: $txt-color;
+      filter: brightness(0.6);
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+
+    &.btn-success {
+      background-color: $success-color;
+      border: 2px solid $success-color;
+      color: $bg-color-0;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
+
+  .error {
+    color: $txt-color;
+    display: none;
+    width: calc(100% - 20px);
+    margin-left: 5px;
+    padding: 5px;
+    border: 2px solid $border-color;
+    border-radius: $border-radius-sm;
+    background-color: $danger-color;
+
+    &.visible {
+      display: block;
     }
   }
 }

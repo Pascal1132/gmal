@@ -44,6 +44,13 @@ export default {
   components: {
     System, Account, Customization,
   },
+  setup() {
+    const firebaseUser = useFirebaseUser();
+
+    return {
+      firebaseUser,
+    };
+  },
   data() {
     return {
       tabs: [
@@ -105,10 +112,10 @@ export default {
       });
     },
     loggedInUserName() {
-      return "Utilisateur de G-mal";
+      return this.firebaseUser?.displayName || "Utilisateur de G-mal";
     },
     loggedInUserPicture() {
-      return  "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+      return  this.firebaseUser?.photoURL || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
     }
   }
 }

@@ -2,25 +2,14 @@
 
 import {
     getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
+    //createUserWithEmailAndPassword,
+    //signInWithEmailAndPassword,
     signInWithPhoneNumber,
     onAuthStateChanged,
     RecaptchaVerifier,
+    updateEmail,
+    updateProfile,
 } from "firebase/auth";
-
-export const createUser = async (email, password) => {
-    const auth = getAuth();
-    const credentials = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-    ).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-    });
-    return credentials;
-};
 
 export const setupVerifier = (container) => {
     const auth = getAuth();
@@ -34,16 +23,50 @@ export const setupVerifier = (container) => {
     return verifier;
 };
 
+const codeToMessage = {
+    "auth/invalid-verification-code": "Mauvais code de vérification",
+    "auth/missing-verification-code": "Code de vérification manquant",
+    "auth/invalid-verification-id": "Mauvais ID de vérification",
+    "auth/missing-verification-id": "ID de vérification manquant",
+    "auth/credential-already-in-use": "Ce numéro est déjà utilisé",
+    "auth/invalid-credential": "Mauvaise authentification",
+    "auth/missing-credential": "Authentification manquante",
+    "auth/invalid-phone-number": "Mauvais numéro de téléphone",
+    "auth/missing-phone-number": "Num de téléphone manquant",
+    "auth/invalid-verification-code": "Mauvais code de vérification",
+    "auth/missing-verification-code": "Code de vérification manquant",
+    "auth/invalid-verification-id": "Mauvais ID de vérification",
+    "auth/missing-verification-id": "ID de vérification manquant",
+    "auth/credential-already-in-use": "Ce numéro est déjà utilisé",
+    "auth/invalid-credential": "Mauvaise authentification",
+    "auth/missing-credential": "Authentification manquante",
+    "auth/invalid-phone-number": "Mauvais numéro de téléphone",
+    "auth/missing-phone-number": "Num de téléphone manquant",
+    "auth/internal-error": "Une erreur est survenue, veuillez réessayer plus tard."
+};
+
+/**
+ * Sign in with phone, return true if sucess or false if not
+ * @param {string} phone 
+ * @param {RecaptchaVerifier} verifier 
+ * @return {true | object} result
+ */
 export const signInUser = async (phone, verifier) => {
     const auth = getAuth();
-
-    const credentials = await signInWithPhoneNumber(
-        auth,
-        phone,
-        verifier
-    );
-    window.confirmationResult = credentials;
-    return credentials;
+    try {
+        const credentials = await signInWithPhoneNumber(
+            auth,
+            phone,
+            verifier
+        );
+        window.confirmationResult = credentials;
+        return true
+    } catch (err) {
+        return {
+            code: err.code,
+            message: codeToMessage[err.code] ?? ''
+        };
+    }
 };
 
 export const initUser = async () => {
@@ -80,4 +103,16 @@ export const signOutUser = async () => {
     const auth = getAuth();
     const result = await auth.signOut();
     return result;
+};
+
+export const updateUser = async (user) => {
+    // update user profile and email
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+        await updateProfile(currentUser, {
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+        });
+    }
 };
