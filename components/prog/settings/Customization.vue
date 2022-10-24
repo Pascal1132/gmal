@@ -83,7 +83,7 @@
   </div>
 </template>
 <script lang="js">
-import { mapWritableState } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import themes from '~/assets/config/themes.js'
 import { useThemeStore } from '../../../store/theme';
 export default {
@@ -95,10 +95,10 @@ export default {
     }
   },
   methods: {
-    changeTheme(theme) {
+    async changeTheme(theme) {
       // clone theme object
       const newTheme = JSON.parse(JSON.stringify(theme))
-      this.currentTheme = newTheme;
+      console.log(await this.setTheme(newTheme));
       //reset the background picture
       this.$refs.bgImageInput.value = null;
     },
@@ -113,8 +113,10 @@ export default {
       var file = e.target.files[0];
       var reader = new FileReader();
       reader.onload = (e) => {
-        this.currentTheme.bg = `url(${e.target.result})`;
-        this.currentTheme.name = 'custom';
+        this.setTheme({
+          bg: `url(${e.target.result})`,
+          name: 'custom',
+        });
       };
       try {
         reader.readAsDataURL(file);
@@ -123,17 +125,21 @@ export default {
       }
     },
     changeAccentColor(e) {
-      this.currentTheme.highlight = e.target.value;
-      this.currentTheme.name = 'Custom';
+      this.setTheme({
+        name: 'custom',
+        highlight: e.target.value,
+      });
     },
     changeInterfaceColor(e) {
-      this.currentTheme.name = 'Custom';
-      this.currentTheme.interface = e.target.value;
+      this.setTheme({
+        name: 'custom',
+        interface: e.target.value,
+      });
     },
+    ...mapActions(useThemeStore, ['setTheme']),
   },
   computed: {
-    ...mapWritableState(useThemeStore, ['theme', 'currentTheme']),
-
+    ...mapState(useThemeStore, ['theme', 'currentTheme']),
   }
 }
 </script>

@@ -66,7 +66,6 @@ export default {
         phoneVerificationCode: '',
       },
       profileData: {},
-      data: {},
       waitingForCode: false,
       verifier: null,
       canLogin: false,
@@ -74,11 +73,8 @@ export default {
       isBlured: false,
     };
   },
-  async mounted() {
-    const { data } = useFetch('/api/animal');
-    this.data = data;
+  async mounted() {    
     this.checkVerifier();
-    console.log(this.firebaseUser);
   },
   methods: {
     connectWithFacebook() {

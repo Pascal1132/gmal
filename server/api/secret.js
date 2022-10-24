@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http'
+/*import { IncomingMessage, ServerResponse } from 'http'
 
 export default async (req, res) => {
   
@@ -11,4 +11,13 @@ export default async (req, res) => {
   }
   res.statusCode = 400
   res.end('Must be signed in to read secret message')
-}
+}*/
+
+export default defineEventHandler((event) => {
+  const user = event.context.user;
+
+  if(user) {
+    return 'This is a top secret message from the API'
+  }
+  return 'Must be signed in to read secret message'
+});

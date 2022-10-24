@@ -116,3 +116,72 @@ export const updateUser = async (user) => {
         });
     }
 };
+
+export const firestoreFetch = async (path, needAuth = true) => {
+    if (needAuth && !isAuth()) return null;
+    let response = null;
+    try{
+        response = await useFetch('/api/' + path);
+        if ((response?.status || 200) !== 200) {
+            throw new Error(response.message);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return response;
+}
+
+export const firestoreUpdate = async (path, data, needAuth = true) => {
+    if (needAuth && !isAuth()) return null;
+    let response = null;
+    try{
+        response = await $fetch('/api/' + path, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        if ((response?.status || 200) !== 200) {
+            throw new Error(response.message);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return response;
+}
+
+export const firestoreDelete = async (path, needAuth = true) => {
+    if (needAuth && !isAuth()) return null;
+    let response = null;
+    try{
+        response = await $fetch('/api/' + path, {
+            method: 'DELETE'
+        });
+        if ((response?.status || 200) !== 200) {
+            throw new Error(response.message);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return response;
+}
+
+export const firestoreAdd = async (path, data, needAuth = true) => {
+    if (needAuth && !isAuth()) return null;
+    let response = null;
+    try{
+        response = await $fetch('/api/' + path, {
+            method: 'PUT',
+            body: data
+        });
+        if ((response?.status || 200) !== 200) {
+            throw new Error(response.message);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return response;
+}
+
+export const isAuth = () => {
+    const auth = getAuth();
+    return auth.currentUser !== null;
+}

@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from "http";
+/*import { IncomingMessage, ServerResponse } from "http";
 
 export default async (req, res) => {
     
@@ -7,3 +7,10 @@ export default async (req, res) => {
 
   return user ? user : "User is signed out"
 };
+*/
+
+export default defineEventHandler((event) => {
+  const user = event.context.user;
+
+  return user ? user : "User is signed out"
+});
