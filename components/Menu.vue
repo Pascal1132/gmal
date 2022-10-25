@@ -29,15 +29,15 @@
                     <span>{{ loggedInUserName }}</span>
                 </div>
                 <div class="shutdown-btn" @click="togglePopup">
-          <fa :icon="['fas', 'power-off']" />
-        </div>
+                    <fa :icon="['fas', 'power-off']" />
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script lang="js">
 import { mainMenu } from '~/assets/config/menus.js'
-import { mapActions} from 'pinia'
+import { mapActions } from 'pinia'
 import { useWindowsStore } from '~/store/windows.js'
 
 export default {
@@ -47,6 +47,13 @@ export default {
             type: Boolean,
             default: false,
         },
+    },
+    setup() {
+        const firebaseUser = useFirebaseUser();
+
+        return {
+            firebaseUser,
+        };
     },
     data() {
         return {
@@ -115,7 +122,7 @@ export default {
             if (window.innerWidth > 768) {
                 if (val) {
                     this.$nextTick(() => {
-                        this.$refs.menu.querySelector('input').focus();
+                        this.$refs.menu?.querySelector('input')?.focus();
                     });
                 }
             }
@@ -123,10 +130,10 @@ export default {
     },
     computed: {
         loggedInUserName() {
-            return "Utilisateur de G-mal";
+            return this.firebaseUser?.displayName || "Utilisateur de G-mal";
         },
         loggedInUserPicture() {
-            return  "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
+            return this.firebaseUser?.photoURL || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
         },
         menuItems() {
             return mainMenu.filter(item => {

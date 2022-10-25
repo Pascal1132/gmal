@@ -2,7 +2,15 @@
 export default defineNuxtConfig({
     runtimeConfig: {
         public: {
-            // Public runtime config
+            firebase: {
+                apiKey: process.env.FIREBASE_API_KEY,
+                authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+                messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+                appId: process.env.FIREBASE_APP_ID,
+                measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+            },
         },
     },
     css: [
@@ -51,5 +59,17 @@ export default defineNuxtConfig({
         port: 3000, // default: 3000
         host: '0.0.0.0', // default: localhost,
         timing: false
+    },
+    // add a meta description
+    head: {
+        title: 'G-mal',
+        meta: [
+            { charset: 'utf-8' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { hid: 'description', name: 'description', content: 'Avez vous mal ? Si oui, vous devez aller sur G-mal.ca. Par contre, si vous n\'avez pas mal, allez y pareil ça me ferait super plaisir :).' }
+        ],
+        link: [
+            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        ]
     },
 })

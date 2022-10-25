@@ -195,14 +195,10 @@ export default {
   height: 100%;
   width: 100%;
 
-  &.dark {
     --tab-bg: #333;
     --tab-active-bg: #111;
-  }
+    --prefix-color: #0f0;
 
-  &.light {
-    --tab-bg: #555;
-  }
 
   .header {
     display: flex;
@@ -247,7 +243,7 @@ export default {
     display: flex;
     flex-direction: column;
     overflow: scroll;
-
+    color: #fff;
     font-family: "Courier New", Courier, monospace;
 
     p {
@@ -259,7 +255,7 @@ export default {
       min-height: 15px;
 
       .prefix {
-        color: #0f0;
+        color: var(--prefix-color);
       }
 
       #blink-indicator {

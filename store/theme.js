@@ -12,25 +12,23 @@ export const useThemeStore = defineStore({
     },
     actions: {
         // set theme with update to api
-        setTheme: async ({ commit, rootState }, payload) => {
-            commit('setTheme', payload)
-            console.log(
-                'return',
-                await $fetch('/api/users/setSettings', {
-                    method: 'POST',
-                    body: {
-                        theme: payload,
-                        auth: { ...rootState.auth.user, strategy: 'facebook' },
-                    },
-                })
-            )
-        }
-    },
-    mutations: {
-        setTheme: (state, payload) => {
-            console.log(payload, state.currentTheme)
-            state.currentTheme = { ...state.currentTheme, ...payload }
-            console.log(state.currentTheme)
+        async setTheme(payload) {
+            const tmp = { ...this.currentTheme, ...payload };
+            const result = await firestoreUpdate('theme', tmp);
+            this.currentTheme = tmp;
+            return result;
+        },
+        async fetchTheme() {
+            let result; 
+            try{
+            result = await firestoreFetch('theme', false);
+            if (result) {
+                this.currentTheme = { ...this.currentTheme, ...(result.data._rawValue) }
+            }
+            } catch (err) {
+                console.warn('Cannot fetch theme', err);
+            }
+            return result;
         }
     },
 })
