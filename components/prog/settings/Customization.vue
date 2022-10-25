@@ -83,6 +83,7 @@
   </div>
 </template>
 <script lang="js">
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import { mapActions, mapState } from 'pinia';
 import themes from '~/assets/config/themes.js'
 import { useThemeStore } from '../../../store/theme';
@@ -98,7 +99,7 @@ export default {
     async changeTheme(theme) {
       // clone theme object
       const newTheme = JSON.parse(JSON.stringify(theme))
-      console.log(await this.setTheme(newTheme));
+      await this.setTheme(newTheme);
       //reset the background picture
       this.$refs.bgImageInput.value = null;
     },
@@ -136,7 +137,14 @@ export default {
         interface: e.target.value,
       });
     },
-    ...mapActions(useThemeStore, ['setTheme']),
+    ...mapActions(useThemeStore, ['setTheme', 'fetchTheme']),
+  },
+  mounted(){
+    onAuthStateChanged(getAuth(), (user) => {
+        if (user) {
+          this.fetchTheme();
+        }
+    });
   },
   computed: {
     ...mapState(useThemeStore, ['theme', 'currentTheme']),

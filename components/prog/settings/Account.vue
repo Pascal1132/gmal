@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       user: {
-        phone: '6505553434',
+        phone: '', // Test : 6505553434
         phoneVerificationCode: '',
       },
       errors: {
@@ -93,7 +93,6 @@ export default {
       this.checkVerifier();
     },
     async signIn() {
-      console.log('signIn');
       this.checkVerifier();
       const req = await signInUser(`+1${this.user.phone}`, this.verifier);
       if (req == true) {

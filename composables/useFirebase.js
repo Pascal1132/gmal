@@ -11,8 +11,10 @@ import {
     updateProfile,
 } from "firebase/auth";
 
+
 export const setupVerifier = (container) => {
     const auth = getAuth();
+
     const verifier = new RecaptchaVerifier(container, {
         size: "invisible",
         callback: (response) => {
@@ -60,7 +62,7 @@ export const signInUser = async (phone, verifier) => {
             verifier
         );
         window.confirmationResult = credentials;
-        return true
+        return true;
     } catch (err) {
         return {
             code: err.code,
