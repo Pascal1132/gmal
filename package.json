@@ -1,11 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build && cp service-account.json .output/server/service-account.json && cd ./.output/server/ && npm up",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.186",
