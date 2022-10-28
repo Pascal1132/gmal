@@ -174,7 +174,6 @@ export default {
   width: 100%;
   height: 100%;
   max-width: 600px;
-  min-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: left;

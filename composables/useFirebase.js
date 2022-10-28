@@ -84,6 +84,7 @@ export const initUser = async () => {
         if (user) {
             // User is signed in, see docs for a list of available properties
             // https://firebase.google.com/docs/reference/js/firebase.User
+
         } else {
             //if signed out
             router.push("/");
@@ -98,6 +99,9 @@ export const initUser = async () => {
             method: "POST",
             body: { user },
         });
+
+        const { init } = useInitializerStore();
+        init();
     });
 };
 
@@ -122,7 +126,7 @@ export const updateUser = async (user) => {
 export const firestoreFetch = async (path, needAuth = true) => {
     if (needAuth && !isAuth()) return null;
     let response = null;
-    try{
+    try {
         response = await useFetch('/api/' + path);
         if ((response?.status || 200) !== 200) {
             throw new Error(response.message);
@@ -136,7 +140,7 @@ export const firestoreFetch = async (path, needAuth = true) => {
 export const firestoreUpdate = async (path, data, needAuth = true) => {
     if (needAuth && !isAuth()) return null;
     let response = null;
-    try{
+    try {
         response = await $fetch('/api/' + path, {
             method: 'POST',
             body: JSON.stringify(data)
@@ -153,7 +157,7 @@ export const firestoreUpdate = async (path, data, needAuth = true) => {
 export const firestoreDelete = async (path, needAuth = true) => {
     if (needAuth && !isAuth()) return null;
     let response = null;
-    try{
+    try {
         response = await $fetch('/api/' + path, {
             method: 'DELETE'
         });
@@ -169,7 +173,7 @@ export const firestoreDelete = async (path, needAuth = true) => {
 export const firestoreAdd = async (path, data, needAuth = true) => {
     if (needAuth && !isAuth()) return null;
     let response = null;
-    try{
+    try {
         response = await $fetch('/api/' + path, {
             method: 'PUT',
             body: data

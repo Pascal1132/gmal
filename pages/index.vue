@@ -1,6 +1,6 @@
 <template>
   <main class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
-    <GmalLoader :loading="loading"/>
+    <GmalLoader :loading="!initialized"/>
     <div >
       <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id"
         :isMinimized="window.isMinimized" v-slot="slotProps">
@@ -45,12 +45,7 @@ export default {
   data() {
     return {
       showMenu: false,
-      loading: true,
     }
-  },
-  async mounted() {
-    await this.fetchTheme();
-    this.loading = false;
   },
   methods: {
     toggleMenu(state = null) {
@@ -62,7 +57,6 @@ export default {
     ...mapActions(useWindowsStore, ['setWindow']),
     ...mapActions(useThemeStore, ['fetchTheme']),
   },
-
   computed: {
     generateStyleFromTheme() {
       return {
@@ -71,6 +65,7 @@ export default {
     },
     ...mapWritableState(useThemeStore, ['currentTheme']),
     ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
+    ...mapState(useInitializerStore, ['initialized']),
   },
 }
 </script>
