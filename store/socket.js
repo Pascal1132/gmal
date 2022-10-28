@@ -20,7 +20,6 @@ export const useSocketStore = defineStore({
 
             this.socket.on('connect', () => {
                 console.log('connected');
-                this.messages.push('connected');
             });
 
             this.socket.on('disconnect', () => {
@@ -30,6 +29,10 @@ export const useSocketStore = defineStore({
             this.socket.on('message', (message) => {
                 this.messages.push(message);
             });
+
+            this.socket.on('init', (init) => {
+                this.messages = init.messages;
+            });
         },
         async send(message) {
             const firebaseUser = useFirebaseUser();
@@ -38,7 +41,7 @@ export const useSocketStore = defineStore({
                 type: 'message',
                 data: message,
                 createdAt: new Date(),
-            })
+            });
             console.log(this.socket.emit('message', event));
         },
         disconnect() {
