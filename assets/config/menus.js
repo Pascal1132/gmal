@@ -9,6 +9,11 @@ export const bottomBarMenu = [
         imagePath: '/images/chrome.png',
         program: 'ProgBrowser'
     },
+    {
+        name: 'Chat',
+        imagePath: '/images/programs/chat.png',
+        program: 'ProgChat'
+    },
 ];
 export const mainMenu = [
     {

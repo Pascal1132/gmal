@@ -8,7 +8,9 @@ export const useInitializerStore = defineStore({
     actions: {
         async init() {
             const { fetchTheme } = useThemeStore();
+            const { connect } = useSocketStore();
             await fetchTheme();
+            await connect();
             this.initialized = true;
         }
     },
