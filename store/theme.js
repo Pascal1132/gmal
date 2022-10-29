@@ -19,12 +19,12 @@ export const useThemeStore = defineStore({
             return result;
         },
         async fetchTheme() {
-            let result; 
-            try{
-            result = await firestoreFetch('theme', false);
-            if (result) {
-                this.currentTheme = { ...this.currentTheme, ...(result.data._rawValue) }
-            }
+            let result;
+            try {
+                result = await firestoreFetch('theme', false);
+                if (result) {
+                    this.currentTheme = { ...this.currentTheme, ...(result.data._rawValue) };
+                }
             } catch (err) {
                 console.warn('Cannot fetch theme', err);
             }
