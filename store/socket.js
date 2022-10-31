@@ -16,6 +16,10 @@ export const useSocketStore = defineStore({
     actions: {
         // set theme with update to api
         async connect() {
+            // close previous connection if exists
+            if (this.socket) {
+                this.socket.close();
+            }
             this.socket = io();
 
             this.socket.on('connect', () => {

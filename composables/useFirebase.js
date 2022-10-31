@@ -80,29 +80,32 @@ export const initUser = async () => {
 
     const router = useRouter();
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/firebase.User
+    onAuthStateChanged(auth,
+        async (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
 
-        } else {
-            //if signed out
-            router.push("/");
-        }
+            } else {
+                //if signed out
+                router.push("/");
+            }
 
-        firebaseUser.value = user;
+            firebaseUser.value = user;
 
-        // @ts-ignore
-        userCookie.value = user; //ignore error because nuxt will serialize to json
+            // @ts-ignore
+            userCookie.value = user; //ignore error because nuxt will serialize to json
 
-        $fetch("/api/auth", {
-            method: "POST",
-            body: { user },
+            await $fetch("/api/auth", {
+                method: "POST",
+                body: { user },
+            });
+
+            nextTick(() => {
+                const { init } = useInitializerStore();
+                init(user);
+            });
         });
-
-        const { init } = useInitializerStore();
-        init();
-    });
 };
 
 export const signOutUser = async () => {
@@ -127,7 +130,7 @@ export const firestoreFetch = async (path, needAuth = true) => {
     if (needAuth && !isAuth()) return null;
     let response = null;
     try {
-        response = await useFetch('/api/' + path);
+        response = await $fetch('/api/' + path);
         if ((response?.status || 200) !== 200) {
             throw new Error(response.message);
         }

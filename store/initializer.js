@@ -6,10 +6,10 @@ export const useInitializerStore = defineStore({
         initialized: false,
     }),
     actions: {
-        async init() {
+        async init(user) {
             const { fetchTheme } = useThemeStore();
             const { connect } = useSocketStore();
-            await fetchTheme();
+            await fetchTheme(user);
             await connect();
             this.initialized = true;
         }

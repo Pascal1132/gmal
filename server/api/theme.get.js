@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
     const user = event.context.user;
 
     if (!user) {
-        return { error: "User is not signed in" }
+        return {};
     }
     const ref = firestore.collection(`themes`).doc(user?.uid);
     const snapshot = await ref.get();
