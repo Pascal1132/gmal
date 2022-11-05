@@ -11,7 +11,7 @@
           Nouvelle Conversation
         </div>
         <div class="input">
-          <input type="text" placeholder="Nom d'utilisateur" ref="searchInput" v-model="searchString" @keyup.enter="fetchResult" />
+          <input type="text" placeholder="Nom d'utilisateur" ref="searchInput" v-model="searchString" @input="fetchResult" />
         </div>
         <!--List search-->
         <div class="search-result">
