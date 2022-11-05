@@ -11,21 +11,15 @@ export const useProfileStore = defineStore({
         }
     },
     actions: {
-        // set theme with update to api
-        setProfile: async ({ commit, rootState }, payload) => {
-            commit('setProfile', payload)
-            console.log(
-                'return',
-                firestoreUpdate('profile', {
-                    ...payload,
-                    uid: rootState.auth.user.uid,
-                })
-            )
+        async fetchProfile() {
+            const profile = await firestoreFetch('profile');
+            this.profile = profile;
+            return profile;
         },
-    },
-    mutations: {
-        setProfile: (state, payload) => {
-            state.profile = payload
+        async updateProfile(payload) {
+            const profile = await firestoreUpdate('profile', payload);
+            this.profile = profile;
+            return profile;
         }
     },
 });

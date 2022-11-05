@@ -1,4 +1,10 @@
 export default class WsEvent {
+    static TYPES = {
+        MESSAGE: 'message',
+        NEW_CONVERSATION: 'new-conversation',
+        NEW_MESSAGE: 'new-message',
+    };
+
     // properties: raw, userId, type, data, createdAt
     constructor(data) {
         this.raw = data?.raw || data;
@@ -10,7 +16,6 @@ export default class WsEvent {
 
     static createFromMessage(msg) {
         const ev = new WsEvent(msg);
-        console.log(ev.userId);
         return ev;
     }
 }

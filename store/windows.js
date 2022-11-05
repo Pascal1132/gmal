@@ -26,6 +26,7 @@ export const useWindowsStore = defineStore({
             const id = Math.floor(Math.random() * 100000000);
             const data = {
                 id: id,
+                isLoaded: false,
                 component: component,
                 size: {
                     width: 800,

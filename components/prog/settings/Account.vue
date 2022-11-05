@@ -9,10 +9,17 @@
         <input type="text" id="displayName" ref="displayNameInput" v-model="firebaseUser.displayName"
           placeholder="Nom d'utilisateur" @focusout="triggerUpdate" />
       </div>
+      
       <!-- photoUrl -->
       <div class="input-form">
         <fa class="icon" :icon="['fas', 'image']" />
         <input type="text" id="photoUrl" ref="photoUrlInput" @focusout="triggerUpdate" v-model="firebaseUser.photoURL" placeholder="URL de votre photo"/>
+      </div>
+      <!-- Identifiant -->
+      <h4>Mon identifiant unique:</h4>
+      <div class="input-form">
+        <fa class="icon" :icon="['fas', 'id-card']" />
+        <input type="text" :value="usernameByDisplayName" placeholder="Identifiant" disabled />
       </div>
       <button @click="signOut" class="btn full-width btn-danger visible">Déconnexion</button>
     </div>
@@ -21,7 +28,7 @@
       <div class="input-form" :class="{disabled: waitingForCode}">
         <fa class="icon" :icon="['fas', 'phone']" />
         <input type="phone" id="phone" ref="phoneInput" @input="onPhoneInput" :readonly="waitingForCode"
-          v-model="user.phone" placeholder="Téléphone (+1)" />
+          v-model="user.phone" placeholder="Téléphone (+1)" @keyup.enter="signIn"/>
         <button class="edit-btn" @click="onEditNumberClick">Modifier le numéro</button>
       </div>
       <span class="error" :class="{visible: errors.phone != ''}">{{ errors.phone }}</span>
@@ -45,14 +52,18 @@
   </div>
 </template>
 <script lang="js">
+import { mapActions } from 'pinia';
+
 
 export default {
   name: 'Account',
   setup() {
     const firebaseUser = useFirebaseUser();
+    const {profile} = useProfileStore();
 
     return {
       firebaseUser,
+      profile
     };
   },
   data() {
@@ -65,7 +76,7 @@ export default {
         phone: '',
         phoneVerificationCode: '',
       },
-      profileData: {},
+      profile: {},
       waitingForCode: false,
       verifier: null,
       canLogin: false,
@@ -77,6 +88,7 @@ export default {
     this.checkVerifier();
   },
   methods: {
+    ...mapActions(useProfileStore, ['updateProfile']),
     connectWithFacebook() {
     },
     logoutWithFacebook() {
@@ -155,6 +167,11 @@ export default {
     },
     triggerUpdate() {
       updateUser(this.firebaseUser);
+      this.updateProfile({
+        userIdentifier: this.usernameByDisplayName,
+        userId: this.firebaseUser.uid,
+        displayName: this.firebaseUser.displayName,
+      });
     },
     checkVerifier() {
       if (this.verifier == null && this.firebaseUser == null) {
@@ -165,6 +182,9 @@ export default {
   computed: {
     phoneVerificationCodeDigits() {
       return this.user.phoneVerificationCode.split('');
+    },
+    usernameByDisplayName() {
+      return this.firebaseUser.displayName.replace(/ /g, '-').toLowerCase() + '-' + this.firebaseUser.uid.substring(0, 4);
     },
   },
 }
@@ -215,6 +235,10 @@ export default {
       padding: 10px;
       font-size: 15px;
       color: $txt-color;
+
+      &:disabled{
+        color: $highlight-color;
+      }
     }
 
     .icon {
@@ -338,10 +362,11 @@ export default {
       background-color: $bg-color-2;
       border: 2px solid $danger-color;
       color: $txt-color;
+      cursor: default;
       filter: brightness(0.6);
 
       &:hover {
-        filter: brightness(1.2);
+        filter: brightness(0.7);
       }
     }
 

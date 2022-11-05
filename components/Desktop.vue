@@ -11,9 +11,6 @@
       <div class="launcher">
         <img src="/images/recycle_bin.png" format="webp" />
         <label>Corbeille</label>
-        <div class="context-menu-properties">
-          <li>Propriétés de la corbeille</li>
-        </div>
       </div>
       <div class="no-icon" v-for="i in nbOfIconPossible" :key="i" :style="{ order: i }"></div>
     </div>

@@ -1,11 +1,11 @@
 <template>
   <main class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
-    <GmalLoader :loading="!initialized"/>
-    <div >
+    <GmalLoader :loading="!initialized" />
+    <div>
       <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id"
         :isMinimized="window.isMinimized" v-slot="slotProps">
         <Component :is="resolveComponent(window.component)" :windowKey="window.id"
-          v-bind="{ ...window.params, ...slotProps }" @set-window-frame="setWindowFrame"></Component>
+          v-bind="{ ...window.params, ...slotProps }" @set-window-frame="(data) => setWindowFrame(data, window.component)"></Component>
       </Window>
 
       <Desktop></Desktop>
@@ -22,11 +22,12 @@ import { useWindowsStore } from '../store/windows'
 
 export default {
   setup() {
-    const { getWindows, getActiveWindowId } = useWindowsStore();
+    const { getWindows, getActiveWindowId, closeWindow } = useWindowsStore();
     const { fetchTheme } = useThemeStore();
     return {
       getWindows,
       getActiveWindowId,
+      closeWindow,
       fetchTheme
     }
   },
@@ -51,7 +52,18 @@ export default {
     toggleMenu(state = null) {
       this.showMenu = state === null ? !this.showMenu : state
     },
-    setWindowFrame(data) {
+    setWindowFrame(data, component) {
+      if (data?.isSingleInstance === true) {
+        const window = this.windows.find(w => w.component === component && w.isLoaded === true);
+        if (window) {
+          this.closeWindow(data.id);
+          this.$nextTick(() => {
+            this.activeWindowId = window.id;
+          });
+          return;
+        }
+      }
+      data.isLoaded = true;
       this.setWindow(data.id, data);
     },
     ...mapActions(useWindowsStore, ['setWindow']),
@@ -64,7 +76,7 @@ export default {
       };
     },
     ...mapWritableState(useThemeStore, ['currentTheme']),
-    ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
+    ...mapWritableState(useWindowsStore, ['windows', 'activeWindowId']),
     ...mapState(useInitializerStore, ['initialized']),
   },
 }

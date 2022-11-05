@@ -1,7 +1,7 @@
 <template>
     <div v-if="!loaded" id="loader" :class="{ willHide: willHide }">
         <!-- Add a windows icon -->
-            <fa class="loader-icon" :icon="['fab', 'windows']" />
+        <fa class="loader-icon" :icon="['fab', 'windows']" />
 
     </div>
 </template>
@@ -60,13 +60,16 @@ export default {
     .loader-icon {
         width: 15vw;
         height: 15vw;
-        
+        color: lightseagreen;
+
         animation: changeColor 2s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     @keyframes changeColor {
         0% {
             color: lightblue;
         }
+
         100% {
             color: lightseagreen;
         }

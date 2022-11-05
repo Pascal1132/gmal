@@ -1,35 +1,69 @@
 <template>
   <div id="chat">
-    <div class="list" ref="list">
-      <div v-for="message in messages" :key="message.id">
-        <div class="message">
-          <div>
-            <div class="message__text">{{ message.data.text }}</div>
-            <div class="message__time">{{ message.createdAt }}</div>
+    <div class="not-connected" :class="{show: showNotConnected}">
+      <h1>Vous n'êtes pas connecté</h1>
+      <p>Pour accéder au chat, vous devez être connecté.</p>
+      <button @click="goToLogin">Se connecter</button>
+    </div>
+    <div id="new-conversation-modal" :class="{ show: isPopupShowed }" @click="hidePopup">
+      <div class="modal-body" @click="stopPropagation">
+        <div class="title">
+          Nouvelle Conversation
+        </div>
+        <div class="input">
+          <input type="text" placeholder="Nom d'utilisateur" ref="searchInput" v-model="searchString" @keyup.enter="fetchResult" />
+        </div>
+        <!--List search-->
+        <div class="search-result">
+          <div class="item" v-for="(user, index) in users" :key="index" @click="selectUser(user)"
+            :class="{ disabled: user.isAlreadyInConversation }">
+            <div class="picture">
+              <img :src="user.photoURL" />
+            </div>
+            <div class="info">
+              <div class="name">
+                {{ user.displayName }}
+              </div>
+            </div>
           </div>
-          <div class="message__username">{{ message.data.username }}</div>
+          <div class="loader" v-if="isLoading">
+            <div class="loader__spinner"></div>
+          </div>
+          <div class="no-result" v-else-if="users.length === 0">
+            Aucun résultat
+          </div>
         </div>
       </div>
     </div>
-    <div class="input-container">
-      <input type="text" v-model="msg" @keydown="onKeyDown" />
-      <button @click="sendMessage">Send</button>
-    </div>
+    <ProgChatConversationList @on-select-conversation="onSelectConversation" @new-conversation="showPopup"
+      :conversations="conversations" :selected-conversation-id="selectedConversationId" @send-message="sendMessage" />
   </div>
 </template>
 <script>
+import { mapActions } from 'pinia';
+import WsEvent from '~~/server/models/ws_event';
+import Conversation from './chat/Conversation';
+import ConversationMessage from './chat/ConversationMessage';
+
 export default {
   name: 'Chat',
   setup() {
-    const { messages, send } = useSocketStore();
+    const { send } = useSocketStore();
+    const { conversations } = useChatStore();
+    const { createBaseWindow } = useWindowsStore();
     return {
-      messages,
-      send
+      send,
+      conversations,
+      createBaseWindow,
     }
   },
   data() {
     return {
-      msg: ''
+      msg: '',
+      users: [],
+      selectedConversationId: null,
+      isPopupShowed: false,
+      isLoading: false,
     }
   },
   props: {
@@ -39,6 +73,7 @@ export default {
     },
   },
   mounted() {
+    // Check if user is connected
     this.$emit('set-window-frame', {
       id: this.windowKey,
       title: 'Chat',
@@ -46,35 +81,78 @@ export default {
       size: {
         width: 700,
         height: 500,
-        minWidth: 400,
+        minWidth: 600,
         minHeight: 400,
       },
       iconPath: 'images/programs/chat.png',
     });
   },
   methods: {
-    sendMessage() {
-      this.send(this.msg);
-      this.msg = '';
-      setTimeout(() => {
-        this.$refs.list.scrollTop = this.$refs.list.scrollHeight;
-      }, 100);
+    ...mapActions(useUsersStore, ['searchUsersByDisplayName']),
+    ...mapActions(useSocketStore, ['send']),
+    showPopup() {
+      this.isPopupShowed = true;
+      this.$nextTick(() => {
+        this.$refs.searchInput.focus();
+      });
     },
-    onKeyDown(e) {
-      if (e.key === 'Enter') {
-        this.sendMessage();
+    hidePopup() {
+      this.isPopupShowed = false;
+    },
+    stopPropagation(e) {
+      e.stopPropagation();
+    },
+    selectUser(user) {
+      this.hidePopup();
+      if (!user.isAlreadyInConversation) {
+        this.send({
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }, WsEvent.TYPES.NEW_CONVERSATION);
+      } else {
+        this.selectedConversationId = user.uid;
       }
+      user.isAlreadyInConversation = true;
+    },
+    onSelectConversation(conversation) {
+      this.selectedConversationId = conversation.id;
+    },
+    sendMessage(message) {
+      // add the message to the conversation
+      const conversation = this.conversations.find(
+        (conversation) => conversation.id === this.selectedConversationId,
+      );
+      const date = new Date();
+      conversation.addMessage(new ConversationMessage(date.toISOString, message, date, true));
+      this.send({
+        content: message,
+        to: this.selectedConversationId,
+        conversationId: this.selectedConversationId,
+      }, WsEvent.TYPES.NEW_MESSAGE);
+    },
+    async fetchResult() {
+      this.isLoading = true;
+      const res = await this.searchUsersByDisplayName(this.searchString);
+      this.users = res.map((user) => {
+        return {
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          isAlreadyInConversation: this.conversations.some((conversation) => conversation.id === user.uid),
+        }
+      });
+      this.isLoading = false;
+    },
+    goToLogin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+        this.createBaseWindow('ProgSettings', { defaultTab: 'account' })
     }
   },
-  // on change of messages deep, scroll to bottom
-  watch: {
-    messages: {
-      handler() {
-        setTimeout(() => {
-          this.$refs.list.scrollTop = this.$refs.list.scrollHeight;
-        }, 100);
-      },
-      deep: true,
+  computed: {
+    showNotConnected() {
+      return !isAuth();
     },
   },
 }
@@ -85,47 +163,175 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 
-  .list {
-    flex: 1;
-    overflow-y: auto;
-
-    .message {
-      display: flex;
-      justify-content: space-between;
+  .not-connected {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: none;
+    &.show {
+      opacity: 1;
+      visibility: visible;
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
 
-      .message__text {
-        flex: 1;
-        margin-right: 10px;
-      }
-      .message__time {
-        font-size: 0.8em;
-        color: #666;
+      button {
+        margin-top: 20px;
+        background-color: $bg-color-2;
+        border: 1px solid $border-color;
+        color: $txt-color;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        border-radius: $border-radius-sm;
+
+        &:hover {
+          background-color: $bg-color-1;
+        }
       }
     }
   }
 
-  .input-container {
-    display: flex;
-    padding: 10px;
+  #new-conversation-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
 
-    input {
-      flex: 1;
+    .modal-body {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 200px;
+      background-color: $bg-color-1;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+
+      .title {
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .input {
+        width: 100%;
+        height: 50px;
+        display: flex;
+        margin: 5px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+        input {
+          width: 100%;
+          height: 100%;
+          border: 2px solid $border-color;
+          border-radius: 5px;
+          padding: 5px 10px;
+          background-color: $bg-color-2;
+          color: $txt-color;
+          font-size: 16px;
+
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      .search-result {
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+
+        .item {
+          width: 100%;
+          height: 50px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          cursor: pointer;
+          padding: 0 10px;
+
+          &:hover {
+            background-color: $bg-color-2;
+          }
+
+          .picture {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          .info {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 5px;
+
+            .name {
+              font-size: 16px;
+              font-weight: bold;
+            }
+          }
+
+          &.disabled {
+            opacity: 0.5;
+          }
+        }
+      }
+
+      .no-result {
+        padding: 10px;
+        color: $txt-color;
+      }
     }
 
-    button {
-      margin-left: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #ccc;
-      cursor: pointer;
+    &:not(.show) {
+      display: none;
+    }
+
+    &.show {
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
   }
 }

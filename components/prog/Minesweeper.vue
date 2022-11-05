@@ -21,11 +21,10 @@
 </template>
 <script lang="js">
 import MainGrid from "./minesweeper/MainGrid.vue";
-import Timer from "./minesweeper/Timer.vue";
 export default {
     name: 'Minesweeper',
     components: {
-        MainGrid, Timer,
+        MainGrid,
     },
     data() {
         return {

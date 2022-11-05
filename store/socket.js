@@ -1,11 +1,14 @@
+import { getAuth } from 'firebase/auth';
 import { defineStore } from 'pinia'
 import io from 'socket.io-client'
 import WsEvent from '~~/server/models/ws_event';
+import { useChatStore } from './chat';
 
 export const useSocketStore = defineStore({
     id: 'socket',
     state: () => ({
         socket: null,
+        connectedWithUser: false,
         messages: [],
     }),
     getters: {
@@ -22,8 +25,14 @@ export const useSocketStore = defineStore({
             }
             this.socket = io();
 
-            this.socket.on('connect', () => {
+            this.socket.on('connect', async () => {
                 console.log('connected');
+                // Send a message to the server to identify this client
+                this.socket.emit('identity', {
+                    id: 'client',
+                    type: 'client',
+                    auth: getAuth().currentUser,
+                });
             });
 
             this.socket.on('disconnect', () => {
@@ -31,22 +40,33 @@ export const useSocketStore = defineStore({
             });
 
             this.socket.on('message', (message) => {
-                this.messages.push(message);
+                useChatStore().receiveMessage(message);
+            });
+
+            this.socket.on(WsEvent.TYPES.NEW_CONVERSATION, (conversation) => {
+                useChatStore().onNewConversation(conversation);
+            });
+
+            // on identity response
+            this.socket.on('identity', (msg) => {
+                console.log('identity', msg);
+                this.connectedWithUser = msg?.success || false;
             });
 
             this.socket.on('init', (init) => {
-                this.messages = init.messages;
+                useChatStore().onInitFromSocket(init);
             });
         },
-        async send(message) {
+        async send(message, type = WsEvent.TYPES.MESSAGE) {
             const firebaseUser = useFirebaseUser();
             const event = new WsEvent({
                 userId: firebaseUser?.value?.uid || null,
-                type: 'message',
+                type: type,
                 data: message,
                 createdAt: new Date(),
             });
-            console.log(this.socket.emit('message', event));
+
+            this.socket.emit('message', event);
         },
         disconnect() {
             this.socket.disconnect();
