@@ -1,4 +1,5 @@
 import { getAuth } from "firebase/auth";
+import ConversationMessage from "./ConversationMessage";
 
 export default class Conversation {
     constructor(id, displayName, picture, lastMessage, isOnline) {
@@ -23,15 +24,30 @@ export default class Conversation {
 
     static fromSocket(data) {
         const users = data.users;
+        const messages = data?.messages || [];
         // get the other user
+        console.log(messages);
         const dataFromUser = users.find((u) => u.uid !== getAuth().currentUser.uid) || users[0];
-        return new Conversation(
+        const conversation = new Conversation(
             data.id,
             dataFromUser.displayName,
             dataFromUser.photoURL,
             data.lastMessage ? data.lastMessage : null,
             true,
         );
+
+        conversation.messages = messages.map((m) => new ConversationMessage(
+            m.createdAt,
+            m.content,
+            m.createdAt,
+            m.from === getAuth().currentUser.uid,
+            true
+        ));
+        // set last message
+        if (conversation.messages.length > 0) {
+            conversation.lastMessage = conversation.messages[conversation.messages.length - 1];
+        }
+        return conversation;
     }
 
     resetLastMessage(message) {

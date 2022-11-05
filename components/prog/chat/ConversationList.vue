@@ -14,8 +14,7 @@
                 :class="{ selected: selectedConversationId == conversation.id }"
                 @click="selectConversation(conversation)">
                 <div class="picture">
-                    <img :src="conversation.picture"
-                        onerror="this.onerror=null; this.src='https://www.mountsinai.on.ca/wellbeing/our-team/team-images/person-placeholder/image'">
+                    <ProgChatConversationPicture :url="conversation.picture" />
                 </div>
                 <div class="info">
                     <div class="name">
@@ -44,10 +43,12 @@
     </div>
 </template>
 <script>
-import Conversation from './Conversation';
 
 export default {
     name: 'ConversationList',
+    components: {
+        ProgChatConversationPicture: () => import('./ConversationPicture.vue'),
+    },
     props: {
         conversations: {
             type: Array,

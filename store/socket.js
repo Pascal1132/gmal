@@ -9,7 +9,6 @@ export const useSocketStore = defineStore({
     state: () => ({
         socket: null,
         connectedWithUser: false,
-        messages: [],
     }),
     getters: {
         getSocket() {

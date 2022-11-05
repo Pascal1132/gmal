@@ -11,6 +11,13 @@ export const useChatStore = defineStore({
     actions: {
         async onInitFromSocket(init) {
             this.conversations = init.conversations.map((c) => Conversation.fromSocket(c));
+            // sort conversations by last message
+            this.conversations.sort((a, b) => {
+                if (a.lastMessage && b.lastMessage) {
+                    return b.lastMessage.createdAt - a.lastMessage.createdAt;
+                }
+                return 0;
+            });
         },
         async receiveMessage(message) {
             const conversation = this.conversations.find((c) => c.id === message.conversationId);

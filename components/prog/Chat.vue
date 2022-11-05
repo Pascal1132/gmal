@@ -18,7 +18,7 @@
           <div class="item" v-for="(user, index) in users" :key="index" @click="selectUser(user)"
             :class="{ disabled: user.isAlreadyInConversation }">
             <div class="picture">
-              <img :src="user.photoURL" />
+              <ProgChatConversationPicture :url="user.photoURL" />
             </div>
             <div class="info">
               <div class="name">
@@ -42,7 +42,6 @@
 <script>
 import { mapActions } from 'pinia';
 import WsEvent from '~~/server/models/ws_event';
-import Conversation from './chat/Conversation';
 import ConversationMessage from './chat/ConversationMessage';
 
 export default {
@@ -56,6 +55,9 @@ export default {
       conversations,
       createBaseWindow,
     }
+  },
+  components: {
+    ProgChatConversationPicture: () => import('./chat/ConversationPicture.vue'),
   },
   data() {
     return {
@@ -234,7 +236,7 @@ export default {
       left: 50%;
       transform: translate(-50%, -50%);
       width: 400px;
-      height: 200px;
+      max-height: 300px;
       background-color: $bg-color-1;
       border-radius: $border-radius-sm;
       display: flex;
@@ -279,32 +281,34 @@ export default {
       .search-result {
         width: 100%;
         height: 100%;
+        min-height: 50px;
         overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
 
         .item {
           width: 100%;
-          height: 50px;
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: center;
           gap: 10px;
           cursor: pointer;
-          padding: 0 10px;
+          padding: 10px;
 
           &:hover {
             background-color: $bg-color-2;
           }
 
           .picture {
+            border-radius: 50%;
             width: 30px;
             height: 30px;
-            border-radius: 50%;
             overflow: hidden;
-
             img {
-              width: 100%;
-              height: 100%;
+              width: 30px;
+              height: 30px;
               object-fit: cover;
             }
           }
