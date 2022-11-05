@@ -14,6 +14,9 @@ export default defineEventHandler((event) => {
       const wsEvent = WsEvent.createFromMessage(msg);
       handler.handle(wsEvent, sock);
     });
+    sock.on('identity', (msg) => {
+      handler.identity(msg, sock);
+    });
   });
 
   $io.on('disconnect', (sock) => {

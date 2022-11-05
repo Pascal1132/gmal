@@ -9,6 +9,7 @@
       minimized: isMinimized,
       willMinimize: willMinimize,
       focused: isFocused,
+      isLoaded,
     }" @click="onWindowClick">
     <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
@@ -118,6 +119,10 @@ export default {
     isDraggable: {
       type: Boolean,
       default: true,
+    },
+    isLoaded: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted() {
@@ -313,12 +318,17 @@ export default {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  display: flex;
+  display: none;
   min-width: 300px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  animation: fadeIn 0.2s ease-in-out;
+
+  &.isLoaded {
+    animation: windowEnter 0.2s ease-in-out;
+    display: flex;
+
+  }
 
   &.transition {
     transition: all 0.2s ease-in-out;
@@ -462,7 +472,7 @@ export default {
   }
 }
 
-@keyframes fadeIn {
+@keyframes windowEnter {
   from {
     opacity: 0;
     transform: scale(0.8) translateY(100px);

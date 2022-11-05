@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
     const user = event.context.user;
 
     const body = await readBody(event);
-
+    const method = await getMethod(event);
     if (!user) {
         // return error 401 if user is not authenticated
         const response = {
@@ -13,19 +13,18 @@ export default defineEventHandler(async (event) => {
         }
         return response;
     }
-    
+
     let ref, snapshot, data;
-    switch (event.method) {
+    switch (method) {
         case 'GET':
-            console.log('GET');
-             ref = firestore.collection(`profiles`).doc(user?.uid);
-             snapshot = await ref.get();
-             data = snapshot.data();
+            ref = firestore.collection(`profiles`).doc(user?.uid);
+            snapshot = await ref.get();
+            data = snapshot.data();
 
             return data;
         case 'POST':
-             ref = firestore.collection(`profiles`).doc(user?.uid);             
-             snapshot = await ref.set(body);
+            ref = firestore.collection(`profiles`).doc(user?.uid);
+            snapshot = await ref.set(body);
             return snapshot;
     }
     return null;

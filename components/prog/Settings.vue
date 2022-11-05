@@ -95,6 +95,7 @@ export default {
     this.currentTab = this.defaultTab;
     this.$emit('set-window-frame', {
       id: this.windowKey,
+      isSingleInstance: true,
       title: 'Paramètres',
       size: {
         width: 700,
