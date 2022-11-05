@@ -1,10 +1,15 @@
 <template>
     <div id="conversation-view" v-if="isConversationSelected">
+        <div class="conversation-header">
+            <div class="name">{{conversation.displayName}}</div>
+            <div class="actions">
+                <div class="action" >
+                    <fa :icon="['fas', 'ellipsis-vertical']" />
+                </div>
+            </div>
+        </div>
         <div class="messages">
             <div class="message" v-for="message of messages" :key="message.id" :class="{ me: message.isMine }">
-                <!--<div class="picture">
-                    <img :src="message.picture">
-                </div>-->
                 <div class="content">
                     <div class="text">
                         {{ message.text }}
@@ -30,7 +35,7 @@
     </div>
 </template>
 <script>
-import Conversation from './Conversation';
+import { fa0 } from '@fortawesome/free-solid-svg-icons';
 import MessageStatusIcon from './MessageStatusIcon.vue';
 
 export default {
@@ -70,7 +75,7 @@ export default {
             this.msg = this.conversation?.draftMessage || "";
         },
     },
-    components: { MessageStatusIcon }
+    components: { MessageStatusIcon, fa0 }
 }
 </script>
 <style lang="scss" scoped>
@@ -80,6 +85,29 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    .conversation-header {
+        padding: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        background-color: $bg-color-2;
+
+        .name {
+            display: inline-block;
+            width: calc(100% - 50px);
+        }
+
+        .actions {
+            display: inline-block;
+            width: 50px;
+            padding-right: 5px;
+            text-align: right;
+
+            .action {
+                cursor: pointer;
+            }
+        }
+    }
 
     .messages {
         flex-direction: column;
