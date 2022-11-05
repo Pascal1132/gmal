@@ -1,5 +1,5 @@
 <template>
-  <div id="chat">
+  <div id="chat" :class="{small: isSmall, medium: isMedium}">
     <div class="not-connected" :class="{show: showNotConnected}">
       <h1>Vous n'êtes pas connecté</h1>
       <p>Pour accéder au chat, vous devez être connecté.</p>
@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    <ProgChatConversationList @on-select-conversation="onSelectConversation" @new-conversation="showPopup"
+    <ProgChatConversationList @on-select-conversation="onSelectConversation" @new-conversation="showPopup" :isSmall="isSmall" :isMedium="isMedium"
       :conversations="conversations" :selected-conversation-id="selectedConversationId" @send-message="sendMessage" />
   </div>
 </template>
@@ -71,6 +71,14 @@ export default {
       type: Number,
       default: 0,
     },
+    isSmall: {
+      type: Boolean,
+      required: true,
+    },
+    isMedium: {
+      type: Boolean,
+      required: true,
+    },
   },
   mounted() {
     // Check if user is connected
@@ -81,7 +89,7 @@ export default {
       size: {
         width: 700,
         height: 500,
-        minWidth: 600,
+        minWidth: 400,
         minHeight: 400,
       },
       iconPath: 'images/programs/chat.png',
@@ -155,6 +163,20 @@ export default {
       return !isAuth();
     },
   },
+  // watch isSmall and isMedium to change the size of the window
+  watch: {
+    isSmall: {
+      handler(isSmall) {
+      },
+      immediate: true,
+    },
+    isMedium: {
+      handler(isMedium) {
+
+      },
+      immediate: true,
+    },
+  },
 }
 </script>
 
@@ -190,8 +212,6 @@ export default {
         padding: 10px;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
-        border-radius: $border-radius-sm;
-
         &:hover {
           background-color: $bg-color-1;
         }
@@ -216,7 +236,7 @@ export default {
       width: 400px;
       height: 200px;
       background-color: $bg-color-1;
-      border-radius: 10px;
+      border-radius: $border-radius-sm;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -243,7 +263,7 @@ export default {
           width: 100%;
           height: 100%;
           border: 2px solid $border-color;
-          border-radius: 5px;
+          border-radius: 3px;
           padding: 5px 10px;
           background-color: $bg-color-2;
           color: $txt-color;

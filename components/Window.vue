@@ -4,6 +4,11 @@
     height: height + 'px',
     top: y + 'px',
     left: x + 'px',
+    // CSS variables
+    '--window-width': width + 'px',
+    '--window-height': height + 'px',
+    '--window-x': x + 'px',
+    '--window-y': y + 'px',
   }" :class="{
       draggable: isDraggable,
       minimized: isMinimized,
@@ -34,7 +39,7 @@
     </div>
     <div class="window-body" @mousedown="resizeStart">
       <div class="window-content">
-        <slot :isSmall="isSmall"></slot>
+        <slot :isSmall="isSmall" :isMedium="isMedium"></slot>
       </div>
     </div>
     <div class="window-footer" @mousedown="resizeStart"></div>
@@ -264,7 +269,6 @@ export default {
         this.$refs.window.classList.remove('transition');
       }, 200);
       this.isFullScreen = !this.isFullScreen;
-
     },
     minimize() {
       this.willMinimize = true;
@@ -307,6 +311,9 @@ export default {
   computed: {
     isSmall() {
       return this.width < 600 || window.innerWidth < 600
+    },
+    isMedium() {
+      return this.width < 800 || window.innerWidth < 800
     },
   }
 }
