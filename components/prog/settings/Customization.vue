@@ -116,6 +116,7 @@ export default {
       reader.onload = (e) => {
         this.setTheme({
           bg: `url(${e.target.result})`,
+          bgData: e.target.result,
           name: 'custom',
         });
       };
@@ -142,7 +143,7 @@ export default {
   mounted(){
     onAuthStateChanged(getAuth(), (user) => {
         if (user) {
-          this.fetchTheme();
+          this.fetchTheme(true);
         }
     });
   },

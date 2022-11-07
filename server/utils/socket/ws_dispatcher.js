@@ -27,6 +27,8 @@ export class WSHandler {
             case WsEvent.TYPES.NEW_MESSAGE:
                 this.messageHandler.handleNewMessage(event, sock);
                 break;
+            case WsEvent.TYPES.DELETE_CONVERSATION:
+                this.messageHandler.handleDeleteConversation(event, sock);
             default:
                 break;
         }

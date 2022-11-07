@@ -7,8 +7,8 @@ export default {
     name: "ConversationPicture",
     props: {
         url: {
-            type: Object,
-            required: true,
+            type: String,
+            default: null,
         },
     },
 }

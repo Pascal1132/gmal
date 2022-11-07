@@ -26,8 +26,10 @@ export default class Conversation {
         const users = data.users;
         const messages = data?.messages || [];
         // get the other user
-        console.log(messages);
         const dataFromUser = users.find((u) => u.uid !== getAuth().currentUser.uid) || users[0];
+        if (!dataFromUser) {
+            return null;
+        }
         const conversation = new Conversation(
             data.id,
             dataFromUser.displayName,
@@ -41,7 +43,9 @@ export default class Conversation {
             m.content,
             m.createdAt,
             m.from === getAuth().currentUser.uid,
-            true
+            true,
+            m.isRead || false,
+            m.number,
         ));
         // set last message
         if (conversation.messages.length > 0) {

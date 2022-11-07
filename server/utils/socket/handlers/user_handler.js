@@ -16,7 +16,7 @@ export default class UserHandler{
     }
 
     async handleIdentity(msg, sock) {
-        if (!msg || !msg.auth.uid) {
+        if (!msg || !msg.auth?.uid) {
             return false;
         }
         const user = await this.getUser(msg.auth.uid);

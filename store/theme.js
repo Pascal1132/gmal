@@ -18,17 +18,37 @@ export const useThemeStore = defineStore({
             this.currentTheme = tmp;
             return result;
         },
-        async fetchTheme() {
+        async fetchTheme(waitForBackground = false) {
             let result;
             try {
                 result = await firestoreFetch('theme', false);
                 if (result) {
                     this.currentTheme = { ...this.currentTheme, ...(result) };
+                    if (waitForBackground) {
+                        await this.fetchBackground();
+                    }
                 }
             } catch (err) {
                 console.warn('Cannot fetch theme', err);
             }
             return result;
+        },
+        async fetchBackground() {
+            const styleBgAttribute = this.currentTheme.bg;
+            if (styleBgAttribute) {
+                try {
+                    const url = styleBgAttribute.split('url(')[1].split(')')[0];
+                    // fetch the image from the url
+                    const image = new Image();
+                    image.src = url;
+                    // wait for the image to load
+                    await new Promise((resolve, reject) => {
+                        image.onload = resolve;
+                        image.onerror = reject;
+                    });
+                } catch (err) {
+                }
+            }
         }
     },
 })
