@@ -353,12 +353,14 @@ export default {
     .message-group {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         width: 100%;
         margin-bottom: 10px;
         padding: 0 5px;
         
         .date {
+            width: 100%;
+            text-align: center;
             font-size: 0.8em;
             color: $txt-color;
             filter: brightness(0.5);
