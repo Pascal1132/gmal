@@ -23,12 +23,10 @@ import { useWindowsStore } from '../store/windows'
 export default {
   setup() {
     const { getWindows, getActiveWindowId, closeWindow } = useWindowsStore();
-    const { fetchTheme } = useThemeStore();
     return {
       getWindows,
       getActiveWindowId,
       closeWindow,
-      fetchTheme
     }
   },
   head() {
@@ -67,7 +65,6 @@ export default {
       this.setWindow(data.id, data);
     },
     ...mapActions(useWindowsStore, ['setWindow']),
-    ...mapActions(useThemeStore, ['fetchTheme']),
   },
   computed: {
     generateStyleFromTheme() {

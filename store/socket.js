@@ -46,6 +46,10 @@ export const useSocketStore = defineStore({
                 useChatStore().onNewConversation(conversation);
             });
 
+            this.socket.on(WsEvent.TYPES.DELETE_CONVERSATION, (conversationId) => {
+                useChatStore().onDeleteConversation(conversationId);
+            });
+
             // on identity response
             this.socket.on('identity', (msg) => {
                 console.log('identity', msg);

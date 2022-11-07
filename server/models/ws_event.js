@@ -3,6 +3,7 @@ export default class WsEvent {
         MESSAGE: 'message',
         NEW_CONVERSATION: 'new-conversation',
         NEW_MESSAGE: 'new-message',
+        DELETE_CONVERSATION: 'delete-conversation',
     };
 
     // properties: raw, userId, type, data, createdAt
