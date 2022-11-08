@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
             return data;
         case 'POST':
             ref = firestore.collection(`profiles`).doc(user?.uid);
-            snapshot = await ref.set(body);
+            snapshot = await ref.update(body);
             return snapshot;
     }
     return null;

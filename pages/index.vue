@@ -2,6 +2,7 @@
   <main class="theme-definer" :class="[currentTheme.interface]" :style="generateStyleFromTheme">
     <GmalLoader :loading="!initialized" />
     <div>
+      <Notifications />
       <Window v-for="window in windows" :key="window.id" v-bind="window" :isFocused="activeWindowId == window.id"
         :isMinimized="window.isMinimized" v-slot="slotProps">
         <Component :is="resolveComponent(window.component)" :windowKey="window.id"

@@ -11,6 +11,7 @@ export default class MessageHandler {
     async initConnection(sock) {
         if (sock.user) {
             const conversations = await this.fetchConversationList(sock.user.uid, true, true, true);
+
             return {
                 messages: this.messages,
                 conversations: conversations,

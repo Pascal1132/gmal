@@ -99,6 +99,10 @@ export default {
       },
       iconPath: 'images/programs/chat.png',
     });
+    // if there is a minimum of one conversation, select the first one
+    if (this.conversations.length > 0) {
+      this.selectedConversationId = this.conversations[0].id;
+    }
   },
   methods: {
     ...mapActions(useUsersStore, ['searchUsersByDisplayName']),
@@ -137,7 +141,7 @@ export default {
         (conversation) => conversation.id === this.selectedConversationId,
       );
       const date = new Date();
-      conversation.addMessage(new ConversationMessage(date.toISOString, message, date, true));
+      conversation.addMessage(new ConversationMessage(date.toISOString, message, date, true, false, false, null));
       this.send({
         content: message,
         to: this.selectedConversationId,

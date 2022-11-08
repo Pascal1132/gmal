@@ -2,6 +2,7 @@ import { getAuth } from 'firebase/auth';
 import { defineStore } from 'pinia'
 import Conversation from '~~/components/prog/chat/Conversation';
 import ConversationMessage from '~~/components/prog/chat/ConversationMessage';
+import { useNotificationsStore } from './notifications';
 
 export const useChatStore = defineStore({
     id: 'chat',
@@ -36,15 +37,24 @@ export const useChatStore = defineStore({
                     message.content,
                     message.createdAt,
                     message.from === getAuth().currentUser.uid,
-                    true
+                    true,
+                    message.number,
                 );
-                if (temp.isMine) {
+                // if the temp message is equal to the last message, don't add it
+                if (conversation.lastMessage.isOnline && conversation.lastMessage.number == temp.number && conversation.lastMessage.createdAt == temp.createdAt) {
+                    return;
+                }
+                if (temp.isMine && conversation.lastMessage?.number == null) {
                     // remove the last message
                     conversation.resetLastMessage(temp);
                 } else {
                     conversation.addMessage(
                         temp
                     );
+
+                    useNotificationsStore().addNotification({
+                        html: `<div style="display: flex; gap: 5px; align-items:center"><img height="30" style="border-radius: 5px; margin: 0 5px" src="${conversation.picture}"/><strong>${conversation.displayName}</strong>: ${temp.text}</div>`,
+                    });
                 }
             }
             // Set this conversation as the first one
@@ -60,7 +70,6 @@ export const useChatStore = defineStore({
             this.conversations.push(Conversation.fromSocket(conversation));
         },
         async onDeleteConversation({conversationId}) {
-            console.log('onDeleteConversation', conversationId);
             const index = this.conversations.findIndex((c) => c.id === conversationId);
             if (index !== -1) {
                 this.conversations.splice(index, 1);
@@ -70,15 +79,6 @@ export const useChatStore = defineStore({
             const conversation = this.conversations.find((c) => c.id === conversationId);
             if (conversation) {
                 const messages = await firestoreFetch('old_messages?conversationId=' + conversationId + '&offset=' + conversation.messages.length, true);
-                /*conversation.messages = conversation.messages.concat(messages.map((m) => new ConversationMessage(
-                    m.createdAt,
-                    m.content,
-                    m.createdAt,
-                    m.from === getAuth().currentUser.uid,
-                    true,
-                    m.isRead || false,
-                    m.number,
-                )));*/
                 // add to the beginning instead of the end
                 conversation.messages = messages.map((m) => new ConversationMessage(
                     m.createdAt,
