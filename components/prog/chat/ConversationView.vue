@@ -40,10 +40,6 @@
                             <div class="text">
                                 {{ message.text }}
                             </div>
-                            <!--<div class="time">
-                                {{ message. }}
-                                <MessageStatusIcon :message="message" />
-                            </div>-->
                         </div>
                     </div>
                 </div>

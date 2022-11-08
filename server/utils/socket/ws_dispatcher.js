@@ -49,8 +49,6 @@ export class WSHandler {
             if (!(sock.user) || (include.length > 0 && !include.includes(sock.user.uid)) || exclude.includes(sock.user.uid)) {
                 return;
             }
-            // add uid to exclude list
-            exclude.push(sock.user.uid);
             sock.emit(type, event);
         });
     }

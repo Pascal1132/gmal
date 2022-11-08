@@ -25,7 +25,6 @@ export const useSocketStore = defineStore({
             this.socket = io();
 
             this.socket.on('connect', async () => {
-                console.log('connected');
                 // Send a message to the server to identify this client
                 this.socket.emit('identity', {
                     id: 'client',
