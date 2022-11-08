@@ -25,7 +25,6 @@ export const useSocketStore = defineStore({
             this.socket = io();
 
             this.socket.on('connect', async () => {
-                console.log('connected');
                 // Send a message to the server to identify this client
                 this.socket.emit('identity', {
                     id: 'client',
@@ -44,6 +43,10 @@ export const useSocketStore = defineStore({
 
             this.socket.on(WsEvent.TYPES.NEW_CONVERSATION, (conversation) => {
                 useChatStore().onNewConversation(conversation);
+            });
+
+            this.socket.on(WsEvent.TYPES.DELETE_CONVERSATION, (conversationId) => {
+                useChatStore().onDeleteConversation(conversationId);
             });
 
             // on identity response

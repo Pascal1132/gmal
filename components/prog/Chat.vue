@@ -36,7 +36,8 @@
       </div>
     </div>
     <ProgChatConversationList @on-select-conversation="onSelectConversation" @new-conversation="showPopup" :isSmall="isSmall" :isMedium="isMedium"
-      :conversations="conversations" :selected-conversation-id="selectedConversationId" @send-message="sendMessage" />
+      :conversations="conversations" :selected-conversation-id="selectedConversationId" @send-message="sendMessage"
+      @delete-selected-conversation="deleteSelectedConversation" @load-more-messages="loadMoreMessages" />
   </div>
 </template>
 <script>
@@ -48,11 +49,12 @@ export default {
   name: 'Chat',
   setup() {
     const { send } = useSocketStore();
-    const { conversations } = useChatStore();
+    const { conversations, fetchOldMessages} = useChatStore();
     const { createBaseWindow } = useWindowsStore();
     return {
       send,
       conversations,
+      fetchOldMessages,
       createBaseWindow,
     }
   },
@@ -66,6 +68,7 @@ export default {
       selectedConversationId: null,
       isPopupShowed: false,
       isLoading: false,
+      searchString: '',
     }
   },
   props: {
@@ -96,6 +99,10 @@ export default {
       },
       iconPath: 'images/programs/chat.png',
     });
+    // if there is a minimum of one conversation, select the first one
+    if (this.conversations.length > 0) {
+      this.selectedConversationId = this.conversations[0].id;
+    }
   },
   methods: {
     ...mapActions(useUsersStore, ['searchUsersByDisplayName']),
@@ -134,7 +141,7 @@ export default {
         (conversation) => conversation.id === this.selectedConversationId,
       );
       const date = new Date();
-      conversation.addMessage(new ConversationMessage(date.toISOString, message, date, true));
+      conversation.addMessage(new ConversationMessage(date.toISOString, message, date, true, false, false, null));
       this.send({
         content: message,
         to: this.selectedConversationId,
@@ -158,7 +165,16 @@ export default {
       e.preventDefault();
       e.stopPropagation();
         this.createBaseWindow('ProgSettings', { defaultTab: 'account' })
-    }
+    },
+    deleteSelectedConversation() {
+      this.send({
+        conversationId: this.selectedConversationId,
+      }, WsEvent.TYPES.DELETE_CONVERSATION);
+      this.selectedConversationId = null;
+    },
+    loadMoreMessages() {
+      this.fetchOldMessages(this.selectedConversationId);
+    },
   },
   computed: {
     showNotConnected() {
@@ -178,6 +194,9 @@ export default {
       },
       immediate: true,
     },
+    showNotConnected() {
+      
+    },
   },
 }
 </script>
@@ -188,6 +207,7 @@ export default {
   flex-direction: column;
   height: 100%;
   width: 100%;
+  
 
   .not-connected {
     position: absolute;
@@ -195,8 +215,9 @@ export default {
     left: 0;
     width: 100%;
     height: calc(100% - 40px);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba($hex-bg-color-0, 0.8);
     z-index: 100;
+    backdrop-filter: blur(5px);
     display: none;
     &.show {
       opacity: 1;
@@ -211,7 +232,8 @@ export default {
         background-color: $bg-color-2;
         border: 1px solid $border-color;
         color: $txt-color;
-        padding: 10px;
+        padding: 5px 10px;
+        border-radius: 5px;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
         &:hover {

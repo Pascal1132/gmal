@@ -38,7 +38,8 @@
         </div>
         <div id="view">
             <ProgChatConversationView :conversation="selectedConversation" :isSmall="isSmall" :isMedium="isMedium"
-                @send="(msg) => $emit('send-message', msg)" />
+                @send="(msg) => $emit('send-message', msg)" @delete-selected-conversation="()=>$emit('delete-selected-conversation')"
+                @load-more-messages="()=>$emit('load-more-messages')" @new-conversation="newConversation()"/>
         </div>
     </div>
 </template>
@@ -152,8 +153,6 @@ export default {
             gap: 5px;
             cursor: pointer;
             transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out, border-left-width 0.1s ease-in-out;
-
-            &:hover {}
 
             .picture {
                 img {
@@ -290,6 +289,10 @@ export default {
                     height: 20px;
                     font-size: 15px;
                 }
+            }
+
+            .no-conversation {
+                display: none;
             }
         }
     }

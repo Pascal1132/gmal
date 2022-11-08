@@ -9,7 +9,7 @@ export const useInitializerStore = defineStore({
         async init(user) {
             const { fetchTheme } = useThemeStore();
             const { connect } = useSocketStore();
-            await fetchTheme(user);
+            await fetchTheme(true);
             await connect();
             this.initialized = true;
         }

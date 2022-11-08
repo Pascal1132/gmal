@@ -27,6 +27,8 @@ export class WSHandler {
             case WsEvent.TYPES.NEW_MESSAGE:
                 this.messageHandler.handleNewMessage(event, sock);
                 break;
+            case WsEvent.TYPES.DELETE_CONVERSATION:
+                this.messageHandler.handleDeleteConversation(event, sock);
             default:
                 break;
         }
@@ -47,8 +49,6 @@ export class WSHandler {
             if (!(sock.user) || (include.length > 0 && !include.includes(sock.user.uid)) || exclude.includes(sock.user.uid)) {
                 return;
             }
-            // add uid to exclude list
-            exclude.push(sock.user.uid);
             sock.emit(type, event);
         });
     }

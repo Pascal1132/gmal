@@ -16,7 +16,7 @@ export default class UserHandler{
     }
 
     async handleIdentity(msg, sock) {
-        if (!msg || !msg.auth.uid) {
+        if (!msg || !msg.auth?.uid) {
             return false;
         }
         const user = await this.getUser(msg.auth.uid);
@@ -25,11 +25,12 @@ export default class UserHandler{
         const existingConnections = this.dispatcher.connections.filter((sock) => sock.user?.uid === msg.auth.uid);
         if (existingConnections.length > 0) {
             // disconnect existing connections
-            existingConnections.forEach((sock) => {
+            /*existingConnections.forEach((sock) => {
                 sock.disconnect();
             });
             // remove existing connections
             this.dispatcher.connections = this.dispatcher.connections.filter((sock) => sock.user?.uid !== msg.auth.uid);
+            */
         }
         
         // safe check if the user in msg.auth is the same as the user in the database
