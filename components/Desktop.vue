@@ -42,7 +42,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useWindowsStore, ['setActiveWindow']),
     contextMenuClick(e) {
       if (e.target.classList.contains('launcher') || e.target.parentElement.classList.contains('launcher')) {
         this.currentContextMenuElementSelected = e.currentTarget.querySelector('.context-menu-properties')?.innerHTML ?? null;
@@ -181,7 +180,7 @@ export default {
   align-items: flex-start;
   align-content: flex-start;
   gap: 5px;
-  height: $height-no-bottom-nav;
+  height: 100%;
   color: white;
   background-size: cover;
   background-position: center;

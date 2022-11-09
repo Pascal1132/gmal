@@ -9,7 +9,7 @@ export default class ConversationMessage {
         this.number = number;
     }
 
-    getReadableTime() {
-        return getRelativeTime(this.createdAt);
+    getReadableTime(full = true) {
+        return getRelativeTime(this.createdAt, full);
     }
 }

@@ -10,12 +10,12 @@
     '--window-x': x + 'px',
     '--window-y': y + 'px',
   }" :class="{
-      draggable: isDraggable,
-      minimized: isMinimized,
-      willMinimize: willMinimize,
-      focused: isFocused,
-      isLoaded,
-    }" @click="onWindowClick">
+  draggable: isDraggable,
+  minimized: isMinimized,
+  willMinimize: willMinimize,
+  focused: isFocused,
+  isLoaded,
+}" @click="onWindowClick">
     <div class="window-header" @mousedown="setItCurrentDrag" @dblclick="toggleFullScreen">
       <div class="window-title">
         <img v-if="iconPath" :src="iconPath" class="window-favicon" />
@@ -23,15 +23,15 @@
       </div>
       <div class="window-controls">
         <div class="window-controls-right">
-          <div class="window-control" @click="minimize()">
+          <div class="window-control" @click="minimize">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <line x1="10" y1="50" x2="90" y2="50" stroke="white" stroke-width="7px" />
             </svg>
           </div>
-          <div class="window-control fullscreen-toggle" @click="toggleFullScreen()">
+          <div class="window-control fullscreen-toggle" @click="toggleFullScreen">
             <fa :icon="['far', 'square']" />
           </div>
-          <div class="window-control close" @click="close()">
+          <div class="window-control close" @click="close">
             <fa :icon="['fas', 'xmark']" />
           </div>
         </div>
@@ -238,11 +238,15 @@ export default {
         this.height = e.clientY - this.y;
       }
     },
-    close() {
+    close(e) {
+      e.stopPropagation();
       this.closeWindow(this.id);
       this.$emit('closed-window', this.id);
     },
-    toggleFullScreen() {
+    toggleFullScreen(e) {
+      if (e) {
+        e.stopPropagation();
+      }
       this.$refs.window.classList.toggle('fullscreen');
       // add transition class
       this.$refs.window.classList.add('transition');
@@ -270,7 +274,9 @@ export default {
       }, 200);
       this.isFullScreen = !this.isFullScreen;
     },
-    minimize() {
+    minimize(e) {
+      e.stopPropagation();
+      e.preventDefault();
       this.willMinimize = true;
       this.setMinimized(this.id, true);
     },
@@ -306,7 +312,7 @@ export default {
       this.setActiveWindow(this.id);
     },
     ...mapActions(useWindowsStore, ['setMinimized', 'setWindow', 'setActiveWindow']),
-    
+
   },
   computed: {
     isSmall() {
@@ -369,19 +375,26 @@ export default {
 
   // on screen mobile, force fullscreen
   @media (max-width: 768px) {
-    width: 100% !important;
-    height: $height-no-bottom-nav !important;
-    border-radius: 0;
-
-    .window-header {
+    &,
+    &.fullscreen {
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 300;
       border-radius: 0;
 
-      .window-controls .window-controls-right .window-control:last-child {
-        border-top-right-radius: 0;
-      }
+      .window-header {
+        border-radius: 0;
 
-      .fullscreen-toggle {
-        display: none !important;
+        .window-controls .window-controls-right .window-control:last-child {
+          border-top-right-radius: 0 !important;
+        }
+
+        .fullscreen-toggle {
+          display: none !important;
+        }
       }
     }
   }

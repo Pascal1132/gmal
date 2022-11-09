@@ -1,12 +1,13 @@
 <template>
     <div>
         <LazyCalendar :show="showCalendar" v-if="loaded"></LazyCalendar>
-        <div class="bottom-bar">
+        <div class="bottom-bar" :class="{ 'hide-on-mobile': hideOnMobile }">
             <div class="left">
-                <div class="toggle-menu icon" @click="toggleMenu()">
+                <div class="toggle-menu icon" @click="toggleMenu">
                     <fa :icon="['fab', 'windows']" />
                 </div>
-                <div class="icon" v-for="(menu, index) in bottomLeftMenu" :key="index" @click="createBaseWindow(menu.program)">
+                <div class="icon" v-for="(menu, index) in bottomLeftMenu" :key="index"
+                    @click="createBaseWindow(menu.program)">
                     <img :src="menu.imagePath" format="webp" />
                 </div>
                 <div class="label" v-for="window in windows" :key="window.id" @click="onWindowClick(window.id)"
@@ -46,7 +47,8 @@ export default {
     },
     methods: {
         ...mapActions(useWindowsStore, ['openWindow', 'setActiveWindow', 'createBaseWindow', 'setMinimized']),
-        toggleMenu() {
+        toggleMenu(e) {
+            e.stopPropagation();
             this.$emit('toggle-menu')
         },
         toggleCalendar() {
@@ -61,8 +63,9 @@ export default {
             var month = date.getMonth() + 1
             month = month < 10 ? '0' + month : month
             var year = date.getFullYear()
-            minutes = minutes < 10 ? '0' + minutes : minutes
-            seconds = seconds < 10 ? '0' + seconds : seconds
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            day = day < 10 ? '0' + day : day;
             var strTime = hours + ':' + minutes
             this.currentTime = {
                 time: strTime,
@@ -70,8 +73,8 @@ export default {
             }
         },
         onWindowClick(id) {
-             this.setActiveWindow(id);
-             this.setMinimized(id, false);
+            this.setActiveWindow(id);
+            this.setMinimized(id, false);
         },
     },
 
@@ -95,7 +98,18 @@ export default {
         }
     },
     computed: {
+        hideOnMobile() {
+            // if the active window id is not null and minimum a window isMinimied = false
+            return this.activeWindowId !== null;
+        },
         ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
+    },
+    watch: {
+        hideOnMobile: {
+            handler: function (val) {
+            },
+            immediate: true
+        },
     },
 }
 </script>
@@ -110,6 +124,7 @@ export default {
     z-index: 100;
     background-color: $bg-color-1;
     height: 50px;
+    transition: transform 0.3s ease-in-out;
 
     .left {
         display: flex;
@@ -228,6 +243,22 @@ export default {
                 border: 1px solid rgba(125, 125, 125, 0.18);
             }
         }
+    }
+
+    @media screen and (max-width: 768px) {
+        justify-content: center;
+        transform: scale(1.3);
+        transform-origin: bottom center;
+
+        &.hide-on-mobile {
+            transform: translateY(100%);
+        }
+
+        // hide the clock on mobile
+        .clock {
+            display: none !important;
+        }
+
     }
 }
 

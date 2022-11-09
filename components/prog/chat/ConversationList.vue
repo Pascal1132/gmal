@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="last-message-time" v-if="conversation.lastMessage">
-                    {{ conversation.lastMessage.getReadableTime() }}
+                    {{ conversation.lastMessage.getReadableTime(false) }}
                 </div>
             </div>
             <div v-if="conversations.length < 1">

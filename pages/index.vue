@@ -57,7 +57,7 @@ export default {
         if (window) {
           this.closeWindow(data.id);
           this.$nextTick(() => {
-            this.activeWindowId = window.id;
+            this.setActiveWindow(window.id);
           });
           return;
         }
@@ -65,7 +65,7 @@ export default {
       data.isLoaded = true;
       this.setWindow(data.id, data);
     },
-    ...mapActions(useWindowsStore, ['setWindow']),
+    ...mapActions(useWindowsStore, ['setWindow', 'setActiveWindow']),
   },
   computed: {
     generateStyleFromTheme() {
