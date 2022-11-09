@@ -39,7 +39,7 @@ export const useWindowsStore = defineStore({
                 params: windowParams,
             };
             this.windows.push(data);
-            this.activeWindowId = id;
+            this.setActiveWindow(id);
         },
         openWindow(payload) {
             this.windows.push(payload);
@@ -54,8 +54,8 @@ export const useWindowsStore = defineStore({
             const window = this.windows.find((window) => window.id === id);
             if (window) {
                 window.isMinimized = isMinimized;
+                this.activeWindowId = (isMinimized) ? null : window.id;
             }
-            this.activeWindowId = (window.isMinimized) ? null : window.id;
         },
         /**
          * Set active window
@@ -63,15 +63,18 @@ export const useWindowsStore = defineStore({
          */
         setActiveWindow(id) {
             this.activeWindowId = id;
+            // if the window is minimized, unminimize it
+            this.setMinimized(id, false);
         },
         /**
          * Close window
          * @param {Number} id
          */
         closeWindow(id) {
+            if (this.activeWindowId == id) {
+                this.setActiveWindow(null);
+            }
             this.windows = this.windows.filter((window) => window.id !== id);
-            // Set active window to the last window
-            this.activeWindowId = this.windows.length > 0 ? this.windows[this.windows.length - 1].id : null;
         },
         /**
          * Set window
@@ -82,6 +85,6 @@ export const useWindowsStore = defineStore({
                 Object.assign(window, payload);
             }
         }
-        
+
     },
 });

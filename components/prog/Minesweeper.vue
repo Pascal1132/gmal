@@ -169,7 +169,7 @@ export default {
     justify-content: flex-start;
     width: 100%;
     overflow: auto;
-    height: calc(100% - 140px);
+    height: 100%;
     gap: 10px;
     padding: 0 10px;
   }

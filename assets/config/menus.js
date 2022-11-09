@@ -1,13 +1,8 @@
 export const bottomBarMenu = [
     {
-        name: 'File Explorer',
-        imagePath: '/images/file_explorer.ico',
-        program: 'ProgFileExplorer'
-    },
-    {
-        name: 'Browser',
-        imagePath: '/images/chrome.png',
-        program: 'ProgBrowser'
+        name: 'Paramètres',
+        imagePath: '/images/settings.png',
+        program: 'ProgSettings',
     },
     {
         name: 'Chat',
@@ -21,11 +16,6 @@ export const mainMenu = [
         imagePath: '/images/minesweeper.png',
         program: 'ProgMinesweeper',
     },
-    /*{
-        title: 'Tétris',
-        imagePath: '/images/tetris.png',
-        program: 'ProgTetris',
-    },*/
     {
         title: 'Terminal',
         imagePath: '/images/programs/terminal.ico',
@@ -45,5 +35,10 @@ export const mainMenu = [
         title: 'Paramètres',
         imagePath: '/images/settings.png',
         program: 'ProgSettings',
+    },
+    {
+        title: 'Chat',
+        imagePath: '/images/programs/chat.png',
+        program: 'ProgChat'
     },
 ];

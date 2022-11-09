@@ -162,7 +162,7 @@ export default {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     bottom: 50px;
-    transform: translateY(110%);
+    transform: translateY(120%);
     z-index: 99;
     margin: 10px;
     border: 1.5px solid $border-color;
@@ -278,6 +278,34 @@ export default {
                     margin-left: 10px;
                 }
             }
+        }
+    }
+
+    // on mobile take the full screen
+    @media (max-width: 768px) {
+        width: calc(100% - 20px);
+        height: calc(100% - 10px);
+        max-height: 100%;
+        max-width: 100%;
+        bottom: 0;
+        transform: translateY(100%);
+        margin: 10px 0 0 10px;
+        padding: 0;
+
+        // increase the search-bar height
+        .menu-header {
+            padding: 30px 30px 0 30px;
+
+            .search-bar {
+                height: 50px;
+            }
+
+            margin-bottom: 15px;
+        }
+
+        .menu-list .menu-item {
+            transform: scale(1.2);
+            transform-origin: top left;
         }
     }
 

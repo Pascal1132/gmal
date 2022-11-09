@@ -91,6 +91,7 @@ export default {
       id: this.windowKey,
       title: 'Chat',
       isMinimized: false,
+      isSingleInstance: true,
       size: {
         width: 700,
         height: 500,
