@@ -6,9 +6,13 @@ export default defineEventHandler(async (event) => {
     if (!user) {
         return {};
     }
-    const ref = firestore.collection(`themes`).doc(user?.uid);
-    const snapshot = await ref.get();
-    const data = snapshot.data();
-    
-    return data;
+    try {
+        const ref = firestore.collection(`themes`).doc(user?.uid);
+        const snapshot = await ref.get();
+        const data = snapshot.data();
+        return data;
+    } catch (err) {
+        console.warn(err)
+    }
+    return {};
 });

@@ -256,6 +256,7 @@ export default {
 #conversation-view {
     height: 100%;
     overflow-y: auto;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

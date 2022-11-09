@@ -1,5 +1,5 @@
 <template>
-    <div id="conversation-list" :class="{ small: isSmall, medium: isMedium }">
+    <div id="conversation-list" :class="{ small: !(!isSmall || showConversationListFull), medium: isMedium }">
         <div id="list">
             <!-- new conversation button -->
             <div class="new-conversation" @click="newConversation">
@@ -35,11 +35,20 @@
                     Aucune conversation
                 </div>
             </div>
+            <div v-if="isSmall" class="icon-list-full" @click="showConversationListFull = !showConversationListFull">
+                <span class="opened">
+                    <fa :icon="['fas', 'chevron-right']" />
+                </span>
+                <span class="closed">
+                    <fa :icon="['fas', 'times']" />
+                </span>
+            </div>
         </div>
         <div id="view">
             <ProgChatConversationView :conversation="selectedConversation" :isSmall="isSmall" :isMedium="isMedium"
-                @send="(msg) => $emit('send-message', msg)" @delete-selected-conversation="()=>$emit('delete-selected-conversation')"
-                @load-more-messages="()=>$emit('load-more-messages')" @new-conversation="newConversation()"/>
+                @send="(msg) => $emit('send-message', msg)"
+                @delete-selected-conversation="() => $emit('delete-selected-conversation')"
+                @load-more-messages="() => $emit('load-more-messages')" @new-conversation="newConversation()" />
         </div>
     </div>
 </template>
@@ -75,6 +84,11 @@ export default {
         selectConversation(conversation) {
             this.$emit('on-select-conversation', conversation);
         },
+    },
+    data() {
+        return {
+            showConversationListFull: false,
+        }
     },
     computed: {
         selectedConversation() {
@@ -207,6 +221,25 @@ export default {
             height: 100%;
             color: gray;
         }
+
+        .icon-list-full {
+            align-self: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: $bg-color-2;
+
+            .opened {
+                display: none;
+            }
+
+            .closed {
+                display: flex;
+            }
+        }
     }
 
     #view {
@@ -293,6 +326,17 @@ export default {
 
             .no-conversation {
                 display: none;
+            }
+
+            .icon-list-full {
+                
+                .opened {
+                    display: flex;
+                }
+
+                .closed {
+                    display: none;
+                }
             }
         }
     }
