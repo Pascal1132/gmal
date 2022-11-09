@@ -12,16 +12,16 @@
             <PopupMenu :showMenu="showMenu" :pos="menuPos">
                 <div id="conversation-actions">
                     <div class="content">
-                    <ul>
-                        <li v-for="item in menuItems" :key="item.id" @click="item.handleClick" :style="item.style">
-                            {{ item.name }}
-                        </li>
-                    </ul>
+                        <ul>
+                            <li v-for="item in menuItems" :key="item.id" @click="item.handleClick" :style="item.style">
+                                {{ item.name }}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                </div>
-                </PopupMenu>
+            </PopupMenu>
             <div class="messages" ref="messagesContainer" @scroll="onMessageContainerScroll">
-                
+
                 <div class="loading-more" v-if="thereIsNotTheLastMessageInMessages">
                     <div class="loading-more-message">
                         Chargement des messages
@@ -67,7 +67,8 @@
             </h1>
             <p>Désires tu commencer une conversation ?</p>
             <div class="button" @click="$emit('new-conversation')">
-                Nouvelle conversation <fa :icon="['fas', 'plus']" />
+                Nouvelle conversation
+                <fa :icon="['fas', 'plus']" />
             </div>
         </div>
     </div>
@@ -285,7 +286,7 @@ export default {
         }
     }
 
-    #conversation-actions{
+    #conversation-actions {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -354,7 +355,7 @@ export default {
         width: 100%;
         margin-bottom: 10px;
         padding: 0 5px;
-        
+
         .date {
             width: 100%;
             text-align: center;
@@ -375,116 +376,122 @@ export default {
             &.me {
                 align-self: flex-end;
                 align-items: flex-end;
-            }
 
-            .picture {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                overflow: hidden;
-
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                .content {
+                    .text {
+                        background-color: $bg-color-0;
+                    }
                 }
             }
 
-            .content {
-                display: flex;
-                color: $txt-color;
+                .picture {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    overflow: hidden;
 
-                .text {
-                    background-color: $bg-color-0;
-                    padding: 10px;
-                    border-radius: 10px;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
                 }
 
-                .time {
-                    font-size: 12px;
-                    color: #999;
+                .content {
                     display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    padding: 5px;
+                    color: $txt-color;
+
+                    .text {
+                        background-color: $bg-color-2;
+                        padding: 10px;
+                        border-radius: 10px;
+                    }
+
+                    .time {
+                        font-size: 12px;
+                        color: #999;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        padding: 5px;
+                    }
                 }
             }
         }
-    }
 
-    .no-message {
-        height: 100%;
-        font-size: 15px;
-        padding: 10px;
-        color: #999;
-    }
-
-    .send-message {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-
-        input {
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .no-message {
+            height: 100%;
+            font-size: 15px;
             padding: 10px;
-            outline: none;
-        }
-
-        .send {
-            margin-left: 10px;
-            cursor: pointer;
             color: #999;
         }
-    }
-}
 
-.full-height {
-    height: 100%;
-}
+        .send-message {
+            display: flex;
+            align-items: center;
+            padding: 10px;
 
-#welcome-to-chat {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    color: $txt-color;
-    filter: brightness(0.8);
-    padding: 10px;
+            input {
+                flex: 1;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                outline: none;
+            }
 
-    h1 {
-        font-size: 1.5em;
-        font-weight: bold;
-    }
-
-    p {
-        text-align: center;
-        font-size: 1.2em;
-    }
-
-    .button {
-        margin-top: 10px;
-        padding: 10px 20px;
-        border-radius: 5px;
-        background-color: $bg-color-0;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out;
-
-        &:hover {
-            background-color: $bg-color-1;
+            .send {
+                margin-left: 10px;
+                cursor: pointer;
+                color: #999;
+            }
         }
     }
-}
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
+    .full-height {
+        height: 100%;
     }
 
-    100% {
-        transform: rotate(360deg);
+    #welcome-to-chat {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        color: $txt-color;
+        filter: brightness(0.8);
+        padding: 10px;
+
+        h1 {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: $bg-color-0;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+
+            &:hover {
+                background-color: $bg-color-1;
+            }
+        }
     }
-}
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
