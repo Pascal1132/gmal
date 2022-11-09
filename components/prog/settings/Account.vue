@@ -7,44 +7,46 @@
       <div class="input-form">
         <fa class="icon" :icon="['fas', 'user']" />
         <input type="text" id="displayName" ref="displayNameInput" v-model="firebaseUser.displayName"
-          placeholder="Nom d'utilisateur" @focusout="triggerUpdate" />
+          placeholder="Nom d'utilisateur" />
       </div>
-      
+
       <!-- photoUrl -->
       <div class="input-form">
         <fa class="icon" :icon="['fas', 'image']" />
-        <input type="text" id="photoUrl" ref="photoUrlInput" @focusout="triggerUpdate" v-model="firebaseUser.photoURL" placeholder="URL de votre photo"/>
+        <input type="text" id="photoUrl" ref="photoUrlInput" v-model="firebaseUser.photoURL"
+          placeholder="URL de votre photo" />
       </div>
       <!-- Identifiant -->
-      <h4>Mon identifiant unique:</h4>
+      <!--<h4>Mon identifiant unique:</h4>
       <div class="input-form">
         <fa class="icon" :icon="['fas', 'id-card']" />
         <input type="text" :value="usernameByDisplayName" placeholder="Identifiant" disabled />
-      </div>
-      <button @click="signOut" class="btn full-width btn-danger visible">Déconnexion</button>
+      </div>-->
+      <button @click="triggerUpdate" class="btn full-width btn-success visible">Sauvegarder</button>
+
     </div>
     <div v-else class="login-container">
       <h3>Connexion</h3>
-      <div class="input-form" :class="{disabled: waitingForCode}">
+      <div class="input-form" :class="{ disabled: waitingForCode }">
         <fa class="icon" :icon="['fas', 'phone']" />
         <input type="phone" id="phone" ref="phoneInput" @input="onPhoneInput" :readonly="waitingForCode"
-          v-model="user.phone" placeholder="Téléphone (+1)" @keyup.enter="signIn"/>
+          v-model="user.phone" placeholder="Téléphone (+1)" @keyup.enter="signIn" />
         <button class="edit-btn" @click="onEditNumberClick">Modifier le numéro</button>
       </div>
-      <span class="error" :class="{visible: errors.phone != ''}">{{ errors.phone }}</span>
+      <span class="error" :class="{ visible: errors.phone != '' }">{{ errors.phone }}</span>
 
-      <button class="btn" :class="{visible:!waitingForCode}" @click="signIn" id="recaptcha-container">Se
+      <button class="btn" :class="{ visible: !waitingForCode }" @click="signIn" id="recaptcha-container">Se
         connecter</button>
       <div class="phone-verification-form" v-if="waitingForCode">
         <label class="phone-verification-form-title">Entrer le code</label>
         <div id="code-input" @click.prevent="onCodeInputClick">
           <span class="number" v-for="(n, i) in 6" :key="i"
-            :class="{active: (selectionStartInputCodeVerification == i && !isBlured)}">
-            {{phoneVerificationCodeDigits[i] || ''}}
+            :class="{ active: (selectionStartInputCodeVerification == i && !isBlured) }">
+            {{ phoneVerificationCodeDigits[i] || '' }}
           </span>
         </div>
         <span class="error"
-          :class="{visible: errors.phoneVerificationCode != ''}">{{errors.phoneVerificationCode}}</span>
+          :class="{ visible: errors.phoneVerificationCode != '' }">{{ errors.phoneVerificationCode }}</span>
         <input id="dummyInputCodeVerification" ref="dummyInputCodeVerification" @input="updateSelectionStart"
           type="text" maxlength="6" v-model="user.phoneVerificationCode" @focusout="onBlur" @focusin="onFocus">
       </div>
@@ -59,11 +61,13 @@ export default {
   name: 'Account',
   setup() {
     const firebaseUser = useFirebaseUser();
-    const {profile} = useProfileStore();
+    const { profile } = useProfileStore();
+    const { addNotification } = useNotificationsStore();
 
     return {
       firebaseUser,
-      profile
+      profile,
+      addNotification,
     };
   },
   data() {
@@ -84,7 +88,7 @@ export default {
       isBlured: false,
     };
   },
-  async mounted() {    
+  async mounted() {
     this.checkVerifier();
   },
   methods: {
@@ -165,12 +169,17 @@ export default {
 
       this.errors.phoneVerificationCode = '';
     },
-    triggerUpdate() {
+    async triggerUpdate() {
       updateUser(this.firebaseUser);
-      this.updateProfile({
+      await this.updateProfile({
         userIdentifier: this.usernameByDisplayName,
         userId: this.firebaseUser.uid,
         displayName: this.firebaseUser.displayName,
+      });
+      this.addNotification({
+        html: `
+          <strong>Profile</strong>: Votre profil a bien été mis à jour.
+        `,
       });
     },
     checkVerifier() {
@@ -236,7 +245,7 @@ export default {
       font-size: 15px;
       color: $txt-color;
 
-      &:disabled{
+      &:disabled {
         color: $highlight-color;
       }
     }
@@ -371,12 +380,14 @@ export default {
     }
 
     &.btn-success {
-      background-color: $success-color;
+      border-color: $success-color;
       border: 2px solid $success-color;
-      color: $bg-color-0;
+      color: $txt-color;
 
       &:hover {
         filter: brightness(1.2);
+        background-color: $success-color;
+        color: $bg-color-0;
       }
     }
   }
