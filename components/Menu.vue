@@ -284,13 +284,17 @@ export default {
     // on mobile take the full screen
     @media (max-width: 768px) {
         width: calc(100% - 20px);
-        height: calc(100% - 10px);
-        max-height: 100%;
+        height: 70%;
+        max-height: 70%;
         max-width: 100%;
         bottom: 0;
-        transform: translateY(100%);
         margin: 10px 0 0 10px;
+        border-radius: 0;
         padding: 0;
+        transform: translateY(120%);
+        &.show{
+            transform: translateY(-80px);
+        }
 
         // increase the search-bar height
         .menu-header {

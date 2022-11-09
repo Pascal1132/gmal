@@ -7,10 +7,10 @@
                     <fa :icon="['fab', 'windows']" />
                 </div>
                 <div class="icon" v-for="(menu, index) in bottomLeftMenu" :key="index"
-                    @click="createBaseWindow(menu.program)">
+                    :class="{ 'instances-running': menu.instances, 'focused': menu.focused }" @click="createBaseWindow(menu.program)">
                     <img :src="menu.imagePath" format="webp" />
                 </div>
-                <div class="label" v-for="window in windows" :key="window.id" @click="onWindowClick(window.id)"
+                <div class="label" v-for="window in windowsInstancesFiltered" :key="window.id" @click="onWindowClick(window.id)"
                     :class="{ focused: activeWindowId == window.id }">
                     <div class="label-container">
                         <img :src="window.iconPath" v-if="window.iconPath" class="label-icon" />
@@ -42,7 +42,7 @@ export default {
             },
             showCalendar: false,
             loaded: false,
-            bottomLeftMenu: bottomBarMenu,
+            bottomLeftMenuData: bottomBarMenu,
         }
     },
     methods: {
@@ -101,6 +101,25 @@ export default {
         hideOnMobile() {
             // if the active window id is not null and minimum a window isMinimied = false
             return this.activeWindowId !== null;
+        },
+        bottomLeftMenu() {
+            // return this.bottomLeftMenuData but with check if there is instances of the program in windows
+            return this.bottomLeftMenuData.map((menu) => {
+                const map = this.windows.filter((window) => window.component === menu.program);
+
+                return {
+                    ...menu,
+                    instances: map.length,
+                    focused: map.some((window) => window.id === this.activeWindowId),
+                };
+            });
+        },
+        windowsInstancesFiltered() {
+            // filter all windows not in the bottomLeftMenuData
+            const mapping =this.bottomLeftMenuData.map((menu) => menu.program);
+            return this.windows.filter((window) => {
+                    return !( mapping.includes(window.component));
+            });
         },
         ...mapState(useWindowsStore, ['windows', 'activeWindowId']),
     },
@@ -162,6 +181,26 @@ export default {
                     img {
                         color: rgb(85, 158, 241);
                         transform: scale(0.85);
+                    }
+                }
+
+                &.instances-running {
+                    &:after {
+                        // add a small line below
+                        content: "";
+                        display: block;
+                        width: 5px;
+                        height: 3px;
+                        border-radius: 50px;
+                        background-color: $txt-color;
+                        margin-top: 6px;
+                        transition: all 0.3s ease-in-out;
+                    }
+                    &.focused {
+                        &:after {
+                            width: 18px;
+                            background-color: $highlight-color;
+                        }
                     }
                 }
             }
