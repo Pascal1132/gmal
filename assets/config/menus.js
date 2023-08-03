@@ -41,4 +41,9 @@ export const mainMenu = [
         imagePath: '/images/programs/chat.png',
         program: 'ProgChat'
     },
+    {
+        title: 'City Game',
+        imagePath: '/images/programs/citygame/logo.jpeg',
+        program: 'ProgCityGame'
+    }
 ];

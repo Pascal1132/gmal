@@ -67,7 +67,12 @@ export const useChatStore = defineStore({
             
         },
         async onNewConversation(conversation) {
-            this.conversations.push(Conversation.fromSocket(conversation));
+            // check if the new conversation is not already in the list
+            const index = this.conversations.findIndex((c) => c.id = conversation.id);
+            if (index == -1) {
+                // add it to the list
+                this.conversations.unshift(conversation);
+            }
         },
         async onDeleteConversation({conversationId}) {
             const index = this.conversations.findIndex((c) => c.id === conversationId);
